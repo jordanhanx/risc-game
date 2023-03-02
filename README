@@ -1,3 +1,4 @@
+  ![pipeline](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/master/pipeline.svg) ![coverage](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/master/coverage.svg?job=test)
 So far, you have used gradle for "single project" setups, where you have one program
 that you run. For RISC, you probably want a "multi project" setup, where you can have
 multiple programs (e.g., a server and a client) and they can share some common code.
@@ -94,7 +95,8 @@ We've included that updated file here for you as well.
 With that, you should be able to get your multi-project gradle setup,
 and get your CI/CD setup!
 
-
+## Coverage
+[Detailed coverage](https://xh123.pages.oit.duke.edu/ece651-sp23-team7-risk/dashboard.html)
 
 
 
