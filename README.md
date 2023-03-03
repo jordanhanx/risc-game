@@ -1,7 +1,7 @@
 ECE 651 Team7: Risk Game
 =======================================
-![pipeline](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/1-ci-cd-setup/pipeline.svg)
-![coverage](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/1-ci-cd-setup/coverage.svg?job=test)
+![pipeline](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/master/pipeline.svg)
+![coverage](https://gitlab.oit.duke.edu/xh123/ece651-sp23-team7-risk/badges/master/coverage.svg?job=test)
 
 
  - client : the code for the client
