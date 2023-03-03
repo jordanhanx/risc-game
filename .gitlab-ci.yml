@@ -25,10 +25,13 @@ test:
   stage: test
   script: 
     - scripts/run-tests-in-docker.sh
+    - ./gradlew build
+    - ./gradlew cloverGenerateReport
+    - ./gradlew cloverAggregateReport
     - ls -lha .
-    - ls -lha coverage/
-    # - ls -lha build/reports/
-    # - ls -lha build/reports/clover/
+    - ls -lha build/
+    - ls -lha build/reports/clover/
+    - scripts/coverage_summary.sh
     - cp -r build/reports/clover/html/* /coverage-out/
   artifacts:
     paths:
