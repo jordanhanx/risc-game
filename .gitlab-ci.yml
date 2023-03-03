@@ -9,8 +9,6 @@ stages:
   - build
   - test
   - coverage
-  # - deploy
-  # - test-deployment
 
    
 build:
@@ -23,7 +21,8 @@ test:
   tags:
     - ece651
   stage: test
-  script: scripts/run-tests-in-docker.sh
+  script: 
+    - scripts/run-tests-in-docker.sh
   artifacts:
     paths:
       - coverage
@@ -41,21 +40,3 @@ pages:
     paths:
       - public
 
-
-# deploy:
-  # tags:
-  #   - ece651
-  # stage: deploy
-  # script: ./scripts/redeploy.sh
-  
-
-# test-deployment:
-#   tags:
-#     - ece651
-#   stage: test-deployment
-#   dependencies:
-#     - deploy
-#   script: ./scripts/test-deployment.sh
-#   only:
-#     - master
-#     - 1-ci-cd-setup
