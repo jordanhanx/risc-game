@@ -9,8 +9,8 @@ stages:
   - build
   - test
   - coverage
-  - deploy
-  - test-deployment
+  # - deploy
+  # - test-deployment
 
    
 build:
@@ -43,12 +43,10 @@ pages:
 
 
 # deploy:
-#   tags:
-#     - ece651
-#   stage: deploy
-#   script: ./scripts/redeploy.sh
-#   only:
-#     - master
+  # tags:
+  #   - ece651
+  # stage: deploy
+  # script: ./scripts/redeploy.sh
   
 
 # test-deployment:
