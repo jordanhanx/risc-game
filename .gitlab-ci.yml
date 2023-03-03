@@ -26,9 +26,9 @@ test:
   script: 
     - scripts/run-tests-in-docker.sh
     - ls -lha .
-    - ls -lha build/
-    - ls -lha build/reports/
-    - ls -lha build/reports/clover/
+    - ls -lha coverage/
+    # - ls -lha build/reports/
+    # - ls -lha build/reports/clover/
     - cp -r build/reports/clover/html/* /coverage-out/
   artifacts:
     paths:
