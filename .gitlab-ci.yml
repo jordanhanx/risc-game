@@ -42,14 +42,13 @@ pages:
       - public
 
 
-deploy:
-  tags:
-    - ece651
-  stage: deploy
-  script: ./scripts/redeploy.sh
-  only:
-    - master
-    - 1-ci-cd-setup
+# deploy:
+#   tags:
+#     - ece651
+#   stage: deploy
+#   script: ./scripts/redeploy.sh
+#   only:
+#     - master
   
 
 # test-deployment:
