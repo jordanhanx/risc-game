@@ -25,7 +25,6 @@ test:
   stage: test
   script: 
     - scripts/run-tests-in-docker.sh
-    - ls -lha /coverage-out/
     - ./gradlew build
     - ./gradlew cloverGenerateReport
     - ./gradlew cloverAggregateReport
