@@ -3,6 +3,9 @@
  */
 package edu.duke.ece651.team7.client;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import edu.duke.ece651.team7.shared.MyName;
 
 public class App {
@@ -13,5 +16,15 @@ public class App {
   public static void main(String[] args) {
     App a = new App();
     System.out.println(a.getMessage());
+     try{
+       Client c = new Client("0.0.0.0",4444);
+       c.sendString("Hi, here is client 1");
+       c.closeSocket();
+     }catch(UnknownHostException e){
+       System.err.println("Cannot resolve hostname");
+     }catch(IOException e){
+       System.err.println("Cannot bind to port 4444");
+     }
+
   }
 }

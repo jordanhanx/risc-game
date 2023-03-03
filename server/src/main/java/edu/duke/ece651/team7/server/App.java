@@ -3,6 +3,8 @@
  */
 package edu.duke.ece651.team7.server;
 
+import java.io.IOException;
+
 import edu.duke.ece651.team7.shared.MyName;
 
 public class App {
@@ -13,5 +15,13 @@ public class App {
   public static void main(String[] args) {
     App a = new App();
     System.out.println(a.getMessage());
+     try{
+       Server s = new Server(4444, 1);
+       s.connectClients();
+       s.readData();
+     }catch(IOException e){
+       System.err.println("Cannot bind to port 4444");
+     }
+
   }
 }
