@@ -24,6 +24,7 @@ test:
   script: 
     - scripts/run-tests-in-docker.sh
     - ls -lha
+    - ls -lha coverage
   artifacts:
     paths:
       - coverage
