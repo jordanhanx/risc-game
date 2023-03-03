@@ -9,3 +9,6 @@ bin
 .settings
 .classpath
 .project
+
+# Ignore macOS default files
+.DS_Store
