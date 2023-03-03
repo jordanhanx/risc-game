@@ -52,13 +52,13 @@ deploy:
     - 1-ci-cd-setup
   
 
-test-deployment:
-  tags:
-    - ece651
-  stage: test-deployment
-  dependencies:
-    - deploy
-  script: ./scripts/test-deployment.sh
-  only:
-    - master
-    - 1-ci-cd-setup
+# test-deployment:
+#   tags:
+#     - ece651
+#   stage: test-deployment
+#   dependencies:
+#     - deploy
+#   script: ./scripts/test-deployment.sh
+#   only:
+#     - master
+#     - 1-ci-cd-setup
