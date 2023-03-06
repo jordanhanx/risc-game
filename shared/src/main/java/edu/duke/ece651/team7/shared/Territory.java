@@ -1,11 +1,14 @@
 package edu.duke.ece651.team7.shared;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Territory {
+public class Territory extends UnicastRemoteObject implements RemoteTerritory {
   private String name;
 
-  public String getName() {
+  @Override
+  public String getName() throws RemoteException {
     return name;
   }
 
@@ -15,7 +18,7 @@ public class Territory {
    * @param name is the name of the newly constructed territory
    */
 
-  public Territory(String name) {
+  public Territory(String name) throws RemoteException {
     this.name = name;
   }
 }

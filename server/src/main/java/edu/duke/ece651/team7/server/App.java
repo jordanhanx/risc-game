@@ -3,22 +3,16 @@
  */
 package edu.duke.ece651.team7.server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.rmi.registry.LocateRegistry;
-
 public class App {
   public static void main(String[] args) {
-    if (args.length == 0) {
+    if (args.length == 2) {
       try {
-        Server server = new Server(new BufferedReader(new InputStreamReader(System.in)), System.out);
-        LocateRegistry.createRegistry(8082).rebind("RiscGameServer", server);
-        server.run();
+        Server server = new Server(Integer.parseInt(args[0]), Integer.parseInt(args[1]), System.out);
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }
     } else {
-      System.err.println("Usage: server");
+      System.err.println("Usage: server <port> <MaxPlayerNumber>");
     }
   }
 }

@@ -4,7 +4,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RemoteServer extends Remote {
-    public String tryRegisterPlayer(RemotePlayer p) throws RemoteException;
+    public boolean tryRegisterPlayer(RemoteClient p) throws RemoteException;
 
-    // public boolean isGameOver() throws RemoteException;
+    public void requestStart() throws RemoteException;
+
+    public RemoteGameMap getGameMap() throws RemoteException;
 }
