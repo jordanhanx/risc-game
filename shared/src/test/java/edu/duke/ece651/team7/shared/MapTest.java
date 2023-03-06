@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 
-
 import org.junit.jupiter.api.Test;
 
 public class MapTest {
@@ -14,8 +13,7 @@ public class MapTest {
     Territory territory = new Territory("testMap");
     territories.add(territory);
     Map m = new Map(territories);
-    assertEquals(territories,m.getTerritoriesSet());
+    assertEquals(territories, m.getTerritoriesSet());
   }
 
 }
-

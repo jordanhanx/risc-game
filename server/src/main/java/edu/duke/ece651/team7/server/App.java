@@ -3,41 +3,22 @@
  */
 package edu.duke.ece651.team7.server;
 
-import java.io.IOException;
-import java.rmi.registry.Registry;
-import java.rmi.RemoteException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.rmi.registry.LocateRegistry;
 
-import edu.duke.ece651.team7.shared.*;
-// import edu.duke.ece651.team7.shared.MyName;
-
 public class App {
-  public String getMessage() {
-    return "Hello from the server for " + MyName.getName();
-  }
-
   public static void main(String[] args) {
-    App a = new App();
-    // System.out.println(a.getMessage());
-    // try{
-    // Server s = new Server(4444, 1);
-    // s.connectClients();
-    // s.readData();
-    // }catch(IOException e){
-    // System.err.println("Cannot bind to port 4444");
-    // }
-    System.out.println("Rmi Server started!");
-    try {
-      RemotePlayer p1 = new ImplRemotePlayer("Hello my frined!");
-      System.out.println("Rmi Server RemotePalyer created!");
-      Registry registry = LocateRegistry.createRegistry(8082);
-      System.out.println("Rmi Server got registry!");
-      registry.rebind("RemotePlayer1", p1);
-      System.out.println("Rmi Server ready!");
-    } catch (RemoteException e) {
-      System.err.println("RemoteException: " + e);
-    } catch (Exception e) {
-      System.err.println("Exception: " + e);
+    if (args.length == 0) {
+      try {
+        Server server = new Server(new BufferedReader(new InputStreamReader(System.in)), System.out);
+        LocateRegistry.createRegistry(8082).rebind("RiscGameServer", server);
+        server.run();
+      } catch (Exception e) {
+        System.err.println("Exception: " + e);
+      }
+    } else {
+      System.err.println("Usage: server");
     }
   }
 }

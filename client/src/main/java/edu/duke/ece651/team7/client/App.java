@@ -3,41 +3,21 @@
  */
 package edu.duke.ece651.team7.client;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.rmi.registry.Registry;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-
-import edu.duke.ece651.team7.shared.*;
-// import edu.duke.ece651.team7.shared.MyName;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class App {
-  public String getMessage() {
-    return "Hello from the client for " + MyName.getName();
-  }
-
   public static void main(String[] args) {
-    // App a = new App();
-    // System.out.println(a.getMessage());
-    // try{
-    // Client c = new Client("0.0.0.0",4444);
-    // c.sendString("Hi, here is client 1");
-    // c.closeSocket();
-    // }catch(UnknownHostException e){
-    // System.err.println("Cannot resolve hostname");
-    // }catch(IOException e){
-    // System.err.println("Cannot bind to port 4444");
-    // }
-    System.out.println("Rmi Client started!");
-    try {
-      Registry registry = LocateRegistry.getRegistry(args[0], Integer.parseInt(args[1]));
-      RemotePlayer p1 = (RemotePlayer) registry.lookup("RemotePlayer1");
-      System.out.println("Rmi Client connected to Server, getMsg(): " + p1.getMsg());
-    } catch (RemoteException e) {
-      System.err.println("RemoteException: " + e);
-    } catch (Exception e) {
-      System.err.println("Exception: " + e);
+    if (args.length == 3) {
+      try {
+        Client client = new Client(args[0], Integer.parseInt(args[1]), args[2],
+            new BufferedReader(new InputStreamReader(System.in)), System.out);
+        client.run();
+      } catch (Exception e) {
+        System.err.println("Exception: " + e);
+      }
+    } else {
+      System.err.println("Usage: client <host> <port> <playername>");
     }
   }
 }
