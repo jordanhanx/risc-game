@@ -14,10 +14,13 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   private HashSet<RemoteClient> players;
   private GameMap map;
 
-  public Server(int port, int maxPlayerNum, PrintStream out) throws RemoteException {
+  public Server(int maxPlayerNum, PrintStream out) throws RemoteException {
     this.maxPlayerNum = maxPlayerNum;
     this.players = new HashSet<>();
     this.out = out;
+  }
+
+  public void start(int port) throws RemoteException {
     LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
     out.println("Server ready");
   }
@@ -33,25 +36,30 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
   }
 
-  @Override
-  public synchronized void requestStart() throws RemoteException {
-    out.println("Received start request, players current/max = " + players.size() + "/" + maxPlayerNum);
-    if (players.size() == maxPlayerNum) {
-      HashSet<Territory> territories = new HashSet<>();
-      territories.add(new Territory("Hogwartz"));
-      territories.add(new Territory("Gondor"));
-      territories.add(new Territory("Oz"));
-      map = new GameMap(territories);
-      out.println("Created Map including " + territories.size() + " territories");
-      for (RemoteClient p : players) {
-        p.start();
-        out.println("Sent start command to " + p.getName());
-      }
-    }
+  public synchronized void initGameMap() throws RemoteException {
+    HashSet<Territory> territories = new HashSet<>();
+    territories.add(new Territory("Hogwartz"));
+    territories.add(new Territory("Gondor"));
+    territories.add(new Territory("Oz"));
+    map = new GameMap(territories);
+    out.println("Created a Map including " + map.getTerritoriesSet().size() + " territories");
   }
 
   @Override
-  public synchronized RemoteGameMap getGameMap() throws RemoteException {
+  public synchronized RemoteGameMap getGameMap() throws RemoteException, InterruptedException {
+    out.println("Received game map request, players current/max = " + players.size() + "/" + maxPlayerNum);
+    if (players.size() == maxPlayerNum) {
+      out.println("enough clients joined, game start");
+      initGameMap();
+      notifyAll();
+      out.println("notified all waiting GameMap Request");
+    } else {
+      out.println("waiting for other clients");
+      while (players.size() < maxPlayerNum) {
+        wait();
+      }
+    }
+    out.println("return GameMap");
     return map;
   }
 }

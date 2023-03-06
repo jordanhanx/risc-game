@@ -5,7 +5,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
 
 public class GameMap extends UnicastRemoteObject implements RemoteGameMap {
-
     private HashSet<Territory> territories;
 
     /**

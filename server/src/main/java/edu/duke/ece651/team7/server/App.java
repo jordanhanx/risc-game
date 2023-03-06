@@ -7,7 +7,8 @@ public class App {
   public static void main(String[] args) {
     if (args.length == 2) {
       try {
-        Server server = new Server(Integer.parseInt(args[0]), Integer.parseInt(args[1]), System.out);
+        Server server = new Server(Integer.parseInt(args[1]), System.out);
+        server.start(Integer.parseInt(args[0]));
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }

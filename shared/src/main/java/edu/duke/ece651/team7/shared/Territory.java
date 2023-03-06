@@ -19,6 +19,7 @@ public class Territory extends UnicastRemoteObject implements RemoteTerritory {
    */
 
   public Territory(String name) throws RemoteException {
+    super();
     this.name = name;
   }
 }

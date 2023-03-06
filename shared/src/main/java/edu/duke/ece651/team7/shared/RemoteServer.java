@@ -6,7 +6,5 @@ import java.rmi.RemoteException;
 public interface RemoteServer extends Remote {
     public boolean tryRegisterPlayer(RemoteClient p) throws RemoteException;
 
-    public void requestStart() throws RemoteException;
-
-    public RemoteGameMap getGameMap() throws RemoteException;
+    public RemoteGameMap getGameMap() throws RemoteException, InterruptedException;
 }

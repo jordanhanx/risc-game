@@ -25,8 +25,6 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
       throw new RuntimeException("Failed to register");
     }
     out.println("Client joined a RiskGame as Player:" + getName());
-    server.requestStart();
-    out.println("Sent start request to server");
   }
 
   @Override
@@ -34,11 +32,9 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
     return name;
   }
 
-  @Override
-  public void start() throws RemoteException {
-    out.println("Received start command");
+  public void start() throws RemoteException, InterruptedException {
+    out.println("sent GameMap request to server");
     RemoteGameMap map = server.getGameMap();
-    out.println("received GameMap stub");
     out.print(MapTextView.display(map));
   }
 }
