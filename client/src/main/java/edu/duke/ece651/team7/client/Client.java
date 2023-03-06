@@ -21,7 +21,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
     this.out = out;
     this.name = name;
     this.server = (RemoteServer) LocateRegistry.getRegistry(host, port).lookup("RiscGameServer");
-    if (!server.tryRegisterPlayer(this)) {
+    if (!server.tryRegisterClient(this)) {
       throw new RuntimeException("Failed to register");
     }
     out.println("Client joined a RiskGame as Player:" + getName());

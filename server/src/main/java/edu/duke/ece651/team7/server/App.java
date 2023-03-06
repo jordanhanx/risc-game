@@ -13,7 +13,7 @@ public class App {
         System.err.println("Exception: " + e);
       }
     } else {
-      System.err.println("Usage: server <port> <MaxPlayerNumber>");
+      System.err.println("Usage: server <port> <clientCapacity>");
     }
   }
 }

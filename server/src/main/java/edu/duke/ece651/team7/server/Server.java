@@ -10,13 +10,13 @@ import edu.duke.ece651.team7.shared.*;
 
 public class Server extends UnicastRemoteObject implements RemoteServer {
   private final PrintStream out;
-  private final int maxPlayerNum;
-  private HashSet<RemoteClient> players;
+  private final int clientsCapacity;
+  private HashSet<RemoteClient> clients;
   private GameMap map;
 
-  public Server(int maxPlayerNum, PrintStream out) throws RemoteException {
-    this.maxPlayerNum = maxPlayerNum;
-    this.players = new HashSet<>();
+  public Server(int clientsCapacity, PrintStream out) throws RemoteException {
+    this.clientsCapacity = clientsCapacity;
+    this.clients = new HashSet<>();
     this.out = out;
   }
 
@@ -26,10 +26,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   @Override
-  public synchronized boolean tryRegisterPlayer(RemoteClient p) throws RemoteException {
-    if (players.size() < maxPlayerNum && !players.contains(p)) {
-      players.add(p);
-      out.println("Remote Player:" + p.getName() + " has joined game");
+  public synchronized boolean tryRegisterClient(RemoteClient client) throws RemoteException {
+    if (clients.size() < clientsCapacity && !clients.contains(client)) {
+      clients.add(client);
+      out.println("Remote Player:" + client.getName() + " has joined game");
       return true;
     } else {
       return false;
@@ -47,15 +47,15 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
 
   @Override
   public synchronized RemoteGameMap getGameMap() throws RemoteException, InterruptedException {
-    out.println("Received game map request, players current/max = " + players.size() + "/" + maxPlayerNum);
-    if (players.size() == maxPlayerNum) {
+    out.println("Received game map request, players current/max = " + clients.size() + "/" + clientsCapacity);
+    if (clients.size() == clientsCapacity) {
       out.println("enough clients joined, game start");
       initGameMap();
       notifyAll();
       out.println("notified all waiting GameMap Request");
     } else {
       out.println("waiting for other clients");
-      while (players.size() < maxPlayerNum) {
+      while (clients.size() < clientsCapacity) {
         wait();
       }
     }
