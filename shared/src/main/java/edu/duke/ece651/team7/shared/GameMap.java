@@ -1,10 +1,12 @@
 package edu.duke.ece651.team7.shared;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GameMap{
 
-    private Set<Territory> territories;
+   private List<Territory> territories;
 
     
    /**
@@ -12,11 +14,11 @@ public class GameMap{
    * 
    * @param territories is the set of territories in this map
    */
-    public GameMap(Set<Territory> territories){
+    public GameMap(List<Territory> territories){
         this.territories = territories;
     }
 
-    public Set<Territory> getTerritories(){
+    public List<Territory> getTerritories(){
         return territories;
         
     }
@@ -27,9 +29,9 @@ public class GameMap{
    * teporary @param name is the name of the territory, need to be changed to owner: client
    * @return the Territory set where territories have the same name--->owner: client
    */
-    public Set<Territory> getTerritoriesByName(String name){
+    public List<Territory> getTerritoriesByName(String name){
         //changed to owner: client
-        Set<Territory> terrSet = new HashSet<Territory>();
+        List<Territory> terrSet = new ArrayList<Territory>();
         for(Territory t: territories){
             //getOwner()
             if(t.getName().equals(name)){
@@ -39,9 +41,18 @@ public class GameMap{
         return terrSet;
     }
 
+    
+    // public Territory getTerritoriesByName(String name){
+
+    // }
+
+    
+
    /**
    * Override equals
    */
+
+    //keep this if override equals in territory
     @Override
     public boolean equals (Object other){
         if(other != null && other.getClass().equals(getClass())){

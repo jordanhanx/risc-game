@@ -1,6 +1,8 @@
 package edu.duke.ece651.team7.shared;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TextMapFactory implements MapFactory {
@@ -12,7 +14,7 @@ public class TextMapFactory implements MapFactory {
 
     @Override
     public GameMap createTwoPlayerMap(){
-        Set<Territory> territories = new HashSet<Territory>();
+        List<Territory> territories = new ArrayList<Territory>();
         Territory territory = new Territory("player1");
         Territory territory2 = new Territory("player2");
         territories.add(territory);
@@ -24,7 +26,7 @@ public class TextMapFactory implements MapFactory {
 
     @Override
     public GameMap createThreePlayerMap(){
-        Set<Territory> territories = new HashSet<Territory>();
+        List<Territory> territories = new ArrayList<Territory>();
         Territory territory = new Territory("player1");
         Territory territory2 = new Territory("player2");
         Territory territory3 = new Territory("player3");
