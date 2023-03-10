@@ -68,6 +68,7 @@ public class GameMap{
                             return true;
                         }
                         if(!territoryVisited.get(neighbourTerritory.getName())){
+                        // && neighbourTerritory.getOwner().equals(source.getOwner()) 
                             territoryVisited.put(neighbourTerritory.getName(), true);
                             queue.add(neighbourTerritory);
                         }
