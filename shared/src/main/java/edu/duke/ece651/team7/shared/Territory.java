@@ -3,7 +3,9 @@
 
 package edu.duke.ece651.team7.shared;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class Territory {
   private final String name;
@@ -79,6 +81,14 @@ public class Territory {
 
 
   //add the override methods for equal and hashcode
+
+  public List<Territory> getNeighbourTerritories(){
+    List neighbourtTerritoriesList = new ArrayList<>();
+    for(String name: neighbors){
+      neighbourtTerritoriesList.add(new Territory(name));
+    }
+    return neighbourtTerritoriesList;
+  }
 
   @Override
   public boolean equals (Object other){

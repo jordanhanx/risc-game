@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.HashMap;
 public class GameMap{
 
    private List<Territory> territories;
@@ -46,6 +46,38 @@ public class GameMap{
 
     // }
 
+
+ 
+    //check path between the two territories that belong to the same owner
+    public boolean checkPath(Territory source, Territory destination){
+        HashMap<String, Boolean> territoryVisited = new HashMap<>();
+        for (Territory territory : territories) {
+            territoryVisited.put(territory.getName(), false);
+        }
+
+        for (Territory territory : territories) {
+            if (territory.getName().equals(source.getName())) {
+                List<Territory> queue = new ArrayList<>();
+                territoryVisited.put(territory.getName(), true);
+                queue.add(territory);
+                while (queue.size()>0) {
+                    Territory curTerritory = queue.remove(0);
+                    //add method in territory class
+                    for (Territory neighbourTerritory : curTerritory.getNeighbourTerritories()) {
+                        if (neighbourTerritory.getName().equals(destination.getName())) {
+                            return true;
+                        }
+                        if(!territoryVisited.get(neighbourTerritory.getName())){
+                            territoryVisited.put(neighbourTerritory.getName(), true);
+                            queue.add(neighbourTerritory);
+                        }
+                    }
+                }
+            }      
+        }
+    
+        return false;
+    }
     
 
    /**
@@ -61,6 +93,8 @@ public class GameMap{
         }
         return false;
     }
+
+
 
 
 }
