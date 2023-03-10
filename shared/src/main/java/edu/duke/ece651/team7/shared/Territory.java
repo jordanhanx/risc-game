@@ -82,13 +82,13 @@ public class Territory {
 
   //add the override methods for equal and hashcode
 
-  public List<Territory> getNeighbourTerritories(){
-    List neighbourtTerritoriesList = new ArrayList<>();
-    for(String name: neighbors){
-      neighbourtTerritoriesList.add(new Territory(name));
-    }
-    return neighbourtTerritoriesList;
-  }
+  // public List<Territory> getNeighbourTerritories(){
+  //   List neighbourtTerritoriesList = new ArrayList<>();
+  //   for(String name: neighbors){
+  //     neighbourtTerritoriesList.add(new Territory(name));
+  //   }
+  //   return neighbourtTerritoriesList;
+  // }
 
   @Override
   public boolean equals (Object other){
