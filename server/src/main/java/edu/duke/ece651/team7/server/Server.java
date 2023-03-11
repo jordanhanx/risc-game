@@ -16,7 +16,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
 
   public Server(int clientsCapacity, PrintStream out) throws RemoteException {
     this.clientsCapacity = clientsCapacity;
-    this.clients = new HashSet<>();
+    this.clients = new HashSet<RemoteClient>();
     this.out = out;
   }
 
@@ -37,11 +37,11 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   public synchronized void initGameMap() throws RemoteException {
-    HashSet<Territory> territories = new HashSet<>();
+    HashSet<RemoteTerritory> territories = new HashSet<RemoteTerritory>();
     territories.add(new Territory("Hogwartz"));
     territories.add(new Territory("Gondor"));
     territories.add(new Territory("Oz"));
-    map = new GameMap(territories);
+    // map = new GameMap(territories);
     out.println("Created a Map including " + map.getTerritoriesSet().size() + " territories");
   }
 
@@ -61,5 +61,29 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
     out.println("return GameMap");
     return map;
+  }
+
+  @Override
+  public String tryMoveOrder(RemoteClient client, RemoteTerritory src, RemoteTerritory dest, int units) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'tryMoveOrder'");
+  }
+
+  @Override
+  public String tryAttackOrder(RemoteClient client, RemoteTerritory src, RemoteTerritory dest, int units) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'tryAttackOrder'");
+  }
+
+  @Override
+  public void doCommitOrder(RemoteClient client) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'doCommitOrder'");
+  }
+
+  @Override
+  public boolean isGameOver() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isGameOver'");
   }
 }

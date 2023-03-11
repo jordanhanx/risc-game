@@ -2,7 +2,7 @@ package edu.duke.ece651.team7.shared;
 
 import java.util.HashSet;
 
-public class Territory {
+public class Territory implements RemoteTerritory{
   private final String name;
   //private Player owner;
   private int units;
@@ -41,7 +41,7 @@ public class Territory {
     this.neighbors = neighbors;
   }
   
-
+  @Override
   public String getName() {
     return name;
   }
