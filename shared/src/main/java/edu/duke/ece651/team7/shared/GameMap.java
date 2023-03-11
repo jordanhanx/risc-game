@@ -75,7 +75,7 @@ public List<Territory> getTerritoriesByOwner(String name){
 
 /**
 
-Determines whether a path exists between two territories.
+Determines whether a path exists between two territories which belong to the same owner.
 @param from the name of the source territory
 @param to the name of the destination territory
 @return true if a path exists between the source and destination territories, false otherwise
