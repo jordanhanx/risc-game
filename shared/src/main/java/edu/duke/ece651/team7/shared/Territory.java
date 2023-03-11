@@ -72,7 +72,6 @@ public class Territory {
     return neighbors.contains(name);
   }
 
-
   @Override
   public boolean equals (Object other){
     if(other != null && other.getClass().equals(getClass())){
