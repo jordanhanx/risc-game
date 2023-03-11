@@ -3,10 +3,8 @@ package edu.duke.ece651.team7.shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TextMapFactory implements MapFactory {
 
@@ -15,6 +13,10 @@ public class TextMapFactory implements MapFactory {
 
     // }
 
+    /**
+    *Creates a two-player game map with two territories and their adjacency information.
+    *@return a new instance of GameMap representing the two-player game map
+    */
     @Override
     public GameMap createTwoPlayerMap(){
         Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
@@ -27,6 +29,10 @@ public class TextMapFactory implements MapFactory {
     
     }
 
+    /**
+    *Creates a three-player game map with three territories and their adjacency information.
+    *@return a new instance of GameMap representing the three-player game map
+    */
     @Override
     public GameMap createThreePlayerMap(){
         List<Territory> territories = new ArrayList<Territory>();
@@ -39,11 +45,9 @@ public class TextMapFactory implements MapFactory {
         Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
         territoriesAdjacentList.put(territory1, new ArrayList<Territory>(Arrays.asList(territory2, territory3)));
         territoriesAdjacentList.put(territory2, new ArrayList<Territory>(Arrays.asList(territory1, territory3)));
-        territoriesAdjacentList.put(territory3, new ArrayList<Territory>(Arrays.asList(territory1, territory2)));
-    
+        territoriesAdjacentList.put(territory3, new ArrayList<Territory>(Arrays.asList(territory1, territory2)));  
         GameMap threePlayerMap = new GameMap(territoriesAdjacentList);
         return threePlayerMap;
-    
     }
 
 
