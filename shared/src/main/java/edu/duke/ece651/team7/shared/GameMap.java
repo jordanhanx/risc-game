@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 public class GameMap{
 
 private Map<Territory, List<Territory>>  territoriesAdjacentList;
@@ -108,17 +107,6 @@ public boolean hasPath(String from, String to){
 }
 
 
-// /**
-// * Override equals
-// */
-// @Override
-// public boolean equals (Object other){
-//     if(other != null && other.getClass().equals(getClass())){
-//         GameMap otherMap = (GameMap) other;
-//         return territories.equals(otherMap.getTerritories());
-//     }
-//     return false;
-// }
 
 
 }

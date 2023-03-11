@@ -25,7 +25,7 @@ public class GameMapTest {
     GameMap map = new GameMap(territoriesAdjacentList);
     assertEquals(t1, map.getTerritoryByName("territory1"));
     assertEquals(t2, map.getTerritoryByName("territory2"));
-    assertThrows(IllegalArgumentException.class, () -> {map.getTerritoryByName("territory3");});
+    assertThrows(IllegalArgumentException.class, () -> map.getTerritoryByName("territory3"));
   }
 
   @Test
@@ -39,6 +39,28 @@ public class GameMapTest {
     assertTrue(map.isAdjacent("territory1", "territory2"));
     assertTrue(map.isAdjacent("territory2", "territory1"));
     assertFalse(map.isAdjacent("territory1", "territory1"));
+  }
+
+  @Test
+  public void test_hasPath(){
+    Territory t1 = new Territory("territory1");
+    Territory t2 = new Territory("territory2");
+    Territory t3 = new Territory("territory3");
+    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    GameMap map = new GameMap(territoriesAdjacentList);
+    List<Territory> a1 = new ArrayList<>();
+    List<Territory> a2 = new ArrayList<>();
+    List<Territory> a3 = new ArrayList<>();
+    a1.add(t2);
+    a2.add(t1);
+    a2.add(t3);
+    a3.add(t2);
+    territoriesAdjacentList.put(t1, a1);
+    territoriesAdjacentList.put(t2, a2);
+    territoriesAdjacentList.put(t3, a3);
+    assertTrue(map.hasPath("territory1", "territory2"));
+
+    
   }
 
 
