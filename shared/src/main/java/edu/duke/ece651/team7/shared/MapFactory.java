@@ -2,15 +2,15 @@ package edu.duke.ece651.team7.shared;
 
 public interface MapFactory {
 
-   // public void createTerritory();
+  // public void createTerritory();
 
-   /**
-   * Make a map having two players
+  /**
+   * Make a map having two territories
    */
-    public GameMap createTwoPlayerMap();
+  public GameMap createTwoPlayerMap();
 
    /**
-   * Make a map having three players
+   * Make a map having three territories
    */
   public GameMap createThreePlayerMap();
 

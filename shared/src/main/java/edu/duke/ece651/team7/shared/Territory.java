@@ -72,4 +72,25 @@ public class Territory implements RemoteTerritory{
     return neighbors.contains(name);
   }
 
+  @Override
+  public boolean equals (Object other){
+    if(other != null && other.getClass().equals(getClass())){
+        Territory otherTerritory = (Territory) other;
+        return this.getName().equals(otherTerritory.getName()) ;
+    }
+        return false;
+  }
+
+  @Override
+  public String toString() {
+      return getName();
+  }
+  
+  @Override
+  public int hashCode() {
+      return toString().hashCode();
+  }
+  
+
 }
+
