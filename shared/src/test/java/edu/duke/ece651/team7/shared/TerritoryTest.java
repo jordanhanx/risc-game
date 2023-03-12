@@ -45,6 +45,30 @@ public class TerritoryTest {
     assertEquals(2, t.getUnits());
   }
     
+  @Test
+  public void test_equals(){
+    HashSet<String> neighbors = new HashSet<String>();
+    neighbors.add("Oz"); neighbors.add("Hogwarts"); neighbors.add("Mordor");
+    Territory t = new Territory("test", 3, neighbors);
+    Territory t2 = new Territory("test", 3, neighbors);
+    assertEquals(t, t2);
+  }
+
+  @Test
+  public void test_toString(){
+    Territory t = new Territory("test");
+    assertEquals("test", t.toString());
+  }
+
+  @Test
+  public void test_hashCode(){
+    HashSet<String> neighbors = new HashSet<String>();
+    neighbors.add("Oz"); neighbors.add("Hogwarts"); neighbors.add("Mordor");
+    Territory t = new Territory("test", 3, neighbors);
+    Territory t2 = new Territory("test", 3, neighbors);
+    assertEquals(t.hashCode(), t2.hashCode());
+  }
+
 
 }
 
