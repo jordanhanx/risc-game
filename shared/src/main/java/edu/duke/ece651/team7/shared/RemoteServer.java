@@ -11,12 +11,13 @@ public interface RemoteServer extends Remote {
     /**
      * Try to register current Client with the Server.
      * 
-     * @param client is the client to be registered.
+     * @param client is the Client to be registered.
+     * @param name   is the Player's name.
      * @return null if the client is registered successfully, otherwise return
      *         the error message.
      * @throws RemoteException
      */
-    public String tryRegisterClient(RemoteClient client) throws RemoteException;
+    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException;
 
     /**
      * Greacefully end the game:
@@ -31,22 +32,13 @@ public interface RemoteServer extends Remote {
     public String tryUnRegisterClient(RemoteClient client) throws RemoteException;
 
     /**
-     * Create a Player obj bound with the requesting Client.
-     * 
-     * @param client is the requesting Client
-     * @return the remote stub for the created Player obj.
-     * @throws RemoteException
-     */
-    public RemotePlayer createPlayer(RemoteClient client) throws RemoteException;
-
-    /**
      * Get the remote stub for the GameMap.
      * 
      * @return the remote stub for the GameMap.
      * @throws RemoteException
      * @throws InterruptedException (a thread may throw this exception)
      */
-    public RemoteGameMap getGameMap() throws RemoteException, InterruptedException;
+    public GameMap getGameMap() throws RemoteException, InterruptedException;
 
     /**
      * Try to do a MOVE order.
