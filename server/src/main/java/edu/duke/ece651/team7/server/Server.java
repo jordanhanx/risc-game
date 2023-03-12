@@ -4,46 +4,65 @@ import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import edu.duke.ece651.team7.shared.*;
 
 public class Server extends UnicastRemoteObject implements RemoteServer {
   private final PrintStream out;
-  private final int clientsCapacity;
+  private final int numPlayers;
   private HashSet<RemoteClient> clients;
-  private GameMap map;
+  private MapFactory factory;
+  private RemoteGameMap map;
+  // private MapFactory factory;
 
-  public Server(int clientsCapacity, PrintStream out) throws RemoteException {
-    this.clientsCapacity = clientsCapacity;
+  public Server(int n, PrintStream out, MapFactory f) throws RemoteException {
+    this.numPlayers = n;
     this.clients = new HashSet<RemoteClient>();
     this.out = out;
+    factory = f;
+    map = factory.createThreePlayerMap();
   }
 
   public void start(int port) throws RemoteException {
-    LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
+    LocateRegistry.createRegistry(port).rebind("GameServer", this);
     out.println("Server ready");
+    HashSet<HashSet<Territory> > TerritoryGroups = groupTerritory();
+    
+
+  }
+
+  public HashSet<HashSet<Territory> > groupTerritory() throws RemoteException{
+    HashSet<HashSet<Territory> > ans = new HashSet<HashSet<Territory> >();
+    for(Territory t : map.getTerritoriesSet()){
+      HashSet<Territory> elem = new HashSet<Territory>();
+      elem.add(t);
+      ans.add(elem);
+    }
+    return ans;
   }
 
   @Override
   public synchronized boolean tryRegisterClient(RemoteClient client) throws RemoteException {
-    if (clients.size() < clientsCapacity && !clients.contains(client)) {
+    if (clients.size() < numPlayers && !clients.contains(client)) {
       clients.add(client);
       out.println("Remote Player:" + client.getName() + " has joined game");
+
       return true;
     } else {
       return false;
     }
   }
 
-  public synchronized void initGameMap() throws RemoteException {
-    HashSet<RemoteTerritory> territories = new HashSet<RemoteTerritory>();
-    territories.add(new Territory("Hogwartz"));
-    territories.add(new Territory("Gondor"));
-    territories.add(new Territory("Oz"));
-    // map = new GameMap(territories);
-    out.println("Created a Map including " + map.getTerritoriesSet().size() + " territories");
-  }
+  // public synchronized void initGameMap() throws RemoteException {
+  //   HashSet<RemoteTerritory> territories = new HashSet<RemoteTerritory>();
+  //   territories.add(new Territory("Hogwartz"));
+  //   territories.add(new Territory("Gondor"));
+  //   territories.add(new Territory("Oz"));
+  //   // map = new GameMap(territories);
+  //   out.println("Created a Map including " + map.getTerritoriesSet().size() + " territories");
+  // }
 
   @Override
   public synchronized RemoteGameMap getGameMap() throws RemoteException, InterruptedException {

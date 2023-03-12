@@ -1,14 +1,8 @@
-
-// copied from emma's latest commit 
-
 package edu.duke.ece651.team7.shared;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.HashSet;
 
-public class Territory {
+public class Territory implements RemoteTerritory{
   private final String name;
   //private Player owner;
   private int units;
@@ -76,42 +70,6 @@ public class Territory {
 
   public Boolean isAdjacent(String name) {
     return neighbors.contains(name);
-  }
-
-
-
-
-  //add the override methods for equal and hashcode
-
-  public List<Territory> getNeighbourTerritories(){
-    List neighbourtTerritoriesList = new ArrayList<>();
-    for(String name: neighbors){
-      neighbourtTerritoriesList.add(new Territory(name));
-    }
-    return neighbourtTerritoriesList;
-  }
-
-  @Override
-  public boolean equals (Object other){
-    if(other != null && other.getClass().equals(getClass())){
-        Territory otherTerritory = (Territory) other;
-        return this.getName().equals(otherTerritory.getName()) ;
-    }
-        return false;
-  }
-
-  @Override
-  public String toString() {
-      return getName();
-    //this.owner = new Player();
-    this.units = 0;
-    this.neighbors = new HashSet<String>();
-
-  }
-  
-  @Override
-  public int hashCode() {
-      return toString().hashCode();
   }
 
 }
