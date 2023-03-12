@@ -5,7 +5,8 @@ import java.rmi.RemoteException;
 import java.util.Iterator;
 
 /**
- * This interface defines the remote methods of the GameMap class.
+ * This interface defines remote methods of the GameMap class,
+ * only methods defined here can be invoked on remote side.
  */
 public interface RemoteGameMap extends Remote {
     /**
@@ -23,5 +24,4 @@ public interface RemoteGameMap extends Remote {
      * @throws RemoteException
      */
     public Iterator<RemoteTerritory> getNeighborsIterator(String name) throws RemoteException;
-
 }

@@ -4,6 +4,11 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Iterator;
 
+/**
+ * This interface defines remote methods of the Player class,
+ * only methods defined here can be invoked on remote side.
+ */
+
 public interface RemotePlayer extends Remote {
     /**
      * Return the name of the Player.
