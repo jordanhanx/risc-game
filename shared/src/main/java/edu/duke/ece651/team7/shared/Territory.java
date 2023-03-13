@@ -1,46 +1,51 @@
 package edu.duke.ece651.team7.shared;
 
-import java.util.HashSet;
+import java.io.Serializable;
 
-public class Territory {
+/**
+ * This type represents Territory in the game.
+ */
+public class Territory implements Serializable {
+  private static final long serialVersionUID = 1L; // strongly recommended explicitly declare it
   private final String name;
-  //private Player owner;
+  private Player owner;
   private int units;
-  private HashSet<String> neighbors;
 
   /**
-   * Constructs a territory with default values
+   * Constructs a Territory with default name
    */
   public Territory() {
     this.name = "Default";
+    this.owner = null;
+    this.units = 0;
   }
 
   /**
-     Constucts a territory with just inputted name
-  */
+   * Constucts a Territory with just inputted name
+   * 
+   * @param name name of territory
+   */
   public Territory(String name) {
     this.name = name;
-    //this.owner = new Player();
+    this.owner = null;
     this.units = 0;
-    this.neighbors = new HashSet<String>();
+  }
 
-  }
-  
   /**
-     Constructs a territory with inputted values
-     @param name name of territory
-     @param owner player that owns the territory
-     @param units number of player's units present in territory
-     @param neighbors the nearby (adjacent) territories
-  */
-  public Territory(String name, //Player owner,
-                   int units, HashSet<String> neighbors) {
+   * Constructs a territory with inputted values
+   * 
+   * @param name  name of territory
+   * @param owner player that owns the territory
+   * @param units number of player's units present in territory
+   */
+  public Territory(String name, Player owner, int units) {
     this.name = name;
-    //this.owner = owner;
+    this.owner = owner;
+    if (units < 0) {
+      throw new ArithmeticException("units cannot be less than 0");
+    }
     this.units = units;
-    this.neighbors = neighbors;
   }
-  
 
   public String getName() {
     return name;
@@ -50,47 +55,55 @@ public class Territory {
     return units;
   }
 
-  // public Player getOwner() {
-  //   return owner;
-  // }
+  public Player getOwner() {
+    return owner;
+  }
 
-  // public void setOwner(Player p) {
-  //   owner = p;
-  // }
+  public void setOwner(Player p) {
+    owner = p;
+  }
 
   public void increaseUnits() {
     units++;
   }
 
+  public void increaseUnits(int num) {
+    units += num;
+  }
+
   public void decreaseUnits() {
     if (units > 0) {
       units--;
+    } else {
+      throw new ArithmeticException("units cannot be less than 0");
     }
   }
 
-  public Boolean isAdjacent(String name) {
-    return neighbors.contains(name);
+  public void decreaseUnits(int num) {
+    if (units >= num) {
+      units -= num;
+    } else {
+      throw new ArithmeticException("units cannot be less than 0");
+    }
   }
 
   @Override
-  public boolean equals (Object other){
-    if(other != null && other.getClass().equals(getClass())){
-        Territory otherTerritory = (Territory) other;
-        return this.getName().equals(otherTerritory.getName()) ;
+  public boolean equals(Object other) {
+    if (other != null && other.getClass().equals(getClass())) {
+      Territory otherTerritory = (Territory) other;
+      return this.getName().equals(otherTerritory.getName());
     }
-        return false;
+    return false;
   }
 
   @Override
   public String toString() {
-      return getName();
+    return getName();
   }
-  
+
   @Override
   public int hashCode() {
-      return toString().hashCode();
+    return toString().hashCode();
   }
-  
 
 }
-
