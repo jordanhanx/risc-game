@@ -3,6 +3,11 @@ package edu.duke.ece651.team7.shared;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,8 +19,6 @@ import org.junit.jupiter.api.Test;
 
 public class GameMapTest {
 
-
-  
   @Test
   public void test_getTerritoryByName() {
     Territory t1 = new Territory("territory1");
@@ -30,7 +33,7 @@ public class GameMapTest {
   }
 
   @Test
-  public void test_isAdjacent(){
+  public void test_isAdjacent() {
     Territory t1 = new Territory("territory1");
     Territory t2 = new Territory("territory2");
     Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
@@ -43,7 +46,7 @@ public class GameMapTest {
   }
 
   @Test
-  public void test_hasPath(){
+  public void test_hasPath() {
     Territory t1 = new Territory("territory1");
     Territory t2 = new Territory("territory2");
     Territory t3 = new Territory("territory3");
@@ -71,11 +74,10 @@ public class GameMapTest {
     assertTrue(map.hasPath("territory1", "territory5"));
     assertEquals(false, map.hasPath("territory1", "territory4"));
 
-    
   }
 
   @Test
-  public void test_getTerritories(){
+  public void test_getTerritories() {
     Territory t1 = new Territory("territory1");
     Territory t2 = new Territory("territory2");
     Territory t3 = new Territory("territory3");
@@ -96,11 +98,11 @@ public class GameMapTest {
     assertEquals(true, terr.contains(t1));
     assertEquals(true, terr.contains(t2));
     assertEquals(true, terr.contains(t3));
-    
+
   }
 
   @Test
-  public void test_getNeighbors(){
+  public void test_getNeighbors() {
     Territory t1 = new Territory("territory1");
     Territory t2 = new Territory("territory2");
     Territory t3 = new Territory("territory3");
@@ -121,8 +123,83 @@ public class GameMapTest {
     assertEquals(true, terr.contains(t1));
     assertEquals(false, terr.contains(t2));
     assertEquals(true, terr.contains(t3));
-    
+  }
+
+  @Test
+  public void test_equals() {
+    Territory t1 = new Territory("territory1");
+    Territory t2 = new Territory("territory2");
+    Territory t3 = new Territory("territory3");
+    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    List<Territory> a1 = new ArrayList<>();
+    List<Territory> a2 = new ArrayList<>();
+    List<Territory> a3 = new ArrayList<>();
+    a1.add(t2);
+    a2.add(t1);
+    a2.add(t3);
+    a3.add(t2);
+    territoriesAdjacentList.put(t1, a1);
+    territoriesAdjacentList.put(t2, a2);
+    territoriesAdjacentList.put(t3, a3);
+    GameMap map = new GameMap(territoriesAdjacentList);
+
+    Territory t1B = new Territory("territory1");
+    Territory t2B = new Territory("territory2");
+    Territory t3B = new Territory("territory3");
+    Map<Territory, List<Territory>> territoriesAdjacentListB = new HashMap<>();
+    List<Territory> a1B = new ArrayList<>();
+    List<Territory> a2B = new ArrayList<>();
+    List<Territory> a3B = new ArrayList<>();
+    a1B.add(t2B);
+    a2B.add(t1B);
+    a2B.add(t3B);
+    a3B.add(t2B);
+    territoriesAdjacentListB.put(t1B, a1B);
+    territoriesAdjacentListB.put(t2B, a2B);
+    territoriesAdjacentListB.put(t3B, a3B);
+    GameMap mapB = new GameMap(territoriesAdjacentListB);
+
+    assertEquals(map, mapB);
+    assertNotEquals(map, "map");
+    assertNotEquals(map, null);
+  }
+
+  @Test
+  public void test_serializable() throws IOException, ClassNotFoundException {
+    Territory t1 = new Territory("territory1");
+    Territory t2 = new Territory("territory2");
+    Territory t3 = new Territory("territory3");
+    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    List<Territory> a1 = new ArrayList<>();
+    List<Territory> a2 = new ArrayList<>();
+    List<Territory> a3 = new ArrayList<>();
+    a1.add(t2);
+    a2.add(t1);
+    a2.add(t3);
+    a3.add(t2);
+    territoriesAdjacentList.put(t1, a1);
+    territoriesAdjacentList.put(t2, a2);
+    territoriesAdjacentList.put(t3, a3);
+    GameMap map = new GameMap(territoriesAdjacentList);
+    Object deserialized1 = deserialize(serialize(map));
+    Object deserialized2 = deserialize(serialize(map));
+    assertTrue(deserialized1 instanceof GameMap);
+    assertEquals(deserialized1, deserialized2);
+    assertEquals(map, deserialized1);
+    assertEquals(map, deserialized2);
+  }
+
+  private static byte[] serialize(Object obj) throws IOException {
+    ByteArrayOutputStream b = new ByteArrayOutputStream();
+    ObjectOutputStream o = new ObjectOutputStream(b);
+    o.writeObject(obj);
+    return b.toByteArray();
+  }
+
+  private static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+    ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+    ObjectInputStream o = new ObjectInputStream(b);
+    return o.readObject();
   }
 
 }
-
