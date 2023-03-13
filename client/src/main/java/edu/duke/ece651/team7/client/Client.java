@@ -1,50 +1,68 @@
 package edu.duke.ece651.team7.client;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.io.PrintStream;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 
-public class Client {
-    /**
-   * @param socket client socket used for send and recieve data
-   * @param out the datastream for sending data to server
-   * @param input the datastream for recieving data from server
-   */
-  private final Socket socket;
-  private final DataOutputStream out;
-  private final BufferedReader input;
+import edu.duke.ece651.team7.shared.*;
 
-  /**
-   * 
-   * @param host hostname(IP address) of the server connected to
-   * @param port port numner of the server connected to
-   * @throws UnknownHostException
-   * @throws IOException
-   */
-  public Client(String host, int port) throws UnknownHostException, IOException{
-    socket = new Socket(host, port);
-    System.out.println("Connected to host " + host);
-    out = new DataOutputStream(socket.getOutputStream());
-    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+public class Client extends UnicastRemoteObject implements RemoteClient {
+  private final BufferedReader inputReader;
+  private final PrintStream out;
+  private final RemoteServer server;
+  private GameMap map;
+  private MapTextView view;
+
+  public Client(String host, int port, BufferedReader in, PrintStream out)
+      throws RemoteException, NotBoundException {
+    super();
+    this.inputReader = in;
+    this.out = out;
+    this.server = (RemoteServer) LocateRegistry.getRegistry(host, port).lookup("RiscGameServer");
+    out.println("Connected to " + host + ":" + port + " successfully.");
   }
 
-  public void sendString(String message) throws IOException{
-    out.writeBytes(message);
-  }
-
-  public void recvString() throws IOException{
-    String message = input.readLine();
-    if(message==null){
-      throw new EOFException("Input stream is null");
+  public String readUserInput(String prompt) throws IOException {
+    out.println(prompt);
+    String s = inputReader.readLine();
+    if (s == null) {
+      throw new EOFException("inputReader.readLine() return null, EOF!");
     }
-    System.out.println(message);
-   }
+    return s;
+  }
 
-  public void closeSocket() throws IOException{
-    socket.close();
+  public void initPlayer() throws RemoteException, IOException {
+    out.println("sent GameMap request to server");
+    String name = readUserInput("Please name your Player:");
+    String msg = server.tryRegisterClient(this, name);
+    if (msg != null) {
+      throw new RuntimeException("Failed to join the game, reason:" + msg);
+    }
+    out.println("Joined a RiskGame as Player:" + name);
+  }
+
+  public void start() throws RemoteException, InterruptedException, IOException {
+    initPlayer();
+    out.println("sent GameMap request to server");
+    map = server.getGameMap();
+    out.println("get GameMap from server");
+    view.display(out, map);
+    // while (true) {
+    playOneTurn();
+    // }
+  }
+
+  public void playOneTurn() throws RemoteException {
+  }
+
+  @Override
+  public void forceQuit(String reason) throws RemoteException {
+    out.println("Server has ended the game.");
+    System.exit(0);
   }
 }
