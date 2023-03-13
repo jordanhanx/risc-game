@@ -7,6 +7,7 @@ import java.util.LinkedList;
  * This type represents Player in the game.
  */
 public class Player implements Serializable {
+    private static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
 
@@ -92,8 +93,8 @@ public class Player implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o != null && o.getClass().equals(getClass())) {
-            Player c = (Player) o;
-            return name == c.name;
+            Player p = (Player) o;
+            return name.equals(p.name);
         } else {
             return false;
         }

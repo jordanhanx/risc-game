@@ -3,19 +3,15 @@ package edu.duke.ece651.team7.shared;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashSet;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import org.junit.jupiter.api.Test;
 
 public class TerritoryTest {
-  @Test
-  public void test_default_constructor() {
-    Territory t = new Territory();
-    assertEquals("Default", t.getName());
-    assertEquals(0, t.getUnits());
-    assertEquals(null, t.getOwner());
-  }
-
   @Test
   public void test_constructor() {
     Territory t1 = new Territory("test1");
@@ -66,17 +62,6 @@ public class TerritoryTest {
   }
 
   @Test
-  public void test_equals() {
-    Territory t = new Territory("test");
-    Territory t2 = new Territory("test");
-    Territory t3 = new Territory("test2");
-    assertEquals(t, t2);
-    assertNotEquals(t, t3);
-    assertNotEquals(t, "a1");
-    assertNotEquals(t, null);
-  }
-
-  @Test
   public void test_toString() {
     Territory t = new Territory("test");
     assertEquals("test", t.toString());
@@ -89,4 +74,38 @@ public class TerritoryTest {
     assertEquals(t.hashCode(), t2.hashCode());
   }
 
+  @Test
+  public void test_equals() {
+    Territory t = new Territory("test");
+    Territory t2 = new Territory("test");
+    Territory t3 = new Territory("test2");
+    assertEquals(t, t2);
+    assertNotEquals(t, t3);
+    assertNotEquals(t, "a1");
+    assertNotEquals(t, null);
+  }
+
+  @Test
+  public void test_serializable() throws IOException, ClassNotFoundException {
+    Territory t = new Territory("test");
+    Object deserialized1 = deserialize(serialize(t));
+    Object deserialized2 = deserialize(serialize(t));
+    assertTrue(deserialized1 instanceof Territory);
+    assertEquals(deserialized1, deserialized2);
+    assertEquals(t, deserialized1);
+    assertEquals(t, deserialized2);
+  }
+
+  private static byte[] serialize(Object obj) throws IOException {
+    ByteArrayOutputStream b = new ByteArrayOutputStream();
+    ObjectOutputStream o = new ObjectOutputStream(b);
+    o.writeObject(obj);
+    return b.toByteArray();
+  }
+
+  private static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+    ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+    ObjectInputStream o = new ObjectInputStream(b);
+    return o.readObject();
+  }
 }

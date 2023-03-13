@@ -6,19 +6,10 @@ import java.io.Serializable;
  * This type represents Territory in the game.
  */
 public class Territory implements Serializable {
-  private static final long serialVersionUID = 1L; // strongly recommended explicitly declare it
+  private static final long serialVersionUID = 1L; // Java recommends to declare this explicitly.
   private final String name;
   private Player owner;
   private int units;
-
-  /**
-   * Constructs a Territory with default name
-   */
-  public Territory() {
-    this.name = "Default";
-    this.owner = null;
-    this.units = 0;
-  }
 
   /**
    * Constucts a Territory with just inputted name
@@ -91,7 +82,7 @@ public class Territory implements Serializable {
   public boolean equals(Object other) {
     if (other != null && other.getClass().equals(getClass())) {
       Territory otherTerritory = (Territory) other;
-      return this.getName().equals(otherTerritory.getName());
+      return name.equals(otherTerritory.name);
     }
     return false;
   }
