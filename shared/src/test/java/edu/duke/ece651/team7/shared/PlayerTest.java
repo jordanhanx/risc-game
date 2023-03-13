@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.shared;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 
@@ -17,16 +18,18 @@ public class PlayerTest {
     @Test
     void test_addTerritory() {
         Player p = new Player("test");
-        assertDoesNotThrow(() -> p.addTerritory(new Territory("territoryA")));
-        assertDoesNotThrow(() -> p.addTerritory(new Territory("territoryB")));
-        assertThrows(IllegalArgumentException.class, () -> p.addTerritory(new Territory("territoryA")));
+        Territory tA = mock(Territory.class);
+        Territory tB = mock(Territory.class);
+        assertDoesNotThrow(() -> p.addTerritory(tA));
+        assertDoesNotThrow(() -> p.addTerritory(tB));
+        assertThrows(IllegalArgumentException.class, () -> p.addTerritory(tA));
     }
 
     @Test
     void testRemoveTerritory() {
         Player p = new Player("test");
-        Territory tA = new Territory("territoryA");
-        Territory tB = new Territory("territoryB");
+        Territory tA = mock(Territory.class);
+        Territory tB = mock(Territory.class);
         assertDoesNotThrow(() -> p.addTerritory(tA));
         assertDoesNotThrow(() -> p.addTerritory(tB));
         assertDoesNotThrow(() -> p.removeTerritory(tA));
@@ -37,8 +40,8 @@ public class PlayerTest {
     @Test
     void test_getTerritories() {
         Player p = new Player("test");
-        Territory tA = new Territory("territoryA");
-        Territory tB = new Territory("territoryB");
+        Territory tA = mock(Territory.class);
+        Territory tB = mock(Territory.class);
         assertDoesNotThrow(() -> p.addTerritory(tA));
         assertDoesNotThrow(() -> p.addTerritory(tB));
         Collection<Territory> territories = p.getTerritories();
@@ -52,7 +55,7 @@ public class PlayerTest {
     void test_isLose() {
         Player p = new Player("test");
         assertTrue(p.isLose());
-        Territory tA = new Territory("territoryA");
+        Territory tA = mock(Territory.class);
         assertDoesNotThrow(() -> p.addTerritory(tA));
         assertFalse(p.isLose());
         assertDoesNotThrow(() -> p.removeTerritory(tA));
@@ -79,7 +82,7 @@ public class PlayerTest {
         Player p1 = new Player("test1");
         Player p2 = new Player("test2");
         Player p3 = new Player("test1");
-        Territory tA = new Territory("territoryA");
+        Territory tA = mock(Territory.class);
         assertEquals(p1, p1);
         assertNotEquals(p1, p2);
         assertNotEquals(p2, p1);
