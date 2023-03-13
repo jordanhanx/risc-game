@@ -20,6 +20,10 @@ public class Player implements Serializable {
         territories = new LinkedList<>();
     }
 
+    public Player(){
+        this.name = "Default";
+        territories = new LinkedList<>();
+    }
     /**
      * Get the Player's name.
      * 

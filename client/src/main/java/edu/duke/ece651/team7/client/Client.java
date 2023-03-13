@@ -6,6 +6,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.TransferQueue;
 
 import edu.duke.ece651.team7.shared.*;
 
@@ -13,6 +14,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   private final BufferedReader inputReader;
   private final PrintStream out;
   private final String name;
+  private GameMap map;
   private RemoteController server;
 
   public Client(String host, int port, String name, BufferedReader in, PrintStream out)
@@ -29,7 +31,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
       throw new RuntimeException("Failed to register");
     }
     out.println("Client joined a RiskGame as Player:" + name);
-    GameMap map = server.getGameMap();
+    map = server.getGameMap();
     out.print(MapTextView.display(map));
   }
 

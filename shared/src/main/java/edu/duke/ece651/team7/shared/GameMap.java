@@ -1,4 +1,5 @@
 package edu.duke.ece651.team7.shared;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
-public class GameMap{
+
+public class GameMap implements Serializable{
 
 private Map<Territory, List<Territory>>  territoriesAdjacentList;
 
@@ -20,6 +22,9 @@ public GameMap(Map<Territory, List<Territory>>  territoriesAdjacentList){
      this.territoriesAdjacentList = territoriesAdjacentList;
 }
 
+public GameMap(){
+    this.territoriesAdjacentList = new HashMap<Territory, List<Territory> >();
+};
     // public HashMap<Territory, List<Territory>> getTerritories(){
     //     return territoriesAdjacentList;
         
@@ -109,10 +114,7 @@ public boolean hasPath(String from, String to){
         }
     }
     return false;
-}
-
-
-    
+}   
     
 
 

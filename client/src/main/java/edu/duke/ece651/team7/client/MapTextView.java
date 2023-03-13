@@ -8,8 +8,8 @@ public class MapTextView {
     public static String display(GameMap map) throws RemoteException {
         StringBuilder str = new StringBuilder();
         System.out.println("ready iterate territories");
-        for (RemoteTerritory t : map.getTerritories()) {
-            str.append(t.getName() + "\n");
+        for (Territory t : map.getTerritories()) {
+            str.append(t.getName() + ": " + t.getOwner().getName()+ ", " + t.getUnits() + "\n");
         }
         return str.toString();
     }

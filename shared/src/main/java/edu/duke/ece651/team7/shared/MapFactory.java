@@ -14,5 +14,7 @@ public interface MapFactory {
    */
   public GameMap createThreePlayerMap();
 
+  public GameMap createMapTest();
+
 
 }

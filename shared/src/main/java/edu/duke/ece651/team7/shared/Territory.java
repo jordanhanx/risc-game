@@ -1,8 +1,9 @@
 package edu.duke.ece651.team7.shared;
 
 import java.util.HashSet;
+import java.io.Serializable;
 
-public class Territory implements RemoteTerritory{
+public class Territory implements Serializable{
   private final String name;
   private Player owner;
   private int units;
@@ -58,16 +59,27 @@ public class Territory implements RemoteTerritory{
     owner = p;
   }
 
-  public void increaseUnits() {
-    units++;
+  public void increaseUnitsBy(int n) {
+    units += n;
   }
 
-  public void decreaseUnits() {
-    if (units > 0) {
-      units--;
+  public void increaseUnits() {
+    units ++;
+  }
+
+  public void decreaseUnitsBy(int n) {
+    if (units - n> 0) {
+      units-=n;
+    }else{
+      throw new IllegalArgumentException("There is no enough unit.");
     }
   }
 
+  public void decreaseUnits() {
+    if (units> 0) {
+      units--;
+    }
+  }
   public Boolean isAdjacent(String name) {
     return neighbors.contains(name);
   }

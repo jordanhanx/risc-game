@@ -11,7 +11,7 @@ public class App {
     if (args.length == 2) {
       try {
         MapFactory factory  = new TextMapFactory();
-        Server server = new Server(Integer.parseInt(args[1]), System.out, factory.createThreePlayerMap());
+        Server server = new Server(Integer.parseInt(args[1]), System.out, 10, factory.createMapTest());
         server.start(Integer.parseInt(args[0]));
       } catch (Exception e) {
         System.err.println("Exception: " + e);

@@ -18,18 +18,20 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   private final PrintStream out;
   private final int numPlayers;
   private HashMap<RemoteClient, Player> clients;
-  // private MapFactory factory;
   private GameMap map;
   private ArrayList<ArrayList<Territory> > territoryGroups;
   private int ID;
+  private final int initialUnit;
+  boolean startGame = false;
 
-  public Server(int n, PrintStream out, GameMap m) throws RemoteException {
+  public Server(int n, PrintStream out, int units, GameMap m) throws RemoteException {
     this.numPlayers = n;
     this.clients = new HashMap<RemoteClient, Player>();
     this.out = out;
     map = m;
     territoryGroups = new ArrayList<ArrayList<Territory> >();
     ID = 0; 
+    initialUnit = units;
     groupTerritories();
   }
 
@@ -42,11 +44,13 @@ public class Server extends UnicastRemoteObject implements RemoteController{
     // ArrayList<ArrayList<Territory> > ans = new ArrayList<ArrayList<Territory> >();
     List<Territory> tList = new ArrayList<Territory>(map.getTerritories());
     int numGroup = tList.size() / numPlayers;
+    
     Collections.shuffle(tList);
     // out.println("numGroups is: "+ numGroup);
     for(int i = 0; i < numPlayers; i++){
       ArrayList<Territory> elem = new ArrayList<Territory>();
       for(int j = i*numGroup; j < (i+1)*numGroup; j++){
+        tList.get(j).increaseUnitsBy(initialUnit);
         elem.add(tList.get(j));
       }
       territoryGroups.add(elem);
@@ -66,9 +70,22 @@ public class Server extends UnicastRemoteObject implements RemoteController{
    * @param port port number
    * @throws RemoteException
    */
-  public void start(int port) throws RemoteException {
+  public synchronized void start(int port) throws InterruptedException,RemoteException {
     LocateRegistry.createRegistry(port).rebind("GameServer", this);
     out.println("Server ready");
+    while(!startGame){
+      wait();
+    }
+    // for (Territory t: map.getTerritories()){
+    //   out.println(t.getName() + ": " + t.getUnits());
+    // }
+    for(RemoteClient c: clients.keySet()){
+      out.println(clients.get(c).getName());
+      for (Territory t:clients.get(c).getTerritories()){
+        out.println(t.getName() + ": " + t.getUnits());
+      }
+    }
+
   }
 
   @Override
@@ -81,13 +98,13 @@ public class Server extends UnicastRemoteObject implements RemoteController{
         t.setOwner(p);
       }
       clients.put(client, p);
+      ID++;
       if (clients.size() != numPlayers) {
         wait();
       }else{
         out.println("All player joined!");
         notifyAll();
       }
-      // out.println("Remote Player:" + client. + " has joined game");
       return null;
     } else {
       return "Cannot register Client";
@@ -96,6 +113,8 @@ public class Server extends UnicastRemoteObject implements RemoteController{
 
   @Override
   public synchronized GameMap getGameMap() throws RemoteException, InterruptedException {
+    startGame = true;
+    notifyAll();
     return map;
   }
 
@@ -110,8 +129,8 @@ public class Server extends UnicastRemoteObject implements RemoteController{
 
   @Override
   public String tryMoveOrder(RemoteClient client, String from, String to, int units) throws RemoteException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'tryMoveOrder'");
+
+    return "The order is not valid";
   }
 
   @Override
