@@ -54,6 +54,7 @@ public class TerritoryTest {
     Territory t3 = new Territory("test2", 3, neighbors);
     assertEquals(t, t2);
     assertNotEquals(t, t3);
+    assertNotEquals(t, "a1");
   }
 
   @Test
