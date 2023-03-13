@@ -51,7 +51,9 @@ public class TerritoryTest {
     neighbors.add("Oz"); neighbors.add("Hogwarts"); neighbors.add("Mordor");
     Territory t = new Territory("test", 3, neighbors);
     Territory t2 = new Territory("test", 3, neighbors);
+    Territory t3 = new Territory("test2", 3, neighbors);
     assertEquals(t, t2);
+    assertNotEquals(t, t3);
   }
 
   @Test
