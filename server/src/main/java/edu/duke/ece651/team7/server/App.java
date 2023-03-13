@@ -3,11 +3,15 @@
  */
 package edu.duke.ece651.team7.server;
 
+import edu.duke.ece651.team7.shared.MapFactory;
+import edu.duke.ece651.team7.shared.TextMapFactory;
+
 public class App {
   public static void main(String[] args) {
     if (args.length == 2) {
       try {
-        Server server = new Server(Integer.parseInt(args[1]), System.out);
+        MapFactory factory  = new TextMapFactory();
+        Server server = new Server(Integer.parseInt(args[1]), System.out, factory.createThreePlayerMap());
         server.start(Integer.parseInt(args[0]));
       } catch (Exception e) {
         System.err.println("Exception: " + e);

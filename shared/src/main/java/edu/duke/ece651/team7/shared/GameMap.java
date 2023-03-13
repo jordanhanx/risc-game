@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
-public class GameMap implements RemoteGameMap{
+public class GameMap{
 
 private Map<Territory, List<Territory>>  territoriesAdjacentList;
 
@@ -75,6 +75,10 @@ public List<Territory> getTerritoriesByOwner(String name){
     return terrSet;   
 }
 
+public Set<Territory> getTerritories(){
+    return territoriesAdjacentList.keySet();
+}
+
 /**
 
 Determines whether a path exists between two territories which belong to the same owner.
@@ -83,44 +87,32 @@ Determines whether a path exists between two territories which belong to the sam
 @return true if a path exists between the source and destination territories, false otherwise
 @throws IllegalArgumentException if either the source or destination territory cannot be found
 */
+public boolean hasPath(String from, String to){
+    Territory source = getTerritoryByName(from);
+    Territory destination = getTerritoryByName(to);
+    Set<Territory> territoryVisited = new HashSet<>();
+    LinkedList<Territory> queue = new LinkedList<>();
+    queue.add(source);
+    territoryVisited.add(source);
+    while (!queue.isEmpty()) {
+        Territory curTerritory = queue.removeFirst();
+        for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory)) {
+            if (neighbourTerritory.equals(destination)) {
+                return true;
+            }
+            if (!territoryVisited.contains(neighbourTerritory) 
+                // && neighbourTerritory.getOwner().equals(source.getOwner())
+                ) {
+                territoryVisited.add(neighbourTerritory);
+                queue.add(neighbourTerritory);
+            }
+        }
+    }
+    return false;
+}
+
+
     
-    // public Territory getTerritoriesByName(String name){
-
-    // }
-
-
- 
-    //check path between the two territories that belong to the same owner
-    // public boolean checkPath(Territory source, Territory destination){
-    //     HashMap<String, Boolean> territoryVisited = new HashMap<>();
-    //     for (Territory territory : territories) {
-    //         territoryVisited.put(territory.getName(), false);
-    //     }
-
-    //     for (Territory territory : territories) {
-    //         if (territory.getName().equals(source.getName())) {
-    //             List<Territory> queue = new ArrayList<>();
-    //             territoryVisited.put(territory.getName(), true);
-    //             queue.add(territory);
-    //             while (queue.size()>0) {
-    //                 Territory curTerritory = queue.remove(0);
-    //                 //add method in territory class
-    //                 for (Territory neighbourTerritory : curTerritory.getNeighbourTerritories()) {
-    //                     if (neighbourTerritory.getName().equals(destination.getName())) {
-    //                         return true;
-    //                     }
-    //                     if(!territoryVisited.get(neighbourTerritory.getName())){
-    //                     // && neighbourTerritory.getOwner().equals(source.getOwner()) 
-    //                         territoryVisited.put(neighbourTerritory.getName(), true);
-    //                         queue.add(neighbourTerritory);
-    //                     }
-    //                 }
-    //             }
-    //         }      
-    //     }
-    
-    //     return false;
-    // }
     
 
 

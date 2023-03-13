@@ -5,10 +5,10 @@ import java.rmi.RemoteException;
 import edu.duke.ece651.team7.shared.*;
 
 public class MapTextView {
-    public static String display(RemoteGameMap map) throws RemoteException {
+    public static String display(GameMap map) throws RemoteException {
         StringBuilder str = new StringBuilder();
         System.out.println("ready iterate territories");
-        for (RemoteTerritory t : map.getTerritoriesSet()) {
+        for (RemoteTerritory t : map.getTerritories()) {
             str.append(t.getName() + "\n");
         }
         return str.toString();

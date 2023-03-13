@@ -12,7 +12,7 @@ public class TextMapFactory implements MapFactory {
     // public void createTerritory(){
 
     // }
-
+    
     /**
     *Creates a two-player game map with two territories and their adjacency information.
     *@return a new instance of GameMap representing the two-player game map
@@ -49,6 +49,5 @@ public class TextMapFactory implements MapFactory {
         GameMap threePlayerMap = new GameMap(territoriesAdjacentList);
         return threePlayerMap;
     }
-
 
 }

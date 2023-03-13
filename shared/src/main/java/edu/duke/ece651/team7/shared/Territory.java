@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Territory implements RemoteTerritory{
   private final String name;
-  //private Player owner;
+  private Player owner;
   private int units;
   private HashSet<String> neighbors;
 
@@ -50,13 +50,13 @@ public class Territory implements RemoteTerritory{
     return units;
   }
 
-  // public Player getOwner() {
-  //   return owner;
-  // }
+  public Player getOwner() {
+    return owner;
+  }
 
-  // public void setOwner(Player p) {
-  //   owner = p;
-  // }
+  public void setOwner(Player p) {
+    owner = p;
+  }
 
   public void increaseUnits() {
     units++;

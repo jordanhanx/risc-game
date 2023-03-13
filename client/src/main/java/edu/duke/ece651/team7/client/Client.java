@@ -13,28 +13,29 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   private final BufferedReader inputReader;
   private final PrintStream out;
   private final String name;
-  private RemoteServer server;
+  private RemoteController server;
 
   public Client(String host, int port, String name, BufferedReader in, PrintStream out)
-      throws RemoteException, NotBoundException {
+      throws RemoteException, NotBoundException,InterruptedException{
     this.inputReader = in;
     this.out = out;
     this.name = name;
-    this.server = (RemoteServer) LocateRegistry.getRegistry(host, port).lookup("RiscGameServer");
-    if (!server.tryRegisterClient(this)) {
-      throw new RuntimeException("Failed to register");
-    }
-    out.println("Client joined a RiskGame as Player:" + getName());
-  }
-
-  @Override
-  public String getName() throws RemoteException {
-    return name;
+    this.server = (RemoteController) LocateRegistry.getRegistry(host, port).lookup("GameServer");
   }
 
   public void start() throws RemoteException, InterruptedException {
     out.println("sent GameMap request to server");
-    RemoteGameMap map = server.getGameMap();
+    if (server.tryRegisterClient(this,name)!=null) {
+      throw new RuntimeException("Failed to register");
+    }
+    out.println("Client joined a RiskGame as Player:" + name);
+    GameMap map = server.getGameMap();
     out.print(MapTextView.display(map));
+  }
+
+  @Override
+  public void forceQuit(String reason) throws RemoteException {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'forceQuit'");
   }
 }

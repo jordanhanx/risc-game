@@ -2,12 +2,13 @@ package edu.duke.ece651.team7.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.*;
 
 /**
  * This interface defines remote methods of the Server class, and only methods
  * defined here can be invoked on remote side.
  */
-public interface RemoteServer extends Remote {
+public interface RemoteController extends Remote {
     /**
      * Try to register current Client with the Server.
      * 
@@ -17,7 +18,7 @@ public interface RemoteServer extends Remote {
      *         the error message.
      * @throws RemoteException
      */
-    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException;
+    public String tryRegisterClient(RemoteClient client, String name) throws InterruptedException, RemoteException;
 
     /**
      * Greacefully end the game:
@@ -50,7 +51,7 @@ public interface RemoteServer extends Remote {
      * @return null if the order is legal, otherwise return the error message.
      * @throws RemoteException
      */
-    public String tryMoveOrder(RemoteClient client, String from, String to, int units) throws RemoteException;
+    public String tryMoveOrder(RemoteClient client,String from, String to, int units) throws RemoteException;
 
     /**
      * Try to do an ATTACK order.
@@ -62,7 +63,7 @@ public interface RemoteServer extends Remote {
      * @return null if the order is legal, otherwise return the error message.
      * @throws RemoteException
      */
-    public String tryAttackOrder(RemoteClient client, String from, String to, int units) throws RemoteException;
+    public String tryAttackOrder(RemoteClient client,String from, String to, int units) throws RemoteException;
 
     /**
      * Commit all above orders for current turn.
