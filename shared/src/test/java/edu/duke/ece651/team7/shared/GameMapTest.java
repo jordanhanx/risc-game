@@ -47,19 +47,29 @@ public class GameMapTest {
     Territory t1 = new Territory("territory1");
     Territory t2 = new Territory("territory2");
     Territory t3 = new Territory("territory3");
+    Territory t4 = new Territory("territory4");
+    Territory t5 = new Territory("territory5");
     Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
     List<Territory> a1 = new ArrayList<>();
     List<Territory> a2 = new ArrayList<>();
     List<Territory> a3 = new ArrayList<>();
+    List<Territory> a4 = new ArrayList<>();
+    List<Territory> a5 = new ArrayList<>();
     a1.add(t2);
     a2.add(t1);
     a2.add(t3);
+    a2.add(t5);
     a3.add(t2);
+    a5.add(t2);
     territoriesAdjacentList.put(t1, a1);
     territoriesAdjacentList.put(t2, a2);
     territoriesAdjacentList.put(t3, a3);
+    territoriesAdjacentList.put(t4, a4);
+    territoriesAdjacentList.put(t5, a5);
     GameMap map = new GameMap(territoriesAdjacentList);
     assertTrue(map.hasPath("territory1", "territory2"));
+    assertTrue(map.hasPath("territory1", "territory5"));
+    assertEquals(false, map.hasPath("territory1", "territory4"));
 
     
   }
