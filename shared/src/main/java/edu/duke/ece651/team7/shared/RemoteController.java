@@ -71,7 +71,7 @@ public interface RemoteController extends Remote {
      * @param client is the requesting Client.
      * @throws RemoteException
      */
-    public void doCommitOrder(RemoteClient client) throws RemoteException;
+    public void doCommitOrder(RemoteClient client) throws RemoteException,InterruptedException;
 
     /**
      * Check if the game is over.

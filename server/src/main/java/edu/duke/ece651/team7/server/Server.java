@@ -2,15 +2,13 @@ package edu.duke.ece651.team7.server;
 
 import java.io.PrintStream;
 import java.rmi.RemoteException;
-import java.rmi.server.RemoteServer;
-import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+
 
 import edu.duke.ece651.team7.shared.*;
 
@@ -22,9 +20,17 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   private ArrayList<ArrayList<Territory> > territoryGroups;
   private int ID;
   private final int initialUnit;
-  boolean clientsReady = false;
+  private boolean clientsReady = false;
   private OrderExecuter ox;
 
+  /**
+   * 
+   * @param n numer of players
+   * @param out output stream
+   * @param units number of initial units in each territory
+   * @param m game map
+   * @throws RemoteException
+   */
   public Server(int n, PrintStream out, int units, GameMap m) throws RemoteException {
     this.numPlayers = n;
     this.clients = new HashMap<RemoteClient, Player>();
@@ -34,7 +40,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
     ID = 0; 
     initialUnit = units;
     groupTerritories();
-    ox = new OrderExecuter(20);
+    ox = new OrderExecuter(map.getTerritories());
   }
 
   /**
@@ -42,7 +48,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
    * @return the groups of territories
    * @throws RemoteException
    */
-  private void groupTerritories() throws RemoteException{
+  private void groupTerritories(){
     // ArrayList<ArrayList<Territory> > ans = new ArrayList<ArrayList<Territory> >();
     List<Territory> tList = new ArrayList<Territory>(map.getTerritories());
     int numGroup = tList.size() / numPlayers;
@@ -75,17 +81,32 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   public synchronized void start(int port) throws InterruptedException,RemoteException {
     LocateRegistry.createRegistry(port).rebind("GameServer", this);
     out.println("Server ready");
+    //block waiting for client register
     while(!clientsReady){
       wait();
     }
-    // for (Territory t: map.getTerritories()){
-    //   out.println(t.getName() + ": " + t.getUnits());
-    // }
+    clientsReady = false;
     for(RemoteClient c: clients.keySet()){
       out.println(clients.get(c).getName());
       for (Territory t:clients.get(c).getTerritories()){
         out.println(t.getName() + ": " + t.getUnits());
       }
+    }
+    //game start
+    int turn = 0;
+    while(true){
+      //play one turn
+      //wait for all clients to commit
+      while(!clientsReady){
+        wait();
+      }
+      System.out.println("Turn " + turn);
+      clientsReady = false;
+      ox.doAllCombats();
+      if(isGameOver()){
+        break;
+      }
+      turn++;
     }
 
   }
@@ -105,6 +126,8 @@ public class Server extends UnicastRemoteObject implements RemoteController{
         wait();
       }else{
         out.println("All player joined!");
+        clientsReady = true;
+        ID = 0;
         notifyAll();
       }
       return null;
@@ -114,7 +137,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   }
 
   @Override
-  public GameMap getGameMap() throws RemoteException, InterruptedException {
+  public GameMap getGameMap(){
     return map;
   }
 
@@ -130,25 +153,43 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   @Override
   public String tryMoveOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
     Player p = clients.get(client);
-    Order o = new MoveOrder(map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
-    //validate order
-    ox.doOneMove(o, map);
-    return null;
+    if(!p.isLose()){
+      MoveOrder o = new MoveOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
+      //validate order,
+      String err = ox.doOneMove(o);
+      return err;
+    }else{
+      return "You Losed";
+    }
   }
 
   @Override
   public String tryAttackOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
     Player p = clients.get(client);
-    Order o = new AttackOrder(map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
-    //validate order
-    ox.pushCombat(o, map);
-    return null;
+    if(!p.isLose()){
+      AttackOrder o = new AttackOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
+      //validate order
+      String err = ox.pushCombat(o);
+      return err;
+    }else{
+      return "You losed";
+    }
   }
 
+
   @Override
-  public void doCommitOrder(RemoteClient client) {
-    // Player p = clients.get(client);
+  public synchronized void doCommitOrder(RemoteClient client) throws InterruptedException {
+    if(ID != numPlayers-1){
+      wait();
+      ID++;
+    }else{
+      clientsReady = true;
+      ID = 0;
+      notifyAll();
+    }
   }
+
+
 
   @Override
   public boolean isGameOver() throws RemoteException {
