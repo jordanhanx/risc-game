@@ -19,7 +19,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   /**
    * The BufferedReader used for reading user input.
    */
-  private final BufferedReader inputReader;
+  protected final BufferedReader inputReader;
   /**
    * The PrintStream used for outputting information to the user.
    */
@@ -31,7 +31,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   /**
    * The MapTextView used for displaying the game map to the user.
    */
-  private MapTextView view;
+  protected MapTextView view;
 
   /**
    * Constructs a Client object and connects it to the RemoteServer.
@@ -49,6 +49,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
     this.inputReader = in;
     this.out = out;
     connectRemoteServer(host, port);
+    this.view = new MapTextView(out);
   }
 
   /**
@@ -133,9 +134,8 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    * @throws IOException          if there is an error reading input from the user
    */
   public void playOneTurn() throws RemoteException, InterruptedException, IOException {
-    // view.display(out, server.getGameMap());
-    boolean thisTurnEnd = false;
-    while (!thisTurnEnd) {
+    view.display(server.getGameMap());
+    while (true) {
       try {
         String input = readUserInput(
             "You are the " + server.getSelfStatus(this).getName()
@@ -143,7 +143,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
         if (input.matches("^(?i)(D(?:one)?)$")) {
           out.println("Waiting for other players...");
           server.doCommitOrder(this);
-          thisTurnEnd = true;
+          break;
         } else {
           parseOrder(input);
         }
