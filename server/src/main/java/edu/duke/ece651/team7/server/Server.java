@@ -22,7 +22,8 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   private ArrayList<ArrayList<Territory> > territoryGroups;
   private int ID;
   private final int initialUnit;
-  boolean startGame = false;
+  boolean clientsReady = false;
+  private OrderExecuter ox;
 
   public Server(int n, PrintStream out, int units, GameMap m) throws RemoteException {
     this.numPlayers = n;
@@ -33,6 +34,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
     ID = 0; 
     initialUnit = units;
     groupTerritories();
+    ox = new OrderExecuter(20);
   }
 
   /**
@@ -73,7 +75,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   public synchronized void start(int port) throws InterruptedException,RemoteException {
     LocateRegistry.createRegistry(port).rebind("GameServer", this);
     out.println("Server ready");
-    while(!startGame){
+    while(!clientsReady){
       wait();
     }
     // for (Territory t: map.getTerritories()){
@@ -112,9 +114,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   }
 
   @Override
-  public synchronized GameMap getGameMap() throws RemoteException, InterruptedException {
-    startGame = true;
-    notifyAll();
+  public GameMap getGameMap() throws RemoteException, InterruptedException {
     return map;
   }
 
@@ -128,21 +128,26 @@ public class Server extends UnicastRemoteObject implements RemoteController{
   }
 
   @Override
-  public String tryMoveOrder(RemoteClient client, String from, String to, int units) throws RemoteException {
-
-    return "The order is not valid";
+  public String tryMoveOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
+    Player p = clients.get(client);
+    Order o = new MoveOrder(map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
+    //validate order
+    ox.doOneMove(o, map);
+    return null;
   }
 
   @Override
-  public String tryAttackOrder(RemoteClient client, String from, String to, int units) throws RemoteException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'tryAttackOrder'");
+  public String tryAttackOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
+    Player p = clients.get(client);
+    Order o = new AttackOrder(map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
+    //validate order
+    ox.pushCombat(o, map);
+    return null;
   }
 
   @Override
   public void doCommitOrder(RemoteClient client) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'doCommitOrder'");
+    // Player p = clients.get(client);
   }
 
   @Override
