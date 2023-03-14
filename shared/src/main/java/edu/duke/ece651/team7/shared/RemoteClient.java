@@ -14,5 +14,5 @@ public interface RemoteClient extends Remote {
      * @param reason is the quit reason
      * @throws RemoteException
      */
-    public void forceQuit(String reason) throws RemoteException;
+    // public void forceQuit(String reason) throws RemoteException;
 }

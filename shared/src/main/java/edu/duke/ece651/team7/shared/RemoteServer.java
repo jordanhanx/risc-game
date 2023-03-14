@@ -16,8 +16,10 @@ public interface RemoteServer extends Remote {
      * @return null if the client is registered successfully, otherwise return
      *         the error message.
      * @throws RemoteException
+     * @throws InterruptedException (This method will call wait()/notifyAll() and a
+     *                              thread may throw the exception)
      */
-    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException;
+    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException, InterruptedException;
 
     /**
      * Greacefully end the game:
@@ -32,13 +34,21 @@ public interface RemoteServer extends Remote {
     public String tryUnRegisterClient(RemoteClient client) throws RemoteException;
 
     /**
-     * Get the remote stub for the GameMap.
+     * Get the GameMap copy.
      * 
-     * @return the remote stub for the GameMap.
+     * @return the copy of the GameMap.
      * @throws RemoteException
-     * @throws InterruptedException (a thread may throw this exception)
      */
-    public GameMap getGameMap() throws RemoteException, InterruptedException;
+    public GameMap getGameMap() throws RemoteException;
+
+    /**
+     * Get the self Player
+     * 
+     * @param client is the requesting Client.
+     * @return the copy of the Player.
+     * @throws RemoteException
+     */
+    public Player getSelfStatus(RemoteClient client) throws RemoteException;
 
     /**
      * Try to do a MOVE order.
@@ -69,8 +79,10 @@ public interface RemoteServer extends Remote {
      * 
      * @param client is the requesting Client.
      * @throws RemoteException
+     * @throws InterruptedException (This method will call wait()/notifyAll() and a
+     *                              thread may throw the exception)
      */
-    public void doCommitOrder(RemoteClient client) throws RemoteException;
+    public void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException;
 
     /**
      * Check if the game is over.
@@ -79,4 +91,12 @@ public interface RemoteServer extends Remote {
      * @throws RemoteException
      */
     public boolean isGameOver() throws RemoteException;
+
+    /**
+     * Get the winner Player
+     * 
+     * @return the copy of winner Player.
+     * @throws RemoteException
+     */
+    public Player getWinner() throws RemoteException;
 }
