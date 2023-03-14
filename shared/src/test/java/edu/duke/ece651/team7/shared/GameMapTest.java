@@ -203,7 +203,7 @@ public class GameMapTest {
     return o.readObject();
   }
 
-
+  @Test
   public void test_groupTerritories(){
     Player player1 = new Player("player1");
     Player player2 = new Player("player2");
