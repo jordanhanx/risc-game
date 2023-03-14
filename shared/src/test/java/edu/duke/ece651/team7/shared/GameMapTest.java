@@ -47,11 +47,12 @@ public class GameMapTest {
 
   @Test
   public void test_hasPath() {
-    Territory t1 = new Territory("territory1");
-    Territory t2 = new Territory("territory2");
-    Territory t3 = new Territory("territory3");
-    Territory t4 = new Territory("territory4");
-    Territory t5 = new Territory("territory5");
+    Player p1 = new Player("blue");
+    Territory t1 = new Territory("territory1",p1,1);
+    Territory t2 = new Territory("territory2",p1,1);
+    Territory t3 = new Territory("territory3",p1,1);
+    Territory t4 = new Territory("territory4",p1,1);
+    Territory t5 = new Territory("territory5",p1,1);
     Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
     List<Territory> a1 = new ArrayList<>();
     List<Territory> a2 = new ArrayList<>();
@@ -200,6 +201,44 @@ public class GameMapTest {
     ByteArrayInputStream b = new ByteArrayInputStream(bytes);
     ObjectInputStream o = new ObjectInputStream(b);
     return o.readObject();
+  }
+
+
+  public void test_groupTerritories(){
+    Player player1 = new Player("player1");
+    Player player2 = new Player("player2");
+    Player player3 = new Player("player3");
+    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    Territory t1 = new Territory("t1");
+    Territory t2 = new Territory("t2");
+    Territory t3 = new Territory("t3");
+    Territory t4 = new Territory("t4");
+    Territory t5 = new Territory("t5");
+    Territory t6 = new Territory("t6");
+    territoriesAdjacentList.put(t1, new ArrayList<>(Arrays.asList(t2)));
+    territoriesAdjacentList.put(t2, new ArrayList<>(Arrays.asList(t1, t3)));
+    territoriesAdjacentList.put(t3, new ArrayList<>(Arrays.asList(t2, t4, t5)));
+    territoriesAdjacentList.put(t4, new ArrayList<>(Arrays.asList(t3)));
+    territoriesAdjacentList.put(t5, new ArrayList<>(Arrays.asList(t3, t6)));
+    territoriesAdjacentList.put(t6, new ArrayList<>(Arrays.asList(t5)));
+    GameMap testMap = new GameMap(territoriesAdjacentList);
+    ArrayList<ArrayList<Territory>> territoryGroups = testMap.groupTerritories(3);
+    assertEquals(3, territoryGroups.size());
+    assertEquals(2, territoryGroups.get(0).size());
+    assertEquals(2, territoryGroups.get(1).size());
+    assertEquals(2, territoryGroups.get(2).size());
+    Set<Territory> assignedTerritories = new HashSet<>();
+    for (ArrayList<Territory> group : territoryGroups) {
+        for (Territory territory : group) {
+            assertTrue(!assignedTerritories.contains(territory));
+            assignedTerritories.add(territory);
+        }
+    }
+    assertTrue(assignedTerritories.contains(t1));
+    assertTrue(assignedTerritories.contains(t2));
+    assertEquals(6, assignedTerritories.size());
+
+
   }
 
 }
