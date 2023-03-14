@@ -99,6 +99,20 @@ public class PlayerTest {
     }
 
     @Test
+    public void test_compareTo() {
+        Player pGreen = new Player("Green");
+        Player pBlue = new Player("Blue");
+        Player pRed = new Player("Red");
+
+        assertTrue(pGreen.compareTo(pGreen) == 0);
+        assertTrue(pGreen.compareTo(pBlue) > 0);
+        assertTrue(pGreen.compareTo(pRed) < 0);
+        assertTrue(pBlue.compareTo(pRed) < 0);
+        assertThrows(IllegalArgumentException.class, () -> pGreen.compareTo("Green"));
+        assertThrows(IllegalArgumentException.class, () -> pGreen.compareTo(null));
+    }
+
+    @Test
     public void test_serializable() throws IOException, ClassNotFoundException {
         Player p = new Player("test");
         Object deserialized1 = deserialize(serialize(p));
