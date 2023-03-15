@@ -10,14 +10,15 @@ public class App {
   public static void main(String[] args) {
     if (args.length == 3) {
       try {
-        Client client = new Client(args[0], Integer.parseInt(args[1]), args[2],
+        Client client = new Client(args[0], Integer.parseInt(args[1]),
             new BufferedReader(new InputStreamReader(System.in)), System.out);
         client.start();
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }
     } else {
-      System.err.println("Usage: client <host> <port> <playername>");
+      System.err.println("Usage: client <host> <port>");
     }
+
   }
 }

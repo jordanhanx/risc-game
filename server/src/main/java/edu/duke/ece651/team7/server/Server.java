@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Collection;
 
 
 import edu.duke.ece651.team7.shared.*;
 
-public class Server extends UnicastRemoteObject implements RemoteController{
+public class Server extends UnicastRemoteObject implements RemoteServer{
   private final PrintStream out;
   private final int numPlayers;
   private HashMap<RemoteClient, Player> clients;
@@ -58,7 +59,7 @@ public class Server extends UnicastRemoteObject implements RemoteController{
     for(int i = 0; i < numPlayers; i++){
       ArrayList<Territory> elem = new ArrayList<Territory>();
       for(int j = i*numGroup; j < (i+1)*numGroup; j++){
-        tList.get(j).increaseUnitsBy(initialUnit);
+        tList.get(j).increaseUnits(initialUnit);
         elem.add(tList.get(j));
       }
       territoryGroups.add(elem);
@@ -203,6 +204,17 @@ public class Server extends UnicastRemoteObject implements RemoteController{
       return true;
     }
     return false;
+  }
+
+  @Override
+  public Player getSelfStatus(RemoteClient client) throws RemoteException {
+    return clients.get(client);
+  }
+
+  @Override
+  public Player getWinner() throws RemoteException {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getWinner'");
   }
 
 

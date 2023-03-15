@@ -5,9 +5,9 @@ import edu.duke.ece651.team7.shared.Territory;
 
 public abstract class Order {
     // private Territory src;
-    private Player issuer;
-    private Territory dest;
-    private int units;
+    protected Player issuer;
+    protected Territory dest;
+    protected int units;
 
     public Order(Player p, Territory d, int u){
         // src = s;
@@ -27,22 +27,17 @@ public abstract class Order {
         return units;
     }
 
-    public void increaseUnitsBy(int num){
+    public void increaseUnits(int num){
         units+=num;
     }
 
-    public void decreaseUnitsBy(int num){
-        units-=num;
+    public void decreaseUnits(int num){
+        if(units - num >= 0){
+            units-=num;
+        }else{
+            throw new ArithmeticException("units cannot be less than 0");
+        }
     }
-
-    // public boolean equals(Object o){
-    //     if(o != null && o.getClass().equals(getClass())){
-    //         Order other = (Order) o;
-    //         return dest == other.getDest() && units == other.getUnits();
-    //     }else{
-    //         return false;
-    //     }
-    // }
 
     
 

@@ -2,13 +2,12 @@ package edu.duke.ece651.team7.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.server.*;
 
 /**
  * This interface defines remote methods of the Server class, and only methods
  * defined here can be invoked on remote side.
  */
-public interface RemoteController extends Remote {
+public interface RemoteServer extends Remote {
     /**
      * Try to register current Client with the Server.
      * 
@@ -17,8 +16,10 @@ public interface RemoteController extends Remote {
      * @return null if the client is registered successfully, otherwise return
      *         the error message.
      * @throws RemoteException
+     * @throws InterruptedException (This method will call wait()/notifyAll() and a
+     *                              thread may throw the exception)
      */
-    public String tryRegisterClient(RemoteClient client, String name) throws InterruptedException, RemoteException;
+    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException, InterruptedException;
 
     /**
      * Greacefully end the game:
@@ -33,13 +34,21 @@ public interface RemoteController extends Remote {
     public String tryUnRegisterClient(RemoteClient client) throws RemoteException;
 
     /**
-     * Get the remote stub for the GameMap.
+     * Get the GameMap copy.
      * 
-     * @return the remote stub for the GameMap.
+     * @return the copy of the GameMap.
      * @throws RemoteException
-     * @throws InterruptedException (a thread may throw this exception)
      */
-    public GameMap getGameMap() throws RemoteException, InterruptedException;
+    public GameMap getGameMap() throws RemoteException;
+
+    /**
+     * Get the self Player
+     * 
+     * @param client is the requesting Client.
+     * @return the copy of the Player.
+     * @throws RemoteException
+     */
+    public Player getSelfStatus(RemoteClient client) throws RemoteException;
 
     /**
      * Try to do a MOVE order.
@@ -51,7 +60,7 @@ public interface RemoteController extends Remote {
      * @return null if the order is legal, otherwise return the error message.
      * @throws RemoteException
      */
-    public String tryMoveOrder(RemoteClient client,String from, String to, int units) throws RemoteException;
+    public String tryMoveOrder(RemoteClient client, String from, String to, int units) throws RemoteException;
 
     /**
      * Try to do an ATTACK order.
@@ -63,15 +72,17 @@ public interface RemoteController extends Remote {
      * @return null if the order is legal, otherwise return the error message.
      * @throws RemoteException
      */
-    public String tryAttackOrder(RemoteClient client,String from, String to, int units) throws RemoteException;
+    public String tryAttackOrder(RemoteClient client, String from, String to, int units) throws RemoteException;
 
     /**
      * Commit all above orders for current turn.
      * 
      * @param client is the requesting Client.
      * @throws RemoteException
+     * @throws InterruptedException (This method will call wait()/notifyAll() and a
+     *                              thread may throw the exception)
      */
-    public void doCommitOrder(RemoteClient client) throws RemoteException,InterruptedException;
+    public void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException;
 
     /**
      * Check if the game is over.
@@ -80,4 +91,13 @@ public interface RemoteController extends Remote {
      * @throws RemoteException
      */
     public boolean isGameOver() throws RemoteException;
+
+    /**
+     * Get the winner Player
+     * 
+     * @return the copy of winner Player.
+     * @throws RemoteException
+     */
+    public Player getWinner() throws RemoteException;
 }
+

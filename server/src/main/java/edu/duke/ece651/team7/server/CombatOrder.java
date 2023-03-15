@@ -13,5 +13,14 @@ public class CombatOrder extends Order{
         super(o.getPlayer(), o.getDest(), o.getUnits());
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o.getClass().equals(getClass())){
+            CombatOrder other = (CombatOrder) o;
+            return issuer.equals(other.getPlayer()) && dest.equals(other.getDest()) && units == other.getUnits();
+        }else{
+            return false;
+        }
+    }
     
 }

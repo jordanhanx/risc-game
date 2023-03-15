@@ -4,12 +4,29 @@
 # Ignore Gradle build output directory
 build
 bin
-.clover
-
-# Ignore Eclipse setting files
-.settings
-.classpath
-.project
+build-cache
+target
+out
+classes
+.gradletasknamecache
+*.log
 
 # Ignore macOS default files
 .DS_Store
+
+# Ignore Vscode files
+.vscode/
+
+# Ignore Eclipse setting files
+.classpath
+.project
+.settings/
+bin/
+
+# Ignore Intellij files
+*.iml
+*.ipr
+*.iws
+.idea
+*.eml
+.shelf

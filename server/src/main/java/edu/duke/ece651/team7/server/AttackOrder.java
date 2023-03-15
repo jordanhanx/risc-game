@@ -14,5 +14,15 @@ public class AttackOrder extends Order{
         return src;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o.getClass().equals(getClass())){
+            AttackOrder other = (AttackOrder) o;
+            return issuer.equals(other.getPlayer()) &&  src.equals(other.getSrc())
+            && dest.equals(other.getDest()) && units == other.getUnits();
+        }else{
+            return false;
+        }
+    }
     
 }
