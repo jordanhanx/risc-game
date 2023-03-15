@@ -6,7 +6,7 @@ import java.util.LinkedList;
 /**
  * This type represents Player in the game.
  */
-public class Player implements Serializable, Comparable {
+public class Player implements Serializable, Comparable<Player> {
     private static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
@@ -101,10 +101,9 @@ public class Player implements Serializable, Comparable {
     }
 
     @Override
-    public int compareTo(Object arg0) {
+    public int compareTo(Player arg0) {
         if (arg0 != null && arg0.getClass().equals(getClass())) {
-            Player p = (Player) arg0;
-            return name.compareTo(p.name);
+            return name.compareTo(arg0.name);
         } else if (arg0 == null) {
             throw new IllegalArgumentException("Cannot compare with null");
         } else {

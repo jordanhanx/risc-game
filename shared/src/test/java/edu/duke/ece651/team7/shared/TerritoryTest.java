@@ -46,6 +46,8 @@ public class TerritoryTest {
     assertEquals(2, t.getUnits());
     t.increaseUnits(3);
     assertEquals(5, t.getUnits());
+    assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(0));
+    assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(-1));
   }
 
   @Test
@@ -56,6 +58,8 @@ public class TerritoryTest {
     assertEquals(4, t.getUnits());
     t.decreaseUnits(2);
     assertEquals(2, t.getUnits());
+    assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(0));
+    assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(-1));
     assertThrows(ArithmeticException.class, () -> t.decreaseUnits(3));
     assertDoesNotThrow(() -> t.decreaseUnits(2));
     assertThrows(ArithmeticException.class, () -> t.decreaseUnits());
