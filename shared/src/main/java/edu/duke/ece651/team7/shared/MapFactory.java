@@ -10,4 +10,7 @@ public interface MapFactory {
 */
   public GameMap createMap();
 
+  public GameMap createMapTest();
+
+
 }

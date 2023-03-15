@@ -84,6 +84,7 @@ public class GameMap implements Serializable {
         return adjacentTerritories.contains(toTerritory);
     }
 
+
     /**
      * 
      * Determines whether a path exists between two territories which belong to the

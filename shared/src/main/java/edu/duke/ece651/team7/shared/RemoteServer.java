@@ -100,3 +100,4 @@ public interface RemoteServer extends Remote {
      */
     public Player getWinner() throws RemoteException;
 }
+

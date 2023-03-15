@@ -55,7 +55,7 @@ public class Territory implements Serializable {
   }
 
   public void increaseUnits() {
-    units++;
+    units ++;
   }
 
   public void increaseUnits(int num) {
@@ -63,7 +63,7 @@ public class Territory implements Serializable {
   }
 
   public void decreaseUnits() {
-    if (units > 0) {
+    if (units> 0) {
       units--;
     } else {
       throw new ArithmeticException("units cannot be less than 0");
