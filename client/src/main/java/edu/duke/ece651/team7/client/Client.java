@@ -89,13 +89,51 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    *                              server to respond
    * @throws IOException          if there is an error reading user input
    */
-  public void registerPlayer() throws RemoteException, InterruptedException, IOException {
+  public void registerPlayer() throws RemoteException, IOException {
     String name = readUserInput("Please name your Player:");
     String msg = server.tryRegisterClient(this, name);
     if (msg != null) {
       throw new IllegalArgumentException("Failed to register: " + msg);
     }
     out.println("Joined a RiskGame as Player: " + name);
+  }
+
+  public void pickTerritoryGroup() throws RemoteException, IOException {
+    while (true) {
+      view.display(server.getGameMap());
+      String groupName = readUserInput("Please choose your Territory Group:");
+      String msg = server.tryPickTerritoryGroupByName(this, groupName);
+      if (msg == null) {
+        break;
+      } else {
+        out.println("Invalid input: " + msg);
+      }
+    }
+  }
+
+  public void placeUnits() throws RemoteException, IOException {
+    for (Territory t : server.getSelfStatus(this).getTerritories()) {
+      int remainUnits = server.getInitUints() - server.getSelfStatus(this).getTotalUnits();
+      while (remainUnits > 0) {
+        try {
+          int units = Integer.parseInt(readUserInput(
+              "How many units do you place on " + t.getName() + " ? (remaining " + remainUnits + " units)"));
+          String msg = server.tryPlaceUnitsOn(this, t.getName(), units);
+          if (msg == null) {
+            break;
+          } else {
+            out.println("Invalid input: " + msg);
+          }
+        } catch (RuntimeException e) {
+          out.println("Error: " + e.getMessage());
+        }
+      }
+    }
+  }
+
+  public void requestContinueGame() throws RemoteException, InterruptedException {
+    out.println("Waiting for other players...");
+    server.doCommitOrder(this);
   }
 
   /**
@@ -141,8 +179,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
             "You are the " + server.getSelfStatus(this).getName()
                 + " player, what would you like to do?\n(M)ove\n(A)ttack\n(D)one");
         if (input.matches("^(?i)(D(?:one)?)$")) {
-          out.println("Waiting for other players...");
-          server.doCommitOrder(this);
+          requestContinueGame();
           break;
         } else {
           parseOrder(input);
@@ -151,6 +188,11 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
         out.println(e.getMessage());
       }
     }
+  }
+
+  public void watchOneTurn() throws RemoteException, InterruptedException {
+    view.display(server.getGameMap());
+    requestContinueGame();
   }
 
   /**
@@ -186,8 +228,15 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    */
   public void start() throws RemoteException, InterruptedException, IOException {
     registerPlayer();
+    pickTerritoryGroup();
+    placeUnits();
+    requestContinueGame();
     while (!checkIfGameOver()) {
-      playOneTurn();
+      if (!server.getSelfStatus(this).isLose()) {
+        playOneTurn();
+      } else {
+        watchOneTurn();
+      }
     }
   }
 }

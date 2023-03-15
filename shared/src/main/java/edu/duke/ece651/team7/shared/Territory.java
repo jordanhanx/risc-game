@@ -33,7 +33,7 @@ public class Territory implements Serializable {
     this.name = name;
     this.owner = owner;
     if (units < 0) {
-      throw new ArithmeticException("units cannot be less than 0");
+      throw new IllegalArgumentException("units cannot be less than 0");
     }
     this.units = units;
   }

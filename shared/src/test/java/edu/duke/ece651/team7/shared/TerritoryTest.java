@@ -25,7 +25,7 @@ public class TerritoryTest {
     assertEquals(3, t2.getUnits());
     assertEquals(p, t2.getOwner());
 
-    assertThrows(ArithmeticException.class, () -> new Territory("", p, -1));
+    assertThrows(IllegalArgumentException.class, () -> new Territory("", p, -1));
   }
 
   @Test

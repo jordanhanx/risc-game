@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedList;
 
 /**
@@ -33,9 +34,9 @@ public class Player implements Serializable, Comparable<Player> {
     /**
      * Get all territories belonging to the Player.
      * 
-     * @return a linked list containing all territories.
+     * @return a Collection containing all territories.
      */
-    public LinkedList<Territory> getTerritories() {
+    public Collection<Territory> getTerritories() {
         return territories;
     }
 
@@ -65,6 +66,14 @@ public class Player implements Serializable, Comparable<Player> {
             throw new IllegalArgumentException("Player: " + name + " doesn't own Territory: " + t.getName());
         }
         territories.remove(t);
+    }
+
+    public int getTotalUnits() {
+        int totalUnits = 0;
+        for (Territory t : territories) {
+            totalUnits += t.getUnits();
+        }
+        return totalUnits;
     }
 
     /**

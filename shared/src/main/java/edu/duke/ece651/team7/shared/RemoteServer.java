@@ -19,7 +19,7 @@ public interface RemoteServer extends Remote {
      * @throws InterruptedException (This method will call wait()/notifyAll() and a
      *                              thread may throw the exception)
      */
-    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException, InterruptedException;
+    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException;
 
     /**
      * Greacefully end the game:
@@ -49,6 +49,12 @@ public interface RemoteServer extends Remote {
      * @throws RemoteException
      */
     public Player getSelfStatus(RemoteClient client) throws RemoteException;
+
+    public int getInitUints() throws RemoteException;
+
+    public String tryPickTerritoryGroupByName(RemoteClient client, String name) throws RemoteException;
+
+    public String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException;
 
     /**
      * Try to do a MOVE order.
@@ -100,4 +106,3 @@ public interface RemoteServer extends Remote {
      */
     public Player getWinner() throws RemoteException;
 }
-
