@@ -11,7 +11,7 @@ public class ServerTest {
   @Test
   public void test_groupTerritory() throws RemoteException {
     MapFactory factory  = new TextMapFactory();
-    Server server = new Server(3,System.out, 10, factory.createMapTest());
+    Server server = new Server(2,System.out, 10, factory.createMapTest());
     for(ArrayList<Territory> a: server.getTerritoryGroups()){
       for(Territory t: a){
         System.out.print(t.getName());

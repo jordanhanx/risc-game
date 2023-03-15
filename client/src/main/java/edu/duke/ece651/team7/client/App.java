@@ -8,11 +8,12 @@ import java.io.InputStreamReader;
 
 public class App {
   public static void main(String[] args) {
-    if (args.length == 3) {
+    if (args.length == 2) {
       try {
         Client client = new Client(args[0], Integer.parseInt(args[1]),
             new BufferedReader(new InputStreamReader(System.in)), System.out);
         client.start();
+        // client.readUserInput("Testing");
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }

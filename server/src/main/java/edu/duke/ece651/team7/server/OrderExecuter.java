@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import edu.duke.ece651.team7.shared.Dice;
+import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class OrderExecuter {
@@ -46,15 +47,19 @@ public class OrderExecuter {
      */
     public String pushCombat(AttackOrder o){
         //need rule checker
+        System.out.println("Push combat into order executer 1 ");
         o.getSrc().decreaseUnits(o.getUnits());
         int flag = 0;
         for(Order order: attackOrderPool.get(o.getDest())){
+            System.out.println("Push combat into order executer 2 ");
             if (order.getPlayer().equals(o.getPlayer())){
                 order.increaseUnits(o.getUnits());
+                System.out.println("Combine combat Force: " + o.getDest().getName());
                 flag = 1;
             }
         }
         if(flag == 0){
+            System.out.println("Add new Combat: " + o.getDest().getName());
             attackOrderPool.get(o.getDest()).add(new CombatOrder(o));
         }
         return null;
@@ -81,28 +86,31 @@ public class OrderExecuter {
      */
     public void doAllCombats(){
         //for each battle field
+        System.out.println("Resolve Combat Result");
         for(Territory t: attackOrderPool.keySet()){
+            Player originOwner = t.getOwner();
             ArrayList<CombatOrder> combats = attackOrderPool.get(t);
             //not one attacks this territory
             if(combats.size() == 1){
+                System.out.print(t.getName() + " ");
                 continue;
             }
             int i = 0;
             // System.out.println("Territory is: " + t.getName());
             while (true){
-                // assert(i < combats.size());
                 int defenser = i;
+                //wrap around
                 if(i == combats.size()-1){
                     i = -1;
                 }
                 int attacker = i+1;
-
                 doOneUnitCombat(combats.get(defenser), combats.get(attacker));
                 //for testing
-                // System.out.println("Combat result: " + combats.get(defenser).getPlayer().getName() + ": "
-                // + combats.get(defenser).getUnits() + ", " + combats.get(attacker).getPlayer().getName() + ": "
-                // + combats.get(attacker).getUnits());
-
+                System.out.println("Combat result: " + combats.get(defenser).getPlayer().getName() + ": "
+                + combats.get(defenser).getUnits() + ", " + combats.get(attacker).getPlayer().getName() + ": "
+                + combats.get(attacker).getUnits());
+                
+                //if the CombatOrder is lose, remove it from the combat list
                 if(combats.get(defenser).getUnits() == 0){
                     combats.remove(defenser);
                     if(i!=-1){
@@ -114,8 +122,10 @@ public class OrderExecuter {
                 //one winner
                 if(combats.size() == 1){
                     t.setOwner(combats.get(0).getPlayer());
+                    originOwner.removeTerritory(t);
+                    combats.get(0).getPlayer().addTerritory(t);
                     //for testing
-                    // System.out.println("Winner is: " + combats.get(0).getPlayer().getName());
+                    System.out.println("Winner of Combat in " +t.getName() + "is: " + combats.get(0).getPlayer().getName());
                     break;
                 }
                 i++;

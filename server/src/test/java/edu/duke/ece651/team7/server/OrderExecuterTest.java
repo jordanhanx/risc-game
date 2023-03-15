@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.MapFactory;
 import edu.duke.ece651.team7.shared.Player;
+import edu.duke.ece651.team7.shared.Territory;
 import edu.duke.ece651.team7.shared.TextMapFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,6 +107,7 @@ public class OrderExecuterTest {
         Player p4 = new Player("d");
         Player p5 = new Player("e");
         Player p6 = new Player("f");
+        p6.addTerritory(map.getTerritoryByName("Scadrial"));
         map.getTerritoryByName("Scadrial").setOwner(p6);
         OrderExecuter ox = new OrderExecuter(map.getTerritories());
 

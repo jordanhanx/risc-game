@@ -16,11 +16,12 @@ import edu.duke.ece651.team7.shared.*;
 public class Server extends UnicastRemoteObject implements RemoteServer{
   private final PrintStream out;
   private final int numPlayers;
+  private final int initialUnit;
+
   private HashMap<RemoteClient, Player> clients;
   private GameMap map;
   private ArrayList<ArrayList<Territory> > territoryGroups;
   private int ID;
-  private final int initialUnit;
   private boolean clientsReady = false;
   private OrderExecuter ox;
 
@@ -36,12 +37,12 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
     this.numPlayers = n;
     this.clients = new HashMap<RemoteClient, Player>();
     this.out = out;
-    map = m;
-    territoryGroups = new ArrayList<ArrayList<Territory> >();
-    ID = 0; 
-    initialUnit = units;
+    this.map = m;
+    this.territoryGroups = new ArrayList<ArrayList<Territory> >();
+    this.ID = 0; 
+    this.initialUnit = units;
     groupTerritories();
-    ox = new OrderExecuter(map.getTerritories());
+    this.ox = new OrderExecuter(map.getTerritories());
   }
 
   /**
@@ -62,6 +63,14 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
         tList.get(j).increaseUnits(initialUnit);
         elem.add(tList.get(j));
       }
+      if(i == numPlayers-1 && (i+1)*numGroup!= tList.size()){
+        int j = (i+1)*numGroup;
+        while(j < tList.size()){
+          tList.get(j).increaseUnits(initialUnit);
+          elem.add(tList.get(j));
+          j++;
+        }
+      }
       territoryGroups.add(elem);
     }
   }
@@ -74,39 +83,47 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
     return territoryGroups;
   }
 
+  public void printMap(){
+    for(RemoteClient c: clients.keySet()){
+      out.println("Player " + clients.get(c).getName() + ": ");
+      out.println("--------------------");
+      for (Territory t:clients.get(c).getTerritories()){
+        out.println(t.getName() + ": " + t.getUnits());
+      }
+    }
+
+  }
   /**
    * Start the server
    * @param port port number
    * @throws RemoteException
    */
   public synchronized void start(int port) throws InterruptedException,RemoteException {
-    LocateRegistry.createRegistry(port).rebind("GameServer", this);
+    LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
     out.println("Server ready");
     //block waiting for client register
     while(!clientsReady){
       wait();
     }
     clientsReady = false;
-    for(RemoteClient c: clients.keySet()){
-      out.println(clients.get(c).getName());
-      for (Territory t:clients.get(c).getTerritories()){
-        out.println(t.getName() + ": " + t.getUnits());
-      }
-    }
+    printMap();
     //game start
     int turn = 0;
     while(true){
+      // System.out.println();
+      System.out.println("\n\nTurn " + turn);
       //play one turn
       //wait for all clients to commit
       while(!clientsReady){
         wait();
       }
-      System.out.println("Turn " + turn);
+  
       clientsReady = false;
       ox.doAllCombats();
       if(isGameOver()){
         break;
       }
+      printMap();
       turn++;
     }
 
@@ -154,6 +171,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
   @Override
   public String tryMoveOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
     Player p = clients.get(client);
+    System.out.println("Player " + p.getName() + " issues a Move order");
     if(!p.isLose()){
       MoveOrder o = new MoveOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
       //validate order,
@@ -167,10 +185,17 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
   @Override
   public String tryAttackOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
     Player p = clients.get(client);
+    System.out.println("Player " + p.getName() + " issues an Attack order");
     if(!p.isLose()){
       AttackOrder o = new AttackOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
       //validate order
+      // System.out.print("Combat players in " + dest + " are: ");
       String err = ox.pushCombat(o);
+      // System.out.print("Combat players in " + dest + " are: ");
+      // for(CombatOrder c: ox.getCombatsAt(map.getTerritoryByName(dest))){
+      //   System.out.print(c.getDest().getName() + " ");
+      // }
+      // System.out.println();
       return err;
     }else{
       return "You losed";
@@ -180,14 +205,15 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
 
   @Override
   public synchronized void doCommitOrder(RemoteClient client) throws InterruptedException {
-    if(ID != numPlayers-1){
+    ID++;
+    if(ID != numPlayers){
       wait();
-      ID++;
     }else{
       clientsReady = true;
       ID = 0;
       notifyAll();
     }
+    return;
   }
 
 
@@ -213,8 +239,16 @@ public class Server extends UnicastRemoteObject implements RemoteServer{
 
   @Override
   public Player getWinner() throws RemoteException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getWinner'");
+    if (isGameOver()){
+      for(RemoteClient c: clients.keySet()){
+        if(clients.get(c).isLose()){
+          return clients.get(c);
+        }
+      }
+      return null;
+    }else{
+      return null;
+    }
   }
 
 
