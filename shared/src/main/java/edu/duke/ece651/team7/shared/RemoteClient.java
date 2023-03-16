@@ -9,10 +9,25 @@ import java.rmi.RemoteException;
  */
 public interface RemoteClient extends Remote {
     /**
-     * Force the client quit from the game.
+     * Detect if the remote Client is alive.
      * 
-     * @param reason is the quit reason
      * @throws RemoteException
      */
-    // public void forceQuit(String reason) throws RemoteException;
+    public void ping() throws RemoteException;
+
+    /**
+     * Force the client to display the map.
+     * 
+     * @param map is the GameMap
+     * @throws RemoteException
+     */
+    public void doDisplay(GameMap map) throws RemoteException;
+
+    /**
+     * Force the client to display the String message.
+     * 
+     * @param msg is the message
+     * @throws RemoteException
+     */
+    public void doDisplay(String msg) throws RemoteException;
 }

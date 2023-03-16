@@ -84,30 +84,87 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   /**
    * Registers the player with the server.
    *
+   * @throws RemoteException if there is an error with the remote connection
+   * @throws IOException     if there is an error reading user input
+   */
+  public void registerPlayer() throws RemoteException, IOException {
+    while (true) {
+      String name = readUserInput("Please name your Player:");
+      String msg = server.tryRegisterClient(this, name);
+      if (msg == null) {
+        out.println("Joined a RiskGame as Player " + name);
+        break;
+      } else {
+        out.println("Failed to register: " + msg);
+      }
+    }
+  }
+
+  /**
+   * Picks one group of Territories.
+   *
+   * @throws RemoteException if there is an error with the remote connection
+   * @throws IOException     if there is an error reading user input
+   */
+  public void pickTerritoryGroup() throws RemoteException, IOException {
+    while (true) {
+      view.display(server.getGameMap());
+      String groupName = readUserInput("Please choose your Territory Group:");
+      String msg = server.tryPickTerritoryGroupByName(this, groupName);
+      if (msg == null) {
+        break;
+      } else {
+        out.println("Invalid input: " + msg);
+      }
+    }
+  }
+
+  /**
+   * Places specific number of units on each Territory.
+   *
+   * @throws RemoteException if there is an error with the remote connection
+   * @throws IOException     if there is an error reading user input
+   */
+  public void placeUnits() throws RemoteException, IOException {
+    for (int remaining = server.getInitUints()
+        - server.getSelfStatus(this).getTotalUnits(); remaining > 0; remaining = server.getInitUints()
+            - server.getSelfStatus(this).getTotalUnits()) {
+      view.display(server.getGameMap(), server.getSelfStatus(this));
+      String placement = readUserInput(remaining + " units remaining, please input: <Territory> <units>");
+      if (placement.matches("^\\w+\\s+\\d+$")) {
+        String[] substr = placement.split("\\s+");
+        String msg = server.tryPlaceUnitsOn(this, substr[0], Integer.parseInt(substr[1]));
+        if (msg != null) {
+          out.println("Invalid input: " + msg);
+        }
+      } else {
+        out.println("Invalid input: " + placement);
+      }
+    }
+    out.println("Placement finished.");
+
+  }
+
+  /**
+   * Requests Server to continue the Game until all clients are ready.
+   *
    * @throws RemoteException      if there is an error with the remote connection
    * @throws InterruptedException if there is an error while waiting for the
    *                              server to respond
-   * @throws IOException          if there is an error reading user input
    */
-  public void registerPlayer() throws RemoteException, InterruptedException, IOException {
-    String name = readUserInput("Please name your Player:");
-    String msg = server.tryRegisterClient(this, name);
-    if (msg != null) {
-      throw new IllegalArgumentException("Failed to register: " + msg);
-    }
-    out.println("Joined a RiskGame as Player: " + name);
+  public void requestContinueGame() throws RemoteException, InterruptedException {
+    out.println("Waiting for other players...");
+    server.doCommitOrder(this);
   }
 
   /**
    * Parses the user's input to determine what action to take.
    *
    * @param input the user's input
-   * @throws RemoteException      if there is an error with the remote connection
-   * @throws InterruptedException if there is an error while waiting for the
-   *                              server to respond
-   * @throws IOException          if there is an error reading user input
+   * @throws RemoteException if there is an error with the remote connection
+   * @throws IOException     if there is an error reading user input
    */
-  public void parseOrder(String input) throws RemoteException, InterruptedException, IOException {
+  public void parseOrder(String input) throws RemoteException, IOException {
     String response = null;
     if (input.matches("^(?i)(M(?:ove)?)\\s+\\w+\\s+\\w+\\s+\\d+$")) {
       String[] substr = input.split("\\s+");
@@ -119,7 +176,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
       response = "undefined order";
     }
     if (response != null) {
-      throw new IllegalArgumentException("Invalid input: " + response);
+      throw new IllegalArgumentException(response);
     }
   }
 
@@ -136,41 +193,19 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   public void playOneTurn() throws RemoteException, InterruptedException, IOException {
     view.display(server.getGameMap());
     while (true) {
-      try {
-        String input = readUserInput(
-            "You are the " + server.getSelfStatus(this).getName()
-                + " player, what would you like to do?\n(M)ove\n(A)ttack\n(D)one");
-        if (input.matches("^(?i)(D(?:one)?)$")) {
-          out.println("Waiting for other players...");
-          server.doCommitOrder(this);
-          break;
-        } else {
-          parseOrder(input);
-        }
-      } catch (RuntimeException e) {
-        out.println(e.getMessage());
-      }
-    }
-  }
-
-  /**
-   * Checks if the game is over and prints a message to the user if it is. Returns
-   * true if the game is over, false otherwise.
-   *
-   * @return true if the game is over, false otherwise
-   * @throws RemoteException if there is an error communicating with the server
-   */
-  public boolean checkIfGameOver() throws RemoteException {
-    if (server.isGameOver()) {
-      Player winner = server.getWinner();
-      if (winner.equals(server.getSelfStatus(this))) {
-        out.println("Congrats! YOU WIN!");
+      String input = readUserInput(
+          "You are the " + server.getSelfStatus(this).getName()
+              + " player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one");
+      if (input.matches("^(?i)(D(?:one)?)$")) {
+        requestContinueGame();
+        break;
       } else {
-        out.println("Game over! " + winner.getName() + " is the winner.");
+        try {
+          parseOrder(input);
+        } catch (IllegalArgumentException e) {
+          out.println("Invalid input: " + e.getMessage());
+        }
       }
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -186,8 +221,25 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    */
   public void start() throws RemoteException, InterruptedException, IOException {
     registerPlayer();
-    while (!checkIfGameOver()) {
+    pickTerritoryGroup();
+    placeUnits();
+    requestContinueGame();
+    while (!server.getSelfStatus(this).isLose() && !server.isGameOver()) {
       playOneTurn();
     }
+  }
+
+  @Override
+  public void ping() throws RemoteException {
+  }
+
+  @Override
+  public void doDisplay(GameMap map) throws RemoteException {
+    view.display(map);
+  }
+
+  @Override
+  public void doDisplay(String msg) throws RemoteException {
+    view.display(msg);
   }
 }

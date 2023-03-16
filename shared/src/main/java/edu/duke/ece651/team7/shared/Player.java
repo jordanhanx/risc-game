@@ -1,12 +1,13 @@
 package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedList;
 
 /**
  * This type represents Player in the game.
  */
-public class Player implements Serializable, Comparable {
+public class Player implements Serializable, Comparable<Player> {
     private static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
@@ -33,9 +34,9 @@ public class Player implements Serializable, Comparable {
     /**
      * Get all territories belonging to the Player.
      * 
-     * @return a linked list containing all territories.
+     * @return a Collection containing all territories.
      */
-    public LinkedList<Territory> getTerritories() {
+    public Collection<Territory> getTerritories() {
         return territories;
     }
 
@@ -65,6 +66,14 @@ public class Player implements Serializable, Comparable {
             throw new IllegalArgumentException("Player: " + name + " doesn't own Territory: " + t.getName());
         }
         territories.remove(t);
+    }
+
+    public int getTotalUnits() {
+        int totalUnits = 0;
+        for (Territory t : territories) {
+            totalUnits += t.getUnits();
+        }
+        return totalUnits;
     }
 
     /**
@@ -101,10 +110,9 @@ public class Player implements Serializable, Comparable {
     }
 
     @Override
-    public int compareTo(Object arg0) {
+    public int compareTo(Player arg0) {
         if (arg0 != null && arg0.getClass().equals(getClass())) {
-            Player p = (Player) arg0;
-            return name.compareTo(p.name);
+            return name.compareTo(arg0.name);
         } else if (arg0 == null) {
             throw new IllegalArgumentException("Cannot compare with null");
         } else {

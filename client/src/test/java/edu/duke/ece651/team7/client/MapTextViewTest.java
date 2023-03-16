@@ -14,6 +14,17 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class MapTextViewTest {
+
+    @Test
+    public void test_display_String() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(bytes, true);
+        MapTextView view = new MapTextView(out);
+        bytes.reset();
+        assertDoesNotThrow(() -> view.display(""));
+        assertEquals("\n", bytes.toString());
+    }
+
     @Test
     public void test_display() {
         // Setup GameMap

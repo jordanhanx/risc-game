@@ -33,7 +33,7 @@ public class Territory implements Serializable {
     this.name = name;
     this.owner = owner;
     if (units < 0) {
-      throw new ArithmeticException("units cannot be less than 0");
+      throw new IllegalArgumentException("units cannot be less than 0");
     }
     this.units = units;
   }
@@ -55,26 +55,32 @@ public class Territory implements Serializable {
   }
 
   public void increaseUnits() {
-    units ++;
+    units++;
   }
 
   public void increaseUnits(int num) {
-    units += num;
+    if (num <= 0) {
+      throw new IllegalArgumentException("input num must be greater than 0");
+    } else {
+      units += num;
+    }
   }
 
   public void decreaseUnits() {
-    if (units> 0) {
-      units--;
-    } else {
+    if (units <= 0) {
       throw new ArithmeticException("units cannot be less than 0");
+    } else {
+      units--;
     }
   }
 
   public void decreaseUnits(int num) {
-    if (units >= num) {
-      units -= num;
-    } else {
+    if (num <= 0) {
+      throw new IllegalArgumentException("input num must be greater than 0");
+    } else if (units < num) {
       throw new ArithmeticException("units cannot be less than 0");
+    } else {
+      units -= num;
     }
   }
 
@@ -96,5 +102,4 @@ public class Territory implements Serializable {
   public int hashCode() {
     return toString().hashCode();
   }
-
 }

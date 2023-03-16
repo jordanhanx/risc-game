@@ -1,255 +1,293 @@
 package edu.duke.ece651.team7.server;
 
 import java.io.PrintStream;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Collection;
-
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import edu.duke.ece651.team7.shared.*;
 
-public class Server extends UnicastRemoteObject implements RemoteServer{
-  private final PrintStream out;
+/**
+ * The `Server` class implements a game server for a Risk-like game.
+ */
+public class Server extends UnicastRemoteObject implements RemoteServer {
+  /**
+   * The output stream used for logging.
+   */
+  protected final PrintStream out;
+  /**
+   * The number of players in the game.
+   */
   private final int numPlayers;
+  /**
+   * The initial number of units each player has.
+   */
   private final int initialUnit;
+  /**
+   * A table of connected clients and their corresponding players in the game.
+   */
+  protected Map<RemoteClient, Player> inGameClients;
+  /**
+   * A set of clients that are watching the game as spectators.
+   */
+  protected Set<RemoteClient> watchingClients;
+  /**
+   * The risk game map.
+   */
+  protected GameMap map;
+  /**
+   * The order executor used for executing player orders.
+   */
+  protected OrderExecuter ox;
 
-  private HashMap<RemoteClient, Player> clients;
-  private GameMap map;
-  private ArrayList<ArrayList<Territory> > territoryGroups;
-  private int ID;
-  private boolean clientsReady = false;
-  private OrderExecuter ox;
+  protected CountDownLatch commitSignal;
+  protected CountDownLatch returnSignal;
 
   /**
-   * 
-   * @param n numer of players
-   * @param out output stream
-   * @param units number of initial units in each territory
-   * @param m game map
-   * @throws RemoteException
+   * Constructs a new `Server` with the specified output stream, number of
+   * players, and initial units.
+   *
+   * @param out        the output stream to use for logging
+   * @param numPlayers the number of players in the game
+   * @param initUnits  the initial number of units each player has
+   * @throws RemoteException if a remote error occurs
    */
-  public Server(int n, PrintStream out, int units, GameMap m) throws RemoteException {
-    this.numPlayers = n;
-    this.clients = new HashMap<RemoteClient, Player>();
+  public Server(PrintStream out, int port, int numPlayers, int initUnits) throws RemoteException {
     this.out = out;
-    this.map = m;
-    this.territoryGroups = new ArrayList<ArrayList<Territory> >();
-    this.ID = 0; 
-    this.initialUnit = units;
-    groupTerritories();
+    if (numPlayers < 2) {
+      throw new IllegalArgumentException("numPlayers cannot be less than 2");
+    }
+    if (initUnits < 1) {
+      throw new IllegalArgumentException("initUnits cannot be less than 1");
+    }
+    this.numPlayers = numPlayers;
+    this.initialUnit = initUnits;
+    initClientsSet();
+    initGameMap();
+    bindGameOnPort(port);
+    setupCountDownLatches(numPlayers);
+  }
+
+  /**
+   * Initializes all clients map and sets.
+   */
+  protected void initClientsSet() {
+    this.inGameClients = new HashMap<RemoteClient, Player>();
+    this.watchingClients = new HashSet<RemoteClient>();
+  }
+
+  /**
+   * Initializes the game map for the current game.
+   */
+  protected void initGameMap() {
+    this.map = new TextMapFactory().createMap();
     this.ox = new OrderExecuter(map.getTerritories());
+    out.println("GameMap initialized");
   }
 
   /**
-   * Split territorries in map into numPlayers groups
-   * @return the groups of territories
-   * @throws RemoteException
+   * Create a new registry and bind the Server on a specific port in
+   *
+   * @param port the port to listen on
+   * @throws RemoteException if a remote error occurs
    */
-  private void groupTerritories(){
-    // ArrayList<ArrayList<Territory> > ans = new ArrayList<ArrayList<Territory> >();
-    List<Territory> tList = new ArrayList<Territory>(map.getTerritories());
-    int numGroup = tList.size() / numPlayers;
-    
-    Collections.shuffle(tList);
-    // out.println("numGroups is: "+ numGroup);
-    for(int i = 0; i < numPlayers; i++){
-      ArrayList<Territory> elem = new ArrayList<Territory>();
-      for(int j = i*numGroup; j < (i+1)*numGroup; j++){
-        tList.get(j).increaseUnits(initialUnit);
-        elem.add(tList.get(j));
-      }
-      if(i == numPlayers-1 && (i+1)*numGroup!= tList.size()){
-        int j = (i+1)*numGroup;
-        while(j < tList.size()){
-          tList.get(j).increaseUnits(initialUnit);
-          elem.add(tList.get(j));
-          j++;
-        }
-      }
-      territoryGroups.add(elem);
-    }
-  }
-
-  /**
-   * testing the above function
-   * @return a arraylist of grouped territories
-   */
-  public ArrayList<ArrayList<Territory> > getTerritoryGroups(){
-    return territoryGroups;
-  }
-
-  public void printMap(){
-    for(RemoteClient c: clients.keySet()){
-      out.println("Player " + clients.get(c).getName() + ": ");
-      out.println("--------------------");
-      for (Territory t:clients.get(c).getTerritories()){
-        out.println(t.getName() + ": " + t.getUnits());
-      }
-    }
-
-  }
-  /**
-   * Start the server
-   * @param port port number
-   * @throws RemoteException
-   */
-  public synchronized void start(int port) throws InterruptedException,RemoteException {
+  protected void bindGameOnPort(int port) throws RemoteException {
     LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
-    out.println("Server ready");
-    //block waiting for client register
-    while(!clientsReady){
-      wait();
-    }
-    clientsReady = false;
-    printMap();
-    //game start
-    int turn = 0;
-    while(true){
-      // System.out.println();
-      System.out.println("\n\nTurn " + turn);
-      //play one turn
-      //wait for all clients to commit
-      while(!clientsReady){
-        wait();
-      }
-  
-      clientsReady = false;
-      ox.doAllCombats();
-      if(isGameOver()){
-        break;
-      }
-      printMap();
-      turn++;
-    }
+    out.println("RiscGameServer is ready to accept connections");
+  }
 
+  /**
+   * Setup count numbers for each turn.
+   * 
+   * @param numInGame the number of in-game clients
+   */
+  protected void setupCountDownLatches(int numInGame) {
+    this.commitSignal = new CountDownLatch(numInGame);
+    this.returnSignal = new CountDownLatch(1);
+  }
+
+  /**
+   * Starts the game server on the specified port.
+   *
+   * @throws RemoteException      if a remote error occurs
+   * @throws InterruptedException
+   * @throws NotBoundException
+   */
+  public void start() throws RemoteException, InterruptedException, NotBoundException {
+    while (true) {
+      commitSignal.await();
+      /* do all combats here */
+      removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
+      if (isGameOver()) {
+        doEndGame(); // End current game.
+        initClientsSet(); // Prepare for next game.
+        initGameMap();
+        setupCountDownLatches(numPlayers);
+      } else {
+        notifyAllWatchersDisplay();
+        returnSignal.countDown();
+        setupCountDownLatches(inGameClients.size());
+      }
+    }
   }
 
   @Override
-  public synchronized String tryRegisterClient(RemoteClient client, String name) throws InterruptedException, RemoteException {
-    out.println("Received rejister request, players current/max = " + clients.size() + "/" + numPlayers);
-    if (clients.size() < numPlayers && !clients.containsKey(client)) {
-      Player p = new Player(name);
-      for(Territory t: territoryGroups.get(ID)){
-        p.addTerritory(t);
-        t.setOwner(p);
-      }
-      clients.put(client, p);
-      ID++;
-      if (clients.size() != numPlayers) {
-        wait();
-      }else{
-        out.println("All player joined!");
-        clientsReady = true;
-        ID = 0;
-        notifyAll();
-      }
-      return null;
+  public synchronized String tryRegisterClient(RemoteClient newClient, String name) throws RemoteException {
+    if (inGameClients.containsKey(newClient)) {
+      return "Already joined, cannot join repeatly";
+    } else if (inGameClients.size() >= numPlayers) {
+      return "Clients are full";
     } else {
-      return "Cannot register Client";
+      Player p = new Player(name);
+      inGameClients.put(newClient, p);
+      out.println("Player " + p.getName() + " joined game. (" + inGameClients.size() + "/" + numPlayers + ")");
+      return null;
     }
   }
 
   @Override
-  public GameMap getGameMap(){
+  public synchronized GameMap getGameMap() {
     return map;
   }
 
   @Override
-  public String tryUnRegisterClient(RemoteClient client) throws RemoteException {
-    if(clients.containsKey(client)){
-      clients.remove(client);
-      return null;
-    }
-    return "The client is not registered";
+  public synchronized Player getSelfStatus(RemoteClient client) throws RemoteException {
+    return inGameClients.get(client);
   }
 
   @Override
-  public String tryMoveOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
-    Player p = clients.get(client);
-    System.out.println("Player " + p.getName() + " issues a Move order");
-    if(!p.isLose()){
-      MoveOrder o = new MoveOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
-      //validate order,
-      String err = ox.doOneMove(o);
-      return err;
-    }else{
-      return "You Losed";
+  public synchronized int getInitUints() throws RemoteException {
+    return initialUnit;
+  }
+
+  @Override
+  public synchronized String tryPickTerritoryGroupByName(RemoteClient client, String groupName) throws RemoteException {
+    // TODO to be completed
+    return "To be completed";
+  }
+
+  @Override
+  public synchronized String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException {
+    try {
+      if (map.getTerritoryByName(territory).getOwner().equals(inGameClients.get(client))) {
+        map.getTerritoryByName(territory).increaseUnits(units);
+        return null;
+      } else {
+        return "Permission denied";
+      }
+    } catch (RuntimeException e) {
+      return e.getMessage();
     }
   }
 
   @Override
-  public String tryAttackOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
-    Player p = clients.get(client);
-    System.out.println("Player " + p.getName() + " issues an Attack order");
-    if(!p.isLose()){
-      AttackOrder o = new AttackOrder(p, map.getTerritoryByName(src), map.getTerritoryByName(dest), units);
-      //validate order
-      // System.out.print("Combat players in " + dest + " are: ");
-      String err = ox.pushCombat(o);
-      // System.out.print("Combat players in " + dest + " are: ");
-      // for(CombatOrder c: ox.getCombatsAt(map.getTerritoryByName(dest))){
-      //   System.out.print(c.getDest().getName() + " ");
-      // }
-      // System.out.println();
-      return err;
-    }else{
-      return "You losed";
+  public synchronized String tryMoveOrder(RemoteClient client, String src, String dest, int units)
+      throws RemoteException {
+    String response = null;
+    try {
+      MoveOrder mo = new MoveOrder(inGameClients.get(client), map.getTerritoryByName(src),
+          map.getTerritoryByName(dest), units);
+      ox.doOneMove(mo);
+    } catch (RuntimeException e) {
+      response = e.getMessage();
+    }
+    return response;
+  }
+
+  @Override
+  public synchronized String tryAttackOrder(RemoteClient client, String src, String dest, int units)
+      throws RemoteException {
+    String response = null;
+    try {
+      AttackOrder ao = new AttackOrder(inGameClients.get(client), map.getTerritoryByName(src),
+          map.getTerritoryByName(dest), units);
+      ox.pushCombat(ao);
+    } catch (RuntimeException e) {
+      response = e.getMessage();
+    }
+    return response;
+  }
+
+  @Override
+  public void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException {
+    pingInGameClients();
+    commitSignal.countDown();
+    returnSignal.await();
+  }
+
+  @Override
+  public synchronized boolean isGameOver() throws RemoteException {
+    return (inGameClients.size() == 1) ? true : false;
+  }
+
+  /**
+   * Checks the network connections to all in-game Clients.
+   * If an in-game Client is disconnected, the game will exit.
+   * 
+   * @throws RemoteException if a remote error occurs
+   */
+  void pingInGameClients() throws RemoteException {
+    for (RemoteClient c : inGameClients.keySet()) {
+      c.ping();
     }
   }
 
-
-  @Override
-  public synchronized void doCommitOrder(RemoteClient client) throws InterruptedException {
-    ID++;
-    if(ID != numPlayers){
-      wait();
-    }else{
-      clientsReady = true;
-      ID = 0;
-      notifyAll();
-    }
-    return;
-  }
-
-
-
-  @Override
-  public boolean isGameOver() throws RemoteException {
-    int numLose = 0;
-    for(RemoteClient c: clients.keySet()){
-      if(clients.get(c).isLose()){
-        numLose++;
+  /**
+   * Removes any players who have lost from in-game set into watcher set.
+   */
+  void removeLostPlayer() {
+    for (RemoteClient c : inGameClients.keySet()) {
+      if (inGameClients.get(c).isLose()) {
+        watchingClients.add(c);
       }
     }
-    if(numLose == numPlayers-1){
-      return true;
+    for (RemoteClient w : watchingClients) {
+      inGameClients.remove(w);
     }
-    return false;
   }
 
-  @Override
-  public Player getSelfStatus(RemoteClient client) throws RemoteException {
-    return clients.get(client);
+  /**
+   * Notifies all watching Clients of the current state of the game.
+   */
+  void notifyAllWatchersDisplay() {
+    HashSet<RemoteClient> forRemove = new HashSet<RemoteClient>();
+    for (RemoteClient watcher : watchingClients) {
+      try {
+        watcher.doDisplay(map);
+      } catch (RemoteException e) {
+        forRemove.add(watcher);
+      }
+    }
+    for (RemoteClient c : forRemove) {
+      watchingClients.remove(c);
+    }
   }
 
-  @Override
-  public Player getWinner() throws RemoteException {
-    if (isGameOver()){
-      for(RemoteClient c: clients.keySet()){
-        if(clients.get(c).isLose()){
-          return clients.get(c);
+  /**
+   * End the game.
+   * 
+   * @throws RemoteException   if a remote error occurs
+   * @throws NotBoundException
+   */
+  void doEndGame() throws RemoteException, NotBoundException {
+    for (RemoteClient winner : inGameClients.keySet()) {
+      winner.doDisplay(map);
+      winner.doDisplay("You Win!");
+      for (RemoteClient watcher : watchingClients) {
+        try {
+          watcher.doDisplay(map);
+          watcher.doDisplay("Winner is Player " + inGameClients.get(winner).getName());
+        } catch (RemoteException e) {
         }
       }
-      return null;
-    }else{
-      return null;
     }
+    inGameClients.clear();
+    watchingClients.clear();
   }
-
-
 }

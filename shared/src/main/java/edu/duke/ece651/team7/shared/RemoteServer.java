@@ -9,29 +9,15 @@ import java.rmi.RemoteException;
  */
 public interface RemoteServer extends Remote {
     /**
-     * Try to register current Client with the Server.
+     * Try to register current Client with the Server as a Player.
      * 
      * @param client is the Client to be registered.
      * @param name   is the Player's name.
      * @return null if the client is registered successfully, otherwise return
      *         the error message.
      * @throws RemoteException
-     * @throws InterruptedException (This method will call wait()/notifyAll() and a
-     *                              thread may throw the exception)
      */
-    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException, InterruptedException;
-
-    /**
-     * Greacefully end the game:
-     * Try to unregister current Client with the Server when the Client is going to
-     * quit, and delete the associated Player.
-     * 
-     * @param client is the client to be unregistered.
-     * @return null if the client is registered successfully, otherwise return
-     *         the error message.
-     * @throws RemoteException
-     */
-    public String tryUnRegisterClient(RemoteClient client) throws RemoteException;
+    public String tryRegisterClient(RemoteClient client, String name) throws RemoteException;
 
     /**
      * Get the GameMap copy.
@@ -49,6 +35,36 @@ public interface RemoteServer extends Remote {
      * @throws RemoteException
      */
     public Player getSelfStatus(RemoteClient client) throws RemoteException;
+
+    /**
+     * Get the initial units for each Player.
+     * 
+     * @return the initial units for each Player.
+     * @throws RemoteException
+     */
+    public int getInitUints() throws RemoteException;
+
+    /**
+     * Try to pick a group of Territories.
+     * 
+     * @param client    is the Client to be registered.
+     * @param groupName is the group's name.
+     * @return null if the client is registered successfully, otherwise return
+     *         the error message.
+     * @throws RemoteException
+     */
+    public String tryPickTerritoryGroupByName(RemoteClient client, String groupName) throws RemoteException;
+
+    /**
+     * Try to place specific number of units on the Territory.
+     * 
+     * @param client is the Client to be registered.
+     * @param name   is the Player's name.
+     * @return null if the client is registered successfully, otherwise return
+     *         the error message.
+     * @throws RemoteException
+     */
+    public String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException;
 
     /**
      * Try to do a MOVE order.
@@ -91,13 +107,4 @@ public interface RemoteServer extends Remote {
      * @throws RemoteException
      */
     public boolean isGameOver() throws RemoteException;
-
-    /**
-     * Get the winner Player
-     * 
-     * @return the copy of winner Player.
-     * @throws RemoteException
-     */
-    public Player getWinner() throws RemoteException;
 }
-
