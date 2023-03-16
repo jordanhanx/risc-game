@@ -798,4 +798,14 @@ public class ClientTest {
         assertDoesNotThrow(() -> client.doDisplay(mockMap));
         assertEquals(outputs.toString(), bytes.toString());
     }
+
+    @Test
+    public void test_doDisplay_msg() throws RemoteException, NotBoundException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        RemoteServer mockServer = mock(RemoteServer.class);
+        Client client = createMockedClient(mockServer, "", bytes);
+        bytes.reset();
+        assertDoesNotThrow(() -> client.doDisplay(""));
+        assertEquals("\n", bytes.toString());
+    }
 }

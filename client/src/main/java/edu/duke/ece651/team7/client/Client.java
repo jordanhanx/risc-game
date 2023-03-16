@@ -238,4 +238,9 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   public void doDisplay(GameMap map) throws RemoteException {
     view.display(map);
   }
+
+  @Override
+  public void doDisplay(String msg) throws RemoteException {
+    out.println(msg);
+  }
 }

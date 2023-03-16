@@ -6,6 +6,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import edu.duke.ece651.team7.shared.*;
 
@@ -28,7 +30,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   /**
    * A table of connected clients and their corresponding players in the game.
    */
-  protected HashMap<RemoteClient, Player> inGameClients;
+  protected ConcurrentHashMap<RemoteClient, Player> inGameClients;
   /**
    * A set of clients that are ready in one turn.
    */
@@ -65,10 +67,17 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
     this.numPlayers = numPlayers;
     this.initialUnit = initUnits;
-    this.inGameClients = new HashMap<RemoteClient, Player>();
-    this.watchingClients = new HashSet<RemoteClient>();
-    this.watchingClients = new HashSet<RemoteClient>();
+    initClientsSet();
     initGameMap();
+  }
+
+  /**
+   * Initializes all clients map and sets.
+   */
+  protected void initClientsSet() {
+    this.inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
+    this.readyClients = new HashSet<RemoteClient>();
+    this.watchingClients = new HashSet<RemoteClient>();
   }
 
   /**
@@ -131,13 +140,13 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   @Override
-  public String tryPickTerritoryGroupByName(RemoteClient client, String groupName) throws RemoteException {
+  public synchronized String tryPickTerritoryGroupByName(RemoteClient client, String groupName) throws RemoteException {
     // TODO to be completed
     return "To be completed";
   }
 
   @Override
-  public String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException {
+  public synchronized String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException {
     try {
       if (map.getTerritoryByName(territory).getOwner().equals(inGameClients.get(client))) {
         map.getTerritoryByName(territory).increaseUnits(units);
@@ -151,7 +160,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   @Override
-  public String tryMoveOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
+  public synchronized String tryMoveOrder(RemoteClient client, String src, String dest, int units)
+      throws RemoteException {
     String response = null;
     try {
       MoveOrder mo = new MoveOrder(inGameClients.get(client), map.getTerritoryByName(src),
@@ -164,7 +174,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   @Override
-  public String tryAttackOrder(RemoteClient client, String src, String dest, int units) throws RemoteException {
+  public synchronized String tryAttackOrder(RemoteClient client, String src, String dest, int units)
+      throws RemoteException {
     String response = null;
     try {
       AttackOrder ao = new AttackOrder(inGameClients.get(client), map.getTerritoryByName(src),
@@ -177,12 +188,16 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   /**
-   * Checks the network connection to all in-game Clients.
+   * Checks the network connections to all uncommitted in-game Clients.
    * If an in-game Client is disconnected, the game will exit.
+   * 
+   * @throws RemoteException if a remote error occurs
    */
-  void checkConnectionToClients() throws RemoteException {
+  void checkConnectionToUnCommittedClients(Set<RemoteClient> readySet) throws RemoteException {
     for (RemoteClient c : inGameClients.keySet()) {
-      c.isAlive();
+      if (!readySet.contains(c)) {
+        c.isAlive();
+      }
     }
   }
 
@@ -198,58 +213,75 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
   }
 
+  @Override
+  public boolean isGameOver() throws RemoteException {
+    return (inGameClients.size() == 1) ? true : false;
+  }
+
+  /**
+   * Find last in-game Client, the winner.
+   * 
+   * @return the last RemoteClient otherwise null.
+   * @throws RemoteException if a remote error occurs
+   */
+  RemoteClient getWinClient() throws RemoteException {
+    if (isGameOver()) {
+      for (RemoteClient c : inGameClients.keySet()) {
+        if (!inGameClients.get(c).isLose()) {
+          return c;
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * Notifies all watching Clients of the current state of the game.
    */
-  void notifyWatchingClients() {
-    for (RemoteClient c : watchingClients) {
+  void notifyAllWatchersDisplay() {
+    for (RemoteClient watcher : watchingClients) {
       try {
-        c.doDisplay(map);
+        watcher.doDisplay(map);
       } catch (RemoteException e) {
-        watchingClients.remove(c);
+        watchingClients.remove(watcher);
       }
     }
   }
 
+  void doEndGame() throws RemoteException {
+    for (RemoteClient winner : inGameClients.keySet()) {
+      winner.doDisplay(map);
+      winner.doDisplay("You Win!");
+      for (RemoteClient watcher : watchingClients) {
+        try {
+          watcher.doDisplay(map);
+          watcher.doDisplay("Winner is Player " + inGameClients.get(winner).getName());
+        } catch (RemoteException e) {
+          watchingClients.remove(watcher);
+        }
+      }
+    }
+    inGameClients.clear();
+    watchingClients.clear();
+  }
+
   @Override
   public synchronized void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException {
-    checkConnectionToClients();
     readyClients.add(client);
-    while (!readyClients.equals(inGameClients.keySet())) {
+    checkConnectionToUnCommittedClients(readyClients);
+    if (readyClients.size() == inGameClients.keySet().size()) {
+      // do all combats here
+      notifyAll(); // wake all waiting threads and let inGameClients continue run.
+      removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
+      if (isGameOver()) {
+        doEndGame();
+      } else {
+        notifyAllWatchersDisplay();
+      }
+    }
+    while (readyClients.size() < inGameClients.keySet().size()) {
       wait();
     }
-    notifyAll();
     readyClients.clear();
-    removeLostPlayer();
-    notifyWatchingClients();
-  }
-
-  @Override
-  public boolean isGameOver() throws RemoteException {
-    if (inGameClients.size() == 1) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * local method for testing
-   */
-  HashMap<RemoteClient, Player> getInGameClients() {
-    return inGameClients;
-  }
-
-  /**
-   * local method for testing
-   */
-  HashSet<RemoteClient> readyClients() {
-    return readyClients;
-  }
-
-  /**
-   * local method for testing
-   */
-  HashSet<RemoteClient> watchingClients() {
-    return watchingClients;
   }
 }

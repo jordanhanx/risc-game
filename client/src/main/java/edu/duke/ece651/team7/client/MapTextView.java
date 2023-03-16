@@ -30,6 +30,16 @@ public class MapTextView {
      *
      * @param map the GameMap to be displayed
      */
+    public void display(String msg) {
+        out.println(msg);
+    }
+
+    /**
+     * Displays the game map as a text-based view, including the territories
+     * owned by each player and the number of units in each territory.
+     *
+     * @param map the GameMap to be displayed
+     */
     public void display(GameMap map) {
         TreeSet<Player> playerSet = new TreeSet<>();
         for (Territory t : map.getTerritories()) {

@@ -23,4 +23,12 @@ public interface RemoteClient extends Remote {
      * @throws RemoteException
      */
     public void doDisplay(GameMap map) throws RemoteException;
+
+    /**
+     * Force the client to display the String message.
+     * 
+     * @param msg is the message
+     * @throws RemoteException
+     */
+    public void doDisplay(String msg) throws RemoteException;
 }
