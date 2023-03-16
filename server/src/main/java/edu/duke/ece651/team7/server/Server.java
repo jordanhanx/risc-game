@@ -5,12 +5,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import edu.duke.ece651.team7.shared.*;
@@ -48,7 +46,6 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    */
   protected OrderExecuter ox;
 
-  protected Registry registry;
   protected CountDownLatch commitSignal;
   protected CountDownLatch returnSignal;
 
@@ -81,9 +78,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * Initializes all clients map and sets.
    */
   protected void initClientsSet() {
-    this.inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
+    this.inGameClients = new HashMap<RemoteClient, Player>();
     this.watchingClients = new HashSet<RemoteClient>();
-    // this.watchingClients = ConcurrentHashMap.newKeySet();
   }
 
   /**
@@ -102,20 +98,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * @throws RemoteException if a remote error occurs
    */
   protected void bindGameOnPort(int port) throws RemoteException {
-    this.registry = LocateRegistry.createRegistry(port);
-    registry.rebind("RiscGameServer", this);
+    LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
     out.println("RiscGameServer is ready to accept connections");
-  }
-
-  /**
-   * Unbind the Server from registry.
-   *
-   * @throws RemoteException   if a remote error occurs
-   * @throws NotBoundException
-   */
-  protected void unbindGame() throws RemoteException, NotBoundException {
-    registry.unbind("RiscGameServer");
-    out.println("RiscGameServer is Down.");
   }
 
   /**
@@ -138,16 +122,18 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   public void start() throws RemoteException, InterruptedException, NotBoundException {
     while (true) {
       commitSignal.await();
-      // do all combats here
+      /* do all combats here */
       removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
       if (isGameOver()) {
-        doEndGame();
-        break;
+        doEndGame(); // End current game.
+        initClientsSet(); // Prepare for next game.
+        initGameMap();
+        setupCountDownLatches(numPlayers);
       } else {
         notifyAllWatchersDisplay();
+        returnSignal.countDown();
+        setupCountDownLatches(inGameClients.size());
       }
-      returnSignal.countDown();
-      setupCountDownLatches(inGameClients.size());
     }
   }
 
@@ -259,8 +245,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     for (RemoteClient c : inGameClients.keySet()) {
       if (inGameClients.get(c).isLose()) {
         watchingClients.add(c);
-        inGameClients.remove(c);
       }
+    }
+    for (RemoteClient w : watchingClients) {
+      inGameClients.remove(w);
     }
   }
 
@@ -268,12 +256,16 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * Notifies all watching Clients of the current state of the game.
    */
   void notifyAllWatchersDisplay() {
+    HashSet<RemoteClient> forRemove = new HashSet<RemoteClient>();
     for (RemoteClient watcher : watchingClients) {
       try {
         watcher.doDisplay(map);
       } catch (RemoteException e) {
-        watchingClients.remove(watcher);
+        forRemove.add(watcher);
       }
+    }
+    for (RemoteClient c : forRemove) {
+      watchingClients.remove(c);
     }
   }
 
@@ -292,12 +284,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
           watcher.doDisplay(map);
           watcher.doDisplay("Winner is Player " + inGameClients.get(winner).getName());
         } catch (RemoteException e) {
-          watchingClients.remove(watcher);
         }
       }
     }
     inGameClients.clear();
     watchingClients.clear();
-    unbindGame();
   }
 }
