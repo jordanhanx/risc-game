@@ -11,10 +11,9 @@ public interface RemoteClient extends Remote {
     /**
      * Detect if the remote Client is alive.
      * 
-     * @return true if alive, otherwise throw RemoteException.
      * @throws RemoteException
      */
-    public boolean isAlive() throws RemoteException;
+    public void ping() throws RemoteException;
 
     /**
      * Force the client to display the map.

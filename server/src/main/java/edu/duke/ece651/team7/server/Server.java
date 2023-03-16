@@ -1,13 +1,17 @@
 package edu.duke.ece651.team7.server;
 
 import java.io.PrintStream;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 import edu.duke.ece651.team7.shared.*;
 
@@ -30,15 +34,11 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   /**
    * A table of connected clients and their corresponding players in the game.
    */
-  protected ConcurrentHashMap<RemoteClient, Player> inGameClients;
-  /**
-   * A set of clients that are ready in one turn.
-   */
-  protected HashSet<RemoteClient> readyClients;
+  protected Map<RemoteClient, Player> inGameClients;
   /**
    * A set of clients that are watching the game as spectators.
    */
-  protected HashSet<RemoteClient> watchingClients;
+  protected Set<RemoteClient> watchingClients;
   /**
    * The risk game map.
    */
@@ -47,6 +47,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * The order executor used for executing player orders.
    */
   protected OrderExecuter ox;
+
+  protected Registry registry;
+  protected CountDownLatch commitSignal;
+  protected CountDownLatch returnSignal;
 
   /**
    * Constructs a new `Server` with the specified output stream, number of
@@ -57,7 +61,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * @param initUnits  the initial number of units each player has
    * @throws RemoteException if a remote error occurs
    */
-  public Server(PrintStream out, int numPlayers, int initUnits) throws RemoteException {
+  public Server(PrintStream out, int port, int numPlayers, int initUnits) throws RemoteException {
     this.out = out;
     if (numPlayers < 2) {
       throw new IllegalArgumentException("numPlayers cannot be less than 2");
@@ -69,6 +73,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     this.initialUnit = initUnits;
     initClientsSet();
     initGameMap();
+    bindGameOnPort(port);
+    setupCountDownLatches(numPlayers);
   }
 
   /**
@@ -76,8 +82,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    */
   protected void initClientsSet() {
     this.inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    this.readyClients = new HashSet<RemoteClient>();
     this.watchingClients = new HashSet<RemoteClient>();
+    // this.watchingClients = ConcurrentHashMap.newKeySet();
   }
 
   /**
@@ -90,24 +96,59 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   /**
-   * Listens on the specified port for incoming connections.
+   * Create a new registry and bind the Server on a specific port in
    *
    * @param port the port to listen on
    * @throws RemoteException if a remote error occurs
    */
-  protected void listenOnPort(int port) throws RemoteException {
-    LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
+  protected void bindGameOnPort(int port) throws RemoteException {
+    this.registry = LocateRegistry.createRegistry(port);
+    registry.rebind("RiscGameServer", this);
     out.println("RiscGameServer is ready to accept connections");
+  }
+
+  /**
+   * Unbind the Server from registry.
+   *
+   * @throws RemoteException   if a remote error occurs
+   * @throws NotBoundException
+   */
+  protected void unbindGame() throws RemoteException, NotBoundException {
+    registry.unbind("RiscGameServer");
+    out.println("RiscGameServer is Down.");
+  }
+
+  /**
+   * Setup count numbers for each turn.
+   * 
+   * @param numInGame the number of in-game clients
+   */
+  protected void setupCountDownLatches(int numInGame) {
+    this.commitSignal = new CountDownLatch(numInGame);
+    this.returnSignal = new CountDownLatch(1);
   }
 
   /**
    * Starts the game server on the specified port.
    *
-   * @param port the port to listen on
-   * @throws RemoteException if a remote error occurs
+   * @throws RemoteException      if a remote error occurs
+   * @throws InterruptedException
+   * @throws NotBoundException
    */
-  public void start(int port) throws RemoteException {
-    listenOnPort(port);
+  public void start() throws RemoteException, InterruptedException, NotBoundException {
+    while (true) {
+      commitSignal.await();
+      // do all combats here
+      removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
+      if (isGameOver()) {
+        doEndGame();
+        break;
+      } else {
+        notifyAllWatchersDisplay();
+      }
+      returnSignal.countDown();
+      setupCountDownLatches(inGameClients.size());
+    }
   }
 
   @Override
@@ -125,17 +166,17 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   @Override
-  public GameMap getGameMap() {
+  public synchronized GameMap getGameMap() {
     return map;
   }
 
   @Override
-  public Player getSelfStatus(RemoteClient client) throws RemoteException {
+  public synchronized Player getSelfStatus(RemoteClient client) throws RemoteException {
     return inGameClients.get(client);
   }
 
   @Override
-  public int getInitUints() throws RemoteException {
+  public synchronized int getInitUints() throws RemoteException {
     return initialUnit;
   }
 
@@ -187,34 +228,15 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     return response;
   }
 
-  /**
-   * Checks the network connections to all uncommitted in-game Clients.
-   * If an in-game Client is disconnected, the game will exit.
-   * 
-   * @throws RemoteException if a remote error occurs
-   */
-  void checkConnectionToUnCommittedClients(Set<RemoteClient> readySet) throws RemoteException {
-    for (RemoteClient c : inGameClients.keySet()) {
-      if (!readySet.contains(c)) {
-        c.isAlive();
-      }
-    }
-  }
-
-  /**
-   * Removes any players who have lost from in-game set into watcher set.
-   */
-  void removeLostPlayer() {
-    for (RemoteClient c : inGameClients.keySet()) {
-      if (inGameClients.get(c).isLose()) {
-        watchingClients.add(c);
-        inGameClients.remove(c);
-      }
-    }
+  @Override
+  public void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException {
+    pingInGameClients();
+    commitSignal.countDown();
+    returnSignal.await();
   }
 
   @Override
-  public boolean isGameOver() throws RemoteException {
+  public synchronized boolean isGameOver() throws RemoteException {
     return (inGameClients.size() == 1) ? true : false;
   }
 
@@ -236,6 +258,30 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   /**
+   * Checks the network connections to all in-game Clients.
+   * If an in-game Client is disconnected, the game will exit.
+   * 
+   * @throws RemoteException if a remote error occurs
+   */
+  void pingInGameClients() throws RemoteException {
+    for (RemoteClient c : inGameClients.keySet()) {
+      c.ping();
+    }
+  }
+
+  /**
+   * Removes any players who have lost from in-game set into watcher set.
+   */
+  void removeLostPlayer() {
+    for (RemoteClient c : inGameClients.keySet()) {
+      if (inGameClients.get(c).isLose()) {
+        watchingClients.add(c);
+        inGameClients.remove(c);
+      }
+    }
+  }
+
+  /**
    * Notifies all watching Clients of the current state of the game.
    */
   void notifyAllWatchersDisplay() {
@@ -248,7 +294,13 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
   }
 
-  void doEndGame() throws RemoteException {
+  /**
+   * End the game.
+   * 
+   * @throws RemoteException   if a remote error occurs
+   * @throws NotBoundException
+   */
+  void doEndGame() throws RemoteException, NotBoundException {
     for (RemoteClient winner : inGameClients.keySet()) {
       winner.doDisplay(map);
       winner.doDisplay("You Win!");
@@ -263,25 +315,6 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     }
     inGameClients.clear();
     watchingClients.clear();
-  }
-
-  @Override
-  public synchronized void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException {
-    readyClients.add(client);
-    checkConnectionToUnCommittedClients(readyClients);
-    if (readyClients.size() == inGameClients.keySet().size()) {
-      // do all combats here
-      notifyAll(); // wake all waiting threads and let inGameClients continue run.
-      removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
-      if (isGameOver()) {
-        doEndGame();
-      } else {
-        notifyAllWatchersDisplay();
-      }
-    }
-    while (readyClients.size() < inGameClients.keySet().size()) {
-      wait();
-    }
-    readyClients.clear();
+    unbindGame();
   }
 }

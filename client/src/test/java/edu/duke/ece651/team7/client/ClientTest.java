@@ -737,11 +737,18 @@ public class ClientTest {
     }
 
     @Test
-    public void test_isAlive() throws RemoteException, NotBoundException {
+    public void test_ping() throws RemoteException, NotBoundException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         RemoteServer mockServer = mock(RemoteServer.class);
-        Client client = createMockedClient(mockServer, "", bytes);
-        assertTrue(client.isAlive());
+        Client localClient = createMockedClient(mockServer, "", bytes);
+        assertDoesNotThrow(() -> localClient.ping());
+
+        RemoteClient aliveClient = mock(RemoteClient.class);
+        RemoteClient lostClient = mock(RemoteClient.class);
+        doNothing().when(aliveClient).ping();
+        doThrow(RemoteException.class).when(lostClient).ping();
+        assertDoesNotThrow(() -> aliveClient.ping());
+        assertThrows(RemoteException.class, () -> lostClient.ping());
     }
 
     @Test

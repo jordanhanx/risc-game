@@ -8,9 +8,13 @@ import edu.duke.ece651.team7.shared.*;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +23,7 @@ public class ServerTest {
   public static Server createServer(OutputStream bytes, int numPlayers, int initUnits, GameMap mockMap,
       OrderExecuter mockOX) throws RemoteException {
     PrintStream output = new PrintStream(bytes, true);
-    Server server = new Server(output, numPlayers, initUnits) {
+    Server server = new Server(output, 0, numPlayers, initUnits) {
       @Override
       protected void initGameMap() {
         this.map = mockMap;
@@ -28,25 +32,30 @@ public class ServerTest {
       }
 
       @Override
-      protected void listenOnPort(int port) throws RemoteException {
-        // LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
+      protected void bindGameOnPort(int port) throws RemoteException {
+        // this.registry = LocateRegistry.createRegistry(port);
+        // registry.rebind("RiscGameServer", this);
         out.println("RiscGameServer is ready to accept connections");
+      }
+
+      @Override
+      protected void unbindGame() throws RemoteException, NotBoundException {
+        // registry.unbind("RiscGameServer");
+        out.println("RiscGameServer is Down.");
       }
     };
     return server;
   }
 
   public static Server createMockedServer(OutputStream bytes, int numPlayers, int initUnits, GameMap mockMap,
-      OrderExecuter mockOX, ConcurrentHashMap<RemoteClient, Player> mockInGameClients,
-      HashSet<RemoteClient> mockReadyClients,
-      HashSet<RemoteClient> mockWatchingClients)
+      OrderExecuter mockOX, Map<RemoteClient, Player> mockInGameClients,
+      Set<RemoteClient> mockWatchingClients)
       throws RemoteException {
     PrintStream output = new PrintStream(bytes, true);
-    Server server = new Server(output, numPlayers, initUnits) {
+    Server server = new Server(output, 0, numPlayers, initUnits) {
       @Override
       protected void initClientsSet() {
         this.inGameClients = mockInGameClients;
-        this.readyClients = mockReadyClients;
         this.watchingClients = mockWatchingClients;
       }
 
@@ -58,21 +67,27 @@ public class ServerTest {
       }
 
       @Override
-      protected void listenOnPort(int port) throws RemoteException {
-        // LocateRegistry.createRegistry(port).rebind("RiscGameServer", this);
+      protected void bindGameOnPort(int port) throws RemoteException {
+        // this.registry = LocateRegistry.createRegistry(port);
+        // registry.rebind("RiscGameServer", this);
         out.println("RiscGameServer is ready to accept connections");
+      }
+
+      @Override
+      protected void unbindGame() throws RemoteException, NotBoundException {
+        // registry.unbind("RiscGameServer");
+        out.println("RiscGameServer is Down.");
       }
     };
     return server;
   }
 
   @Test
-  public void test_constructor_start() throws RemoteException {
+  public void test_constructor() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     Server server = createServer(bytes, 3, 20, mockMap, mockOX);
-    assertDoesNotThrow(() -> server.start(8000));
     StringBuilder outputs = new StringBuilder();
     outputs.append("GameMap initialized\n");
     outputs.append("RiscGameServer is ready to accept connections\n");
@@ -90,9 +105,8 @@ public class ServerTest {
     RemoteClient cRed = mock(RemoteClient.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 2, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 2, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     StringBuilder outputs = new StringBuilder();
     outputs.append("Player Blue joined game. (1/2)\n");
@@ -128,9 +142,8 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     inGameClients.put(cBlue, pBlue);
     assertEquals(pBlue, server.getSelfStatus(cBlue));
@@ -153,9 +166,8 @@ public class ServerTest {
     RemoteClient cBlue = mock(RemoteClient.class);
     Player pBlue = mock(Player.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     inGameClients.put(cBlue, pBlue);
     assertEquals("To be completed", server.tryPickTerritoryGroupByName(cBlue, "GroupA"));
   }
@@ -170,9 +182,8 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     // Setup mockMap
     Territory tMordor = mock(Territory.class);
@@ -242,7 +253,7 @@ public class ServerTest {
   }
 
   @Test
-  public void test_checkConnectionToClients() throws RemoteException {
+  public void test_pingInGameClients() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -251,17 +262,12 @@ public class ServerTest {
     Server server = createServer(bytes, 2, 20, mockMap, mockOX);
 
     // Setup mockClient
-    when(cBlue.isAlive()).thenReturn(true);
-    when(cGreen.isAlive()).thenThrow(RemoteException.class);
-    HashSet<RemoteClient> readySet = new HashSet<RemoteClient>() {
-      {
-        add(cBlue);
-      }
-    };
+    doNothing().when(cBlue).ping();
+    doThrow(RemoteException.class).when(cGreen).ping();
     // Test
     assertEquals(null, server.tryRegisterClient(cBlue, "Blue"));
     assertEquals(null, server.tryRegisterClient(cGreen, "Green"));
-    assertThrows(RemoteException.class, () -> server.checkConnectionToUnCommittedClients(readySet));
+    assertThrows(RemoteException.class, () -> server.pingInGameClients());
   }
 
   @Test
@@ -274,22 +280,22 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     // Setup mockPlayer
     when(pBlue.isLose()).thenReturn(false);
     when(pGreen.isLose()).thenReturn(true);
     // Replace real Player obj with mockPlayer
     inGameClients.put(cBlue, pBlue);
     inGameClients.put(cGreen, pGreen);
+    // before remove
     assertEquals(2, inGameClients.size());
     assertTrue(inGameClients.containsKey(cBlue));
     assertTrue(inGameClients.containsKey(cGreen));
     assertTrue(watchingClients.isEmpty());
-
+    // do remove
     assertDoesNotThrow(() -> server.removeLostPlayer());
-
+    // after remove
     assertEquals(1, inGameClients.size());
     assertTrue(inGameClients.containsKey(cBlue));
     assertFalse(inGameClients.containsKey(cGreen));
@@ -310,9 +316,8 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     // Setup mockPlayer
     when(pBlue.isLose()).thenReturn(false);
@@ -339,9 +344,8 @@ public class ServerTest {
     RemoteClient cBlue = mock(RemoteClient.class);
     RemoteClient cGreen = mock(RemoteClient.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     // Setup mockClient
     doNothing().when(cBlue).doDisplay(any(GameMap.class));
@@ -371,9 +375,8 @@ public class ServerTest {
     RemoteClient cRed = mock(RemoteClient.class);
     Player pBlue = mock(Player.class);
     ConcurrentHashMap<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, readyClients, watchingClients);
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     inGameClients.put(cBlue, pBlue);
     watchingClients.add(cGreen);
@@ -393,22 +396,5 @@ public class ServerTest {
 
   @Test
   public void test_doCommitOrder() throws RemoteException, InterruptedException {
-    // ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    // GameMap mockMap = mock(GameMap.class);
-    // OrderExecuter mockOX = mock(OrderExecuter.class);
-    // RemoteClient cBlue = mock(RemoteClient.class);
-    // RemoteClient cGreen = mock(RemoteClient.class);
-    // // RemoteClient cRed = mock(RemoteClient.class);
-    // Player pBlue = mock(Player.class);
-    // Player pGreen = mock(Player.class);
-    // ConcurrentHashMap<RemoteClient, Player> inGameClients = new
-    // ConcurrentHashMap<RemoteClient, Player>();
-    // HashSet<RemoteClient> readyClients = new HashSet<RemoteClient>();
-    // HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
-    // Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX,
-    // inGameClients, readyClients, watchingClients);
-
-    // inGameClients.put(cBlue, pBlue);
-    // inGameClients.put(cGreen, pGreen);
   }
 }

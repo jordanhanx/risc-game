@@ -230,8 +230,7 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   }
 
   @Override
-  public boolean isAlive() throws RemoteException {
-    return true;
+  public void ping() throws RemoteException {
   }
 
   @Override
