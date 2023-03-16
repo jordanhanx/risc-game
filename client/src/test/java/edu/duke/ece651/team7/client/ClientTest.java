@@ -37,7 +37,7 @@ public class ClientTest {
     public void test_constructor() throws RemoteException, NotBoundException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         RemoteServer mockServer = mock(RemoteServer.class);
-        createMockedClient(mockServer, "Red\nGreen\nBlue\n\n", bytes);
+        createMockedClient(mockServer, "", bytes);
         assertEquals("Connected to MockHost:0 successfully.\n", bytes.toString());
     }
 
@@ -66,42 +66,31 @@ public class ClientTest {
 
     @Test
     public void test_registerPlayer() throws RemoteException, NotBoundException, InterruptedException, IOException {
+        StringBuilder inputs = new StringBuilder();
+        inputs.append("Blue\n");
+        inputs.append("Green\n");
+        StringBuilder outputs = new StringBuilder();
+        outputs.append("Please name your Player:\n");
+        outputs.append("Failed to register: Player Blue already exists\n");
+        outputs.append("Please name your Player:\n");
+        outputs.append("Joined a RiskGame as Player Green\n");
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         RemoteServer mockServer = mock(RemoteServer.class);
-        Client clientA = createMockedClient(mockServer, "Green\nGreen", bytes);
-        Client clientB = createMockedClient(mockServer, "Blue", bytes);
-        Client clientC = createMockedClient(mockServer, "Blue\nRed", bytes);
-        Client clientD = createMockedClient(mockServer, "Cyan", bytes);
-        bytes.reset();
-        when(mockServer.tryRegisterClient(clientA, "Green")).thenReturn(null, "You has already joined.");
-        when(mockServer.tryRegisterClient(clientB, "Blue")).thenReturn(null);
-        when(mockServer.tryRegisterClient(clientC, "Blue")).thenReturn("Player Blue has existed.");
-        when(mockServer.tryRegisterClient(clientC, "Red")).thenReturn(null);
-        when(mockServer.tryRegisterClient(clientD, "Cyan")).thenReturn("The game already has enough players");
+        Client client = createMockedClient(mockServer, inputs.toString(), bytes);
 
-        assertDoesNotThrow(() -> clientA.registerPlayer());
-        assertEquals("Please name your Player:\nJoined a RiskGame as Player: Green\n", bytes.toString());
-        assertThrows(IllegalArgumentException.class, () -> clientA.registerPlayer());
-        bytes.reset();
+        // Setup mockServer
+        when(mockServer.tryRegisterClient(client, "Blue")).thenReturn("Player Blue already exists");
+        when(mockServer.tryRegisterClient(client, "Green")).thenReturn(null);
 
-        assertDoesNotThrow(() -> clientB.registerPlayer());
-        assertEquals("Please name your Player:\nJoined a RiskGame as Player: Blue\n", bytes.toString());
+        // Test
         bytes.reset();
+        assertDoesNotThrow(() -> client.registerPlayer());
+        assertEquals(outputs.toString(), bytes.toString());
 
-        assertThrows(IllegalArgumentException.class, () -> clientC.registerPlayer());
-        bytes.reset();
-        assertDoesNotThrow(() -> clientC.registerPlayer());
-        assertEquals("Please name your Player:\nJoined a RiskGame as Player: Red\n", bytes.toString());
-        bytes.reset();
-
-        assertThrows(IllegalArgumentException.class, () -> clientD.registerPlayer());
-        bytes.reset();
-
-        verify(mockServer, atLeastOnce()).tryRegisterClient(clientA, "Green");
-        verify(mockServer, atLeastOnce()).tryRegisterClient(clientB, "Blue");
-        verify(mockServer, atLeastOnce()).tryRegisterClient(clientC, "Blue");
-        verify(mockServer, atLeastOnce()).tryRegisterClient(clientC, "Red");
-        verify(mockServer, atLeastOnce()).tryRegisterClient(clientD, "Cyan");
+        // Verify
+        verify(mockServer, times(1)).tryRegisterClient(client, "Blue");
+        verify(mockServer, times(1)).tryRegisterClient(client, "Green");
     }
 
     @Test
@@ -260,20 +249,71 @@ public class ClientTest {
     public void test_placeUnits() throws RemoteException, NotBoundException {
         StringBuilder inputs = new StringBuilder();
         inputs.append("\n");
-        inputs.append("100\n");
-        inputs.append("19\n");
-        inputs.append("1\n");
+        inputs.append("Gondor all\n");
+        inputs.append("Gondor 16\n");
+        inputs.append("Mordor 2\n");
+        inputs.append("Hogwarts 1\n");
+        inputs.append("Mordor 2\n");
+        inputs.append("Hogwarts 1\n");
         StringBuilder outputs = new StringBuilder();
-        outputs.append("How many units do you place on Gondor ? (remaining 20 units)\n");
-        outputs.append("Error: For input string: \"\"\n");
-        outputs.append("How many units do you place on Gondor ? (remaining 20 units)\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append("  0 units in Gondor (next to: Mordor)\n");
+        outputs.append("  0 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("20 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Invalid input: \n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append("  0 units in Gondor (next to: Mordor)\n");
+        outputs.append("  0 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("20 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Invalid input: Gondor all\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append("  0 units in Gondor (next to: Mordor)\n");
+        outputs.append("  0 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("20 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append(" 16 units in Gondor (next to: Mordor)\n");
+        outputs.append("  0 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("4 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append(" 16 units in Gondor (next to: Mordor)\n");
+        outputs.append("  2 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("2 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append(" 16 units in Gondor (next to: Mordor)\n");
+        outputs.append("  2 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  1 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("1 units remaining, please input: <Territory> <units>\n");
         outputs.append("Invalid input: remaining units is insufficient\n");
-        outputs.append("How many units do you place on Gondor ? (remaining 20 units)\n");
-        outputs.append("How many units do you place on Mordor ? (remaining 1 units)\n");
+        outputs.append("Red player:\n");
+        outputs.append("-----------\n");
+        outputs.append(" 16 units in Gondor (next to: Mordor)\n");
+        outputs.append("  2 units in Mordor (next to: Gondor, Hogwarts)\n");
+        outputs.append("  1 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("1 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Placement finished.\n");
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         RemoteServer mockServer = mock(RemoteServer.class);
         Player pRed = mock(Player.class);
+        GameMap mockMap = mock(GameMap.class);
         Territory tGondor = mock(Territory.class);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
@@ -284,24 +324,47 @@ public class ClientTest {
         when(tGondor.getName()).thenReturn("Gondor");
         when(tMordor.getName()).thenReturn("Mordor");
         when(tHogwarts.getName()).thenReturn("Hogwarts");
+        when(tGondor.getUnits()).thenReturn(0, 0, 0, 16);
+        when(tMordor.getUnits()).thenReturn(0, 0, 0, 0, 2);
+        when(tHogwarts.getUnits()).thenReturn(0, 0, 0, 0, 0, 1);
+        LinkedList<Territory> tGondorNeighbors = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+            }
+        };
+        LinkedList<Territory> tMordorNeighbors = new LinkedList<Territory>() {
+            {
+                add(tGondor);
+                add(tHogwarts);
+            }
+        };
+        LinkedList<Territory> tHogwartsNeighbors = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+            }
+        };
+        when(mockMap.getNeighbors(tGondor.getName())).thenReturn(tGondorNeighbors);
+        when(mockMap.getNeighbors(tMordor.getName())).thenReturn(tMordorNeighbors);
+        when(mockMap.getNeighbors(tHogwarts.getName())).thenReturn(tHogwartsNeighbors);
 
         // Setup Player
         when(pRed.getName()).thenReturn("Red");
-        LinkedList<Territory> predTerritories = new LinkedList<Territory>() {
+        LinkedList<Territory> pRedTerritories = new LinkedList<Territory>() {
             {
                 add(tGondor);
                 add(tMordor);
                 add(tHogwarts);
             }
         };
-        when(pRed.getTerritories()).thenReturn(predTerritories);
-        when(pRed.getTotalUnits()).thenReturn(0, 19, 20);
+        when(pRed.getTerritories()).thenReturn(pRedTerritories);
+        when(pRed.getTotalUnits()).thenReturn(0, 0, 0, 16, 18, 19, 19, 20);
         // Setup Server
+        when(mockServer.getGameMap()).thenReturn(mockMap);
         when(mockServer.getSelfStatus(client)).thenReturn(pRed);
         when(mockServer.getInitUints()).thenReturn(20);
-        when(mockServer.tryPlaceUnitsOn(client, "Gondor", 100)).thenReturn("remaining units is insufficient");
-        when(mockServer.tryPlaceUnitsOn(client, "Gondor", 19)).thenReturn(null);
-        when(mockServer.tryPlaceUnitsOn(client, "Mordor", 1)).thenReturn(null);
+        when(mockServer.tryPlaceUnitsOn(client, "Gondor", 16)).thenReturn(null);
+        when(mockServer.tryPlaceUnitsOn(client, "Mordor", 2)).thenReturn(null, "remaining units is insufficient");
+        when(mockServer.tryPlaceUnitsOn(client, "Hogwarts", 1)).thenReturn(null);
 
         // Test
         bytes.reset();
@@ -309,11 +372,11 @@ public class ClientTest {
         assertEquals(outputs.toString(), bytes.toString());
 
         // Verify
-        verify(mockServer, times(1)).tryPlaceUnitsOn(client, "Gondor", 100);
-        verify(mockServer, times(1)).tryPlaceUnitsOn(client, "Gondor", 19);
-        verify(mockServer, times(1)).tryPlaceUnitsOn(client, "Mordor", 1);
-        verify(mockServer, times(3)).getInitUints();
-        verify(pRed, times(3)).getTotalUnits();
+        verify(mockServer, times(1)).tryPlaceUnitsOn(client, "Gondor", 16);
+        verify(mockServer, times(2)).tryPlaceUnitsOn(client, "Mordor", 2);
+        verify(mockServer, times(2)).tryPlaceUnitsOn(client, "Hogwarts", 1);
+        verify(mockServer, times(8)).getInitUints();
+        verify(pRed, times(8)).getTotalUnits();
     }
 
     @Test
@@ -324,13 +387,13 @@ public class ClientTest {
         RemoteServer mockServer = mock(RemoteServer.class);
 
         Client client = createMockedClient(mockServer, "", bytes);
-
+        // Setup mockServer
         doNothing().when(mockServer).doCommitOrder(client);
-
+        // Test
         bytes.reset();
         assertDoesNotThrow(() -> client.requestContinueGame());
         assertEquals(outputs.toString(), bytes.toString());
-
+        // Verify
         verify(mockServer, times(1)).doCommitOrder(client);
     }
 
@@ -381,10 +444,13 @@ public class ClientTest {
         outputs.append(" 14 units in Mordor (next to: Hogwarts)\n");
         outputs.append("  3 units in Hogwarts (next to: Mordor)\n");
         outputs.append("\n");
-        outputs.append("You are the Red player, what would you like to do?\n(M)ove\n(A)ttack\n(D)one\n");
+        outputs.append(
+                "You are the Red player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
         outputs.append("Invalid input: undefined order\n");
-        outputs.append("You are the Red player, what would you like to do?\n(M)ove\n(A)ttack\n(D)one\n");
-        outputs.append("You are the Red player, what would you like to do?\n(M)ove\n(A)ttack\n(D)one\n");
+        outputs.append(
+                "You are the Red player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append(
+                "You are the Red player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
         outputs.append("Waiting for other players...\n");
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -430,164 +496,306 @@ public class ClientTest {
         when(tMordor.getUnits()).thenReturn(14);
         when(tHogwarts.getUnits()).thenReturn(3);
 
-        // Test begin
+        // Tes
         bytes.reset();
         assertDoesNotThrow(() -> client.playOneTurn());
         assertEquals(outputs.toString(), bytes.toString());
 
+        // Verify
         verify(mockServer, atLeastOnce()).getGameMap();
         verify(mockServer, atLeastOnce()).getSelfStatus(client);
         verify(mockServer, atLeastOnce()).tryMoveOrder(client, "Mordor", "Hogwarts", 5);
         verify(mockServer, atLeastOnce()).doCommitOrder(client);
-
-        verify(mockPlayer, atLeastOnce()).getName();
-        verify(mockPlayer, atLeastOnce()).getTerritories();
-
-        verify(mockMap, atLeastOnce()).getTerritories();
-        verify(mockMap, atLeastOnce()).getNeighbors("Mordor");
-        verify(mockMap, atLeastOnce()).getNeighbors("Hogwarts");
-
-        verify(tMordor, atLeastOnce()).getUnits();
-        verify(tHogwarts, atLeastOnce()).getUnits();
-        verify(tMordor, atLeastOnce()).getName();
-        verify(tHogwarts, atLeastOnce()).getName();
-        verify(tMordor, atLeastOnce()).getOwner();
-        verify(tHogwarts, atLeastOnce()).getOwner();
-
     }
 
     @Test
-    public void test_checkIfGameOver() throws RemoteException, NotBoundException {
+    public void test_start_lose() throws RemoteException, NotBoundException, InterruptedException, IOException {
+        StringBuilder inputs = new StringBuilder();
+        inputs.append("Green\n");
+        inputs.append("GroupA\n");
+        inputs.append("Hogwarts 20\n");
+        inputs.append("Move Hogwarts Mordor 5\n");
+        inputs.append("D\n");
+        inputs.append("Attack Hogwarts Mordor 5\n");
+        inputs.append("D\n");
+        StringBuilder outputs = new StringBuilder();
+        outputs.append("Please name your Player:\n");
+        outputs.append("Joined a RiskGame as Player Green\n");
+        outputs.append("GroupA player:\n");
+        outputs.append("--------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("Please choose your Territory Group:\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("20 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Placement finished.\n");
+        outputs.append("Waiting for other players...\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append(" 20 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append("Waiting for other players...\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  5 units in Mordor (next to: Hogwarts)\n");
+        outputs.append(" 15 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append("Waiting for other players...\n");
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         RemoteServer mockServer = mock(RemoteServer.class);
-        Player mockPlayerA = mock(Player.class);
-        Player mockPlayerB = mock(Player.class);
-        Client clientA = createMockedClient(mockServer, "", bytes);
-        Client clientB = createMockedClient(mockServer, "", bytes);
+        GameMap mockMap = mock(GameMap.class);
+        Territory tMordor = mock(Territory.class);
+        Territory tHogwarts = mock(Territory.class);
+        Player groupA = mock(Player.class);
+        Player pGreen = mock(Player.class);
 
+        Client client = createMockedClient(mockServer, inputs.toString(), bytes);
+
+        // Setup mockMap
+        when(tMordor.getName()).thenReturn("Mordor");
+        when(tHogwarts.getName()).thenReturn("Hogwarts");
+        when(tMordor.getOwner()).thenReturn(groupA, pGreen);
+        when(tHogwarts.getOwner()).thenReturn(groupA, pGreen);
+        when(tMordor.getUnits()).thenReturn(0, 0, 0, 5);
+        when(tHogwarts.getUnits()).thenReturn(0, 0, 20, 15);
+        LinkedList<Territory> allTerritories = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+                add(tHogwarts);
+            }
+        };
+        when(mockMap.getTerritories()).thenReturn(allTerritories);
+        LinkedList<Territory> tMordorNeighbors = new LinkedList<Territory>() {
+            {
+                add(tHogwarts);
+            }
+        };
+        LinkedList<Territory> tHogwartsNeighbors = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+            }
+        };
+        when(mockMap.getNeighbors("Mordor")).thenReturn(tMordorNeighbors);
+        when(mockMap.getNeighbors("Hogwarts")).thenReturn(tHogwartsNeighbors);
+
+        // Setup mockPlayer
+        when(groupA.getName()).thenReturn("GroupA");
+        when(pGreen.getName()).thenReturn("Green");
+        when(groupA.getTerritories()).thenReturn(allTerritories);
+        when(pGreen.getTerritories()).thenReturn(allTerritories);
+        when(pGreen.getTotalUnits()).thenReturn(0, 20);
+        when(pGreen.isLose()).thenReturn(false, false, true);
+
+        // Setup mockServer
+        when(mockServer.tryRegisterClient(client, "Green")).thenReturn(null);
+        when(mockServer.getGameMap()).thenReturn(mockMap);
+        when(mockServer.getSelfStatus(client)).thenReturn(pGreen);
+        when(mockServer.getInitUints()).thenReturn(20);
+        when(mockServer.isGameOver()).thenReturn(false);
+
+        // Test
         bytes.reset();
-        when(mockPlayerA.getName()).thenReturn("A");
-        when(mockPlayerB.getName()).thenReturn("B");
-        when(mockServer.isGameOver()).thenReturn(false, true);
-        when(mockServer.getSelfStatus(clientA)).thenReturn(mockPlayerA);
-        when(mockServer.getSelfStatus(clientB)).thenReturn(mockPlayerB);
-        when(mockServer.getWinner()).thenReturn(mockPlayerB);
-        assertFalse(clientA.checkIfGameOver());
-        assertTrue(clientA.checkIfGameOver());
-        assertEquals("Game over! B is the winner.\n", bytes.toString());
-        bytes.reset();
-        assertTrue(clientB.checkIfGameOver());
-        assertEquals("Congrats! YOU WIN!\n", bytes.toString());
+        assertDoesNotThrow(() -> client.start());
+        assertEquals(outputs.toString(), bytes.toString());
 
-        verify(mockPlayerA, never()).getName();
-        verify(mockPlayerB, atLeastOnce()).getName();
-
-        verify(mockServer, atLeastOnce()).isGameOver();
-        verify(mockServer, atLeastOnce()).getSelfStatus(clientA);
-        verify(mockServer, atLeastOnce()).getSelfStatus(clientB);
-        verify(mockServer, atLeastOnce()).getWinner();
+        // Verify
+        verify(mockServer, times(1)).tryRegisterClient(client, "Green");
+        verify(mockServer, atLeastOnce()).getGameMap();
+        verify(mockServer, atLeastOnce()).getSelfStatus(client);
+        verify(mockServer, atLeastOnce()).getInitUints();
+        verify(mockServer, times(2)).isGameOver();
+        verify(pGreen, times(3)).isLose();
     }
 
-    // @Test
-    // public void test_start() throws RemoteException, NotBoundException,
-    // InterruptedException, IOException {
-    // StringBuilder inputs = new StringBuilder();
-    // inputs.append("Red\n");
-    // inputs.append("evom Mordor Hogwarts 5\n");
-    // inputs.append("Move Mordor Hogwarts 5\n");
-    // inputs.append("dOnE\n");
-    // StringBuilder outputs = new StringBuilder();
-    // outputs.append("Please name your Player:\n");
-    // outputs.append("Joined a RiskGame as Player: Red\n");
-    // outputs.append("Red player:\n");
-    // outputs.append("-----------\n");
-    // outputs.append(" 14 units in Mordor (next to: Hogwarts)\n");
-    // outputs.append(" 3 units in Hogwarts (next to: Mordor)\n");
-    // outputs.append("\n");
-    // outputs.append("You are the Red player, what would you like to
-    // do?\n(M)ove\n(A)ttack\n(D)one\n");
-    // outputs.append("Invalid input: undefined order\n");
-    // outputs.append("You are the Red player, what would you like to
-    // do?\n(M)ove\n(A)ttack\n(D)one\n");
-    // outputs.append("You are the Red player, what would you like to
-    // do?\n(M)ove\n(A)ttack\n(D)one\n");
-    // outputs.append("Waiting for other players...\n");
-    // outputs.append("Congrats! YOU WIN!\n");
+    @Test
+    public void test_start_win() throws RemoteException, NotBoundException, InterruptedException, IOException {
+        StringBuilder inputs = new StringBuilder();
+        inputs.append("Green\n");
+        inputs.append("GroupA\n");
+        inputs.append("Hogwarts 20\n");
+        inputs.append("Move Hogwarts Mordor 5\n");
+        inputs.append("D\n");
+        inputs.append("Attack Hogwarts Mordor 5\n");
+        inputs.append("D\n");
+        StringBuilder outputs = new StringBuilder();
+        outputs.append("Please name your Player:\n");
+        outputs.append("Joined a RiskGame as Player Green\n");
+        outputs.append("GroupA player:\n");
+        outputs.append("--------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("Please choose your Territory Group:\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append("20 units remaining, please input: <Territory> <units>\n");
+        outputs.append("Placement finished.\n");
+        outputs.append("Waiting for other players...\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append(" 20 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append("Waiting for other players...\n");
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  5 units in Mordor (next to: Hogwarts)\n");
+        outputs.append(" 15 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append(
+                "You are the Green player, what would you like to do?\n(M)ove <from> <to> <units>\n(A)ttack <from> <to> <units>\n(D)one\n");
+        outputs.append("Waiting for other players...\n");
 
-    // ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    // RemoteServer mockServer = mock(RemoteServer.class);
-    // Player mockPlayer = mock(Player.class);
-    // GameMap mockMap = mock(GameMap.class);
-    // Territory tHogwarts = mock(Territory.class);
-    // Territory tMordor = mock(Territory.class);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        RemoteServer mockServer = mock(RemoteServer.class);
+        GameMap mockMap = mock(GameMap.class);
+        Territory tMordor = mock(Territory.class);
+        Territory tHogwarts = mock(Territory.class);
+        Player groupA = mock(Player.class);
+        Player pGreen = mock(Player.class);
 
-    // Client client = createMockedClient(mockServer, inputs.toString(), bytes);
+        Client client = createMockedClient(mockServer, inputs.toString(), bytes);
 
-    // // Setup mockServer
-    // when(mockServer.getGameMap()).thenReturn(mockMap);
-    // when(mockPlayer.getName()).thenReturn("Red");
-    // when(mockServer.tryRegisterClient(client, "Red")).thenReturn(null);
-    // when(mockServer.isGameOver()).thenReturn(false, true);
-    // when(mockServer.getWinner()).thenReturn(mockPlayer);
-    // when(mockServer.getSelfStatus(client)).thenReturn(mockPlayer);
-    // when(mockServer.tryMoveOrder(client, "Mordor", "Hogwarts",
-    // 5)).thenReturn(null);
-    // doNothing().when(mockServer).doCommitOrder(client);
+        // Setup mockMap
+        when(tMordor.getName()).thenReturn("Mordor");
+        when(tHogwarts.getName()).thenReturn("Hogwarts");
+        when(tMordor.getOwner()).thenReturn(groupA, pGreen);
+        when(tHogwarts.getOwner()).thenReturn(groupA, pGreen);
+        when(tMordor.getUnits()).thenReturn(0, 0, 0, 5);
+        when(tHogwarts.getUnits()).thenReturn(0, 0, 20, 15);
+        LinkedList<Territory> allTerritories = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+                add(tHogwarts);
+            }
+        };
+        when(mockMap.getTerritories()).thenReturn(allTerritories);
+        LinkedList<Territory> tMordorNeighbors = new LinkedList<Territory>() {
+            {
+                add(tHogwarts);
+            }
+        };
+        LinkedList<Territory> tHogwartsNeighbors = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+            }
+        };
+        when(mockMap.getNeighbors("Mordor")).thenReturn(tMordorNeighbors);
+        when(mockMap.getNeighbors("Hogwarts")).thenReturn(tHogwartsNeighbors);
 
-    // // Setup mockGameMap
-    // when(tMordor.getName()).thenReturn("Mordor");
-    // when(tHogwarts.getName()).thenReturn("Hogwarts");
-    // when(tMordor.getOwner()).thenReturn(mockPlayer);
-    // when(tHogwarts.getOwner()).thenReturn(mockPlayer);
-    // LinkedList<Territory> redTerritories = new LinkedList<Territory>() {
-    // {
-    // add(tMordor);
-    // add(tHogwarts);
-    // }
-    // };
-    // when(mockMap.getTerritories()).thenReturn(redTerritories);
-    // when(mockPlayer.getTerritories()).thenReturn(redTerritories);
-    // LinkedList<Territory> tMordorNeighbors = new LinkedList<Territory>() {
-    // {
-    // add(tHogwarts);
-    // }
-    // };
-    // LinkedList<Territory> tHogwartsNeighbors = new LinkedList<Territory>() {
-    // {
-    // add(tMordor);
-    // }
-    // };
-    // when(mockMap.getNeighbors("Mordor")).thenReturn(tMordorNeighbors);
-    // when(mockMap.getNeighbors("Hogwarts")).thenReturn(tHogwartsNeighbors);
-    // when(tMordor.getUnits()).thenReturn(14);
-    // when(tHogwarts.getUnits()).thenReturn(3);
+        // Setup mockPlayer
+        when(groupA.getName()).thenReturn("GroupA");
+        when(pGreen.getName()).thenReturn("Green");
+        when(groupA.getTerritories()).thenReturn(allTerritories);
+        when(pGreen.getTerritories()).thenReturn(allTerritories);
+        when(pGreen.getTotalUnits()).thenReturn(0, 20);
+        when(pGreen.isLose()).thenReturn(false, false, false);
 
-    // bytes.reset();
-    // assertDoesNotThrow(() -> client.start());
-    // assertEquals(outputs.toString(), bytes.toString());
+        // Setup mockServer
+        when(mockServer.tryRegisterClient(client, "Green")).thenReturn(null);
+        when(mockServer.getGameMap()).thenReturn(mockMap);
+        when(mockServer.getSelfStatus(client)).thenReturn(pGreen);
+        when(mockServer.getInitUints()).thenReturn(20);
+        when(mockServer.isGameOver()).thenReturn(false, false, true);
 
-    // verify(mockServer, atLeastOnce()).tryRegisterClient(client, "Red");
-    // verify(mockServer, atLeastOnce()).isGameOver();
-    // verify(mockServer, atLeastOnce()).getGameMap();
-    // verify(mockServer, atLeastOnce()).getWinner();
-    // verify(mockServer, atLeastOnce()).getSelfStatus(client);
-    // verify(mockServer, atLeastOnce()).tryMoveOrder(client, "Mordor", "Hogwarts",
-    // 5);
-    // verify(mockServer, atLeastOnce()).doCommitOrder(client);
+        // Test
+        bytes.reset();
+        assertDoesNotThrow(() -> client.start());
+        assertEquals(outputs.toString(), bytes.toString());
 
-    // verify(mockPlayer, atLeastOnce()).getName();
-    // verify(mockPlayer, atLeastOnce()).getTerritories();
+        // Verify
+        verify(mockServer, times(1)).tryRegisterClient(client, "Green");
+        verify(mockServer, atLeastOnce()).getGameMap();
+        verify(mockServer, atLeastOnce()).getSelfStatus(client);
+        verify(mockServer, atLeastOnce()).getInitUints();
+        verify(mockServer, times(3)).isGameOver();
+        verify(pGreen, times(3)).isLose();
+    }
 
-    // verify(mockMap, atLeastOnce()).getTerritories();
-    // verify(mockMap, atLeastOnce()).getNeighbors("Mordor");
-    // verify(mockMap, atLeastOnce()).getNeighbors("Hogwarts");
+    @Test
+    public void test_isAlive() throws RemoteException, NotBoundException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        RemoteServer mockServer = mock(RemoteServer.class);
+        Client client = createMockedClient(mockServer, "", bytes);
+        assertTrue(client.isAlive());
+    }
 
-    // verify(tMordor, atLeastOnce()).getUnits();
-    // verify(tHogwarts, atLeastOnce()).getUnits();
-    // verify(tMordor, atLeastOnce()).getName();
-    // verify(tHogwarts, atLeastOnce()).getName();
-    // verify(tMordor, atLeastOnce()).getOwner();
-    // verify(tHogwarts, atLeastOnce()).getOwner();
+    @Test
+    public void test_doDisplay() throws RemoteException, NotBoundException {
+        StringBuilder outputs = new StringBuilder();
+        outputs.append("Green player:\n");
+        outputs.append("-------------\n");
+        outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
+        outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
+        outputs.append("\n");
 
-    // }
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        RemoteServer mockServer = mock(RemoteServer.class);
+        GameMap mockMap = mock(GameMap.class);
+        Territory tMordor = mock(Territory.class);
+        Territory tHogwarts = mock(Territory.class);
+        Player pGreen = mock(Player.class);
+
+        Client client = createMockedClient(mockServer, "", bytes);
+
+        // Setup mockMap
+        when(tMordor.getName()).thenReturn("Mordor");
+        when(tHogwarts.getName()).thenReturn("Hogwarts");
+        when(tMordor.getOwner()).thenReturn(pGreen);
+        when(tHogwarts.getOwner()).thenReturn(pGreen);
+        when(tMordor.getUnits()).thenReturn(0);
+        when(tHogwarts.getUnits()).thenReturn(0);
+        LinkedList<Territory> allTerritories = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+                add(tHogwarts);
+            }
+        };
+        when(mockMap.getTerritories()).thenReturn(allTerritories);
+        LinkedList<Territory> tMordorNeighbors = new LinkedList<Territory>() {
+            {
+                add(tHogwarts);
+            }
+        };
+        LinkedList<Territory> tHogwartsNeighbors = new LinkedList<Territory>() {
+            {
+                add(tMordor);
+            }
+        };
+        when(mockMap.getNeighbors("Mordor")).thenReturn(tMordorNeighbors);
+        when(mockMap.getNeighbors("Hogwarts")).thenReturn(tHogwartsNeighbors);
+
+        // Setup mockPlayer
+        when(pGreen.getName()).thenReturn("Green");
+        when(pGreen.getTerritories()).thenReturn(allTerritories);
+
+        // Test
+        bytes.reset();
+        assertDoesNotThrow(() -> client.doDisplay(mockMap));
+        assertEquals(outputs.toString(), bytes.toString());
+    }
 }

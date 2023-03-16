@@ -35,24 +35,34 @@ public class MapTextView {
         for (Territory t : map.getTerritories()) {
             playerSet.add(t.getOwner());
         }
-        StringBuilder text = new StringBuilder("");
         for (Player p : playerSet) {
-            String playerDecl = p.getName() + " player:";
-            text.append(playerDecl + "\n");
-            text.append("-".repeat(playerDecl.length()) + "\n");
-            for (Territory t : p.getTerritories()) {
-                text.append(String.format("%3s", t.getUnits()) + " units in " + t.getName() +
-                        " (next to: ");
-                String sep = "";
-                for (Territory n : map.getNeighbors(t.getName())) {
-                    text.append(sep);
-                    text.append(n.getName());
-                    sep = ", ";
-                }
-                text.append(")\n");
-            }
-            text.append("\n");
+            display(map, p);
         }
+    }
+
+    /**
+     * Displays the collection of Territories owned by a Player as a text-based
+     *
+     * @param map    the unique GameMap
+     * @param player the displayed territories belonging to
+     */
+    public void display(GameMap map, Player p) {
+        StringBuilder text = new StringBuilder("");
+        String playerDecl = p.getName() + " player:";
+        text.append(playerDecl + "\n");
+        text.append("-".repeat(playerDecl.length()) + "\n");
+        for (Territory t : p.getTerritories()) {
+            text.append(String.format("%3s", t.getUnits()) + " units in " + t.getName() +
+                    " (next to: ");
+            String sep = "";
+            for (Territory n : map.getNeighbors(t.getName())) {
+                text.append(sep);
+                text.append(n.getName());
+                sep = ", ";
+            }
+            text.append(")\n");
+        }
+        text.append("\n");
         out.print(text.toString());
     }
 }

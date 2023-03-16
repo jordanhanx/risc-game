@@ -13,7 +13,6 @@ public class App {
         Client client = new Client(args[0], Integer.parseInt(args[1]),
             new BufferedReader(new InputStreamReader(System.in)), System.out);
         client.start();
-        // client.readUserInput("Testing");
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }
