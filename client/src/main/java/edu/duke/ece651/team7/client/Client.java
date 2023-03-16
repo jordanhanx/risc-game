@@ -240,6 +240,6 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
 
   @Override
   public void doDisplay(String msg) throws RemoteException {
-    out.println(msg);
+    view.display(msg);
   }
 }

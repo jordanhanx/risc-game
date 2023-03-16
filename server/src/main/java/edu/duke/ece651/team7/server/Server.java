@@ -241,23 +241,6 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   /**
-   * Find last in-game Client, the winner.
-   * 
-   * @return the last RemoteClient otherwise null.
-   * @throws RemoteException if a remote error occurs
-   */
-  RemoteClient getWinClient() throws RemoteException {
-    if (isGameOver()) {
-      for (RemoteClient c : inGameClients.keySet()) {
-        if (!inGameClients.get(c).isLose()) {
-          return c;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
    * Checks the network connections to all in-game Clients.
    * If an in-game Client is disconnected, the game will exit.
    * 
