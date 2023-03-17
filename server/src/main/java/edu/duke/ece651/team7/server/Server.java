@@ -124,6 +124,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
       commitSignal.await();
       /* do all combats here */
       removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
+      returnSignal.countDown(); // release all doCommit() remote invocations
       if (isGameOver()) {
         notifyAllClientsGameResult(); // End current game.
         initClientsSet(); // Prepare for next game.
@@ -131,7 +132,6 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
         setupCountDownLatches(numPlayers);
       } else {
         notifyAllWatchers();
-        returnSignal.countDown();
         setupCountDownLatches(inGameClients.size());
       }
     }
