@@ -125,12 +125,12 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
       /* do all combats here */
       removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
       if (isGameOver()) {
-        doEndGame(); // End current game.
+        notifyAllClientsGameResult(); // End current game.
         initClientsSet(); // Prepare for next game.
         initGameMap();
         setupCountDownLatches(numPlayers);
       } else {
-        notifyAllWatchersDisplay();
+        notifyAllWatchers();
         returnSignal.countDown();
         setupCountDownLatches(inGameClients.size());
       }
@@ -216,7 +216,6 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
 
   @Override
   public void doCommitOrder(RemoteClient client) throws RemoteException, InterruptedException {
-    pingInGameClients();
     commitSignal.countDown();
     returnSignal.await();
   }
@@ -228,7 +227,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
 
   /**
    * Checks the network connections to all in-game Clients.
-   * If an in-game Client is disconnected, the game will exit.
+   * If remote client is alive then do nothing,
+   * otherwise a RemoteException will be thrown
    * 
    * @throws RemoteException if a remote error occurs
    */
@@ -255,17 +255,15 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   /**
    * Notifies all watching Clients of the current state of the game.
    */
-  void notifyAllWatchersDisplay() {
-    HashSet<RemoteClient> forRemove = new HashSet<RemoteClient>();
+  void notifyAllWatchers() {
     for (RemoteClient watcher : watchingClients) {
       try {
         watcher.doDisplay(map);
       } catch (RemoteException e) {
-        forRemove.add(watcher);
+        /*
+         * RemoteException because the remote Client has disconnected, can be ignored
+         */
       }
-    }
-    for (RemoteClient c : forRemove) {
-      watchingClients.remove(c);
     }
   }
 
@@ -275,7 +273,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * @throws RemoteException   if a remote error occurs
    * @throws NotBoundException
    */
-  void doEndGame() throws RemoteException, NotBoundException {
+  void notifyAllClientsGameResult() throws RemoteException, NotBoundException {
+    /* Precondition: isGameOver() == true ,so the outer loop should be run once */
     for (RemoteClient winner : inGameClients.keySet()) {
       winner.doDisplay(map);
       winner.doDisplay("You Win!");
@@ -284,10 +283,11 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
           watcher.doDisplay(map);
           watcher.doDisplay("Winner is Player " + inGameClients.get(winner).getName());
         } catch (RemoteException e) {
+          /*
+           * RemoteException because the remote Client has disconnected, can be ignored
+           */
         }
       }
     }
-    inGameClients.clear();
-    watchingClients.clear();
   }
 }

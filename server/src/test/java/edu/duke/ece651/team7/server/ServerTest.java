@@ -300,8 +300,8 @@ public class ServerTest {
     // Test
     assertDoesNotThrow(() -> server.doCommitOrder(cBlue));
     // Verify
-    verify(cBlue, times(1)).ping();
-    verify(cGreen, times(1)).ping();
+    // verify(cBlue, times(1)).ping();
+    // verify(cGreen, times(1)).ping();
     verify(commitLatch, times(1)).countDown();
     verify(commitLatch, never()).await();
     verify(returnLatch, never()).countDown();
@@ -388,7 +388,7 @@ public class ServerTest {
   }
 
   @Test
-  public void test_notifyAllWatchersDisplay() throws RemoteException {
+  public void test_notifyAllWatchers() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -409,18 +409,18 @@ public class ServerTest {
     assertTrue(watchingClients.contains(cBlue));
     assertTrue(watchingClients.contains(cGreen));
     // notify
-    assertDoesNotThrow(() -> server.notifyAllWatchersDisplay());
+    assertDoesNotThrow(() -> server.notifyAllWatchers());
     // after notify
-    assertEquals(1, watchingClients.size());
+    assertEquals(2, watchingClients.size());
     assertTrue(watchingClients.contains(cBlue));
-    assertFalse(watchingClients.contains(cGreen));
+    assertTrue(watchingClients.contains(cGreen));
     // Verify
     verify(cBlue, times(1)).doDisplay(any(GameMap.class));
     verify(cGreen, times(1)).doDisplay(any(GameMap.class));
   }
 
   @Test
-  public void test_doEndGame() throws RemoteException {
+  public void test_notifyAllClientsGameResult() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -438,9 +438,7 @@ public class ServerTest {
     watchingClients.add(cRed);
     doThrow(RemoteException.class).when(cRed).doDisplay(anyString());
     // Test
-    assertDoesNotThrow(() -> server.doEndGame());
-    assertTrue(inGameClients.isEmpty());
-    assertTrue(watchingClients.isEmpty());
+    assertDoesNotThrow(() -> server.notifyAllClientsGameResult());
   }
 
   @Test
@@ -448,7 +446,6 @@ public class ServerTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
-    RemoteClient cBlue = mock(RemoteClient.class);
     Map<RemoteClient, Player> mockInGameClients = mock(HashMap.class);
 
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
