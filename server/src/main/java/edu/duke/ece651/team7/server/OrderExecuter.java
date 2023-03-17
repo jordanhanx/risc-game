@@ -12,6 +12,9 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class OrderExecuter {
+    /**
+     * @param CombatOrderPool stores the requested combats
+     */
     // private OrderRuleChecker checker;
     private GameMap map;
     private List<Combat> combatPool;
@@ -76,7 +79,7 @@ public class OrderExecuter {
     }
 
     /**
-     * resolve all combats saved in attackOrderPool and update Territory owner
+     * resolve all combats saved in combatOrderPool and update Territory owner
      */
     public void doAllCombats(){
         for(Combat c : combatPool){
