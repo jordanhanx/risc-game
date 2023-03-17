@@ -4,41 +4,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import edu.duke.ece651.team7.shared.Dice;
+import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class OrderExecuter {
     // private OrderRuleChecker checker;
-    private Map<Territory, ArrayList<CombatOrder> > attackOrderPool;
+    private GameMap map;
+    private List<Combat> combatPool;
 
     /**
      * 
-     * @param terris territories in the gamemap
+     * @param map the gameMap
      */
-    public OrderExecuter(Collection<Territory> terris){
-        attackOrderPool = new HashMap<Territory, ArrayList<CombatOrder> >();
-        for(Territory t: terris){
-            attackOrderPool.put(t, new ArrayList<CombatOrder>(Arrays.asList(new CombatOrder(t.getOwner(),t,t.getUnits()))));
-        }
+    public OrderExecuter(GameMap map){
+        this.map = map;
+        this.combatPool = new ArrayList<Combat>();
     }
 
-    public ArrayList<CombatOrder> getCombatsAt(Territory t){
-        return attackOrderPool.get(t);
+    public int getCombatsPoolSize(){
+        return combatPool.size();
     }
-
     /**
      * Execute one move order, move the unit from one territory to another
      * @param o order to execute
      * @return null if success, error message if not
+     * @throws IllegalArgumentException if the order is not valid
      */
-    public String doOneMove(MoveOrder o){
+    public void doOneMove(MoveOrder o) throws IllegalArgumentException{
         //need rule checker
         o.getSrc().decreaseUnits(o.getUnits());
         o.getDest().increaseUnits(o.getUnits());
-        return null;
     }
 
     /**
@@ -46,10 +45,10 @@ public class OrderExecuter {
      * @param o Player's order
      * @return if the combat exists, return the combat. if not return null.
      */
-    public CombatOrder isInAttackPool(AttackOrder o){
-        for(CombatOrder order: attackOrderPool.get(o.getDest())){
-            if (order.getPlayer().equals(o.getPlayer())){
-                return order;
+    public Combat isInCombatPool(Territory t){
+        for (Combat c : combatPool){
+            if(c.getBattlefield().equals(t)){
+                return c;
             }
         }
         return null;
@@ -59,104 +58,34 @@ public class OrderExecuter {
      * when a player issues an attack order, let units depart form the territory,
      * but not arrive at the target
      * @param o
-     * @return null if success, error message if not
+     * @throws IllegalArgumentException if the order is not valid
      */
-    public String pushCombat(AttackOrder o){
+    public void pushCombat(AttackOrder o) throws IllegalArgumentException{
         //need rule checker
         o.getSrc().decreaseUnits(o.getUnits());
-        CombatOrder targetCombat = isInAttackPool(o);
+        Combat targetCombat = isInCombatPool(o.getDest());
         if(targetCombat != null){
-            targetCombat.increaseUnits(o.getUnits());
+            targetCombat.pushAttack(o.getPlayer(), o.getUnits());
             System.out.println("Combine combat Force: " + o.getDest().getName());
         }else{
+            targetCombat = new Combat(o.getDest());
+            targetCombat.pushAttack(o.getPlayer(), o.getUnits());
+            combatPool.add(targetCombat);
             System.out.println("Add new Combat: " + o.getDest().getName());
-            attackOrderPool.get(o.getDest()).add(new CombatOrder(o));
         }
-        return null;
-    }
-
-    /**
-     * Execute one unit combat between two Combat Order
-     * @param defender 
-     * @param attacker
-     * @return true if attacker succeeds, false if defender succeeds
-     */
-    public boolean doOneUnitCombat(CombatOrder defender, CombatOrder attacker){
-        Dice attackD = new Dice(20);
-        Dice defenseD = new Dice(20);
-        if(attackD.throwDice()> defenseD.throwDice()){
-            defender.decreaseUnits(1);
-            return true;
-        }else{
-            attacker.decreaseUnits(1);
-            return false;
-        }
-    }   
-
-    /**
-     *  resolve the combat result, return the next defender's index
-     * @param defender index of the current defender Order in the combat list
-     * @param attacker index of the current attacker Order in the combat list
-     * @param combats the list of all combats
-     * @return next defender's index in the combat list
-     */
-    public int updateCombatList(int defender, int attacker, ArrayList<CombatOrder> combats){
-        //for testing
-        // System.out.println("Combat result: " + combats.get(defender).getPlayer().getName() + ": "
-        // + combats.get(defender).getUnits() + ", " + combats.get(attacker).getPlayer().getName() + ": "
-        // + combats.get(attacker).getUnits());
-        
-        //if the CombatOrder lose, remove it from the combat list
-        if(combats.get(defender).getUnits() == 0){
-            combats.remove(defender);
-            if(defender >= combats.size()){
-                return 0; 
-            }else{
-                return defender;
-            }
-        }else if(combats.get(attacker).getUnits() == 0){
-            combats.remove(attacker);
-            if(attacker >= combats.size()){
-                return 0; 
-            }
-        }
-        return attacker;
     }
 
     /**
      * resolve all combats saved in attackOrderPool and update Territory owner
      */
     public void doAllCombats(){
-        //for each battle field
-        System.out.println("Resolve Combat Result");
-        for(Territory t: attackOrderPool.keySet()){
-            Player originOwner = t.getOwner();
-            ArrayList<CombatOrder> combats = attackOrderPool.get(t);
-            //no one attacks this territory
-            if(combats.size() == 1){
-                // System.out.print(t.getName() + " ");
-                continue;
-            }
-            int defender = 0;
-            System.out.println("Territory is: " + t.getName());
-            while (true){
-                //wrap around
-                int attacker = defender+1;
-                if(defender == combats.size()-1){
-                    attacker = 0;
-                }
-                doOneUnitCombat(combats.get(defender), combats.get(attacker));
-                defender = updateCombatList(defender, attacker, combats);
-                if(combats.size() == 1){ //combats end
-                    t.setOwner(combats.get(0).getPlayer());
-                    originOwner.removeTerritory(t);
-                    combats.get(0).getPlayer().addTerritory(t);
-                    //for testing
-                    System.out.println("Winner of Combat in " +t.getName() + " is: " + combats.get(0).getPlayer().getName());
-                    break;
-                }
-            }
+        for(Combat c : combatPool){
+            c.resolveCombat();
         }
-
+        for(Territory t: map.getTerritories()){
+            t.increaseUnits();
+        }
+        combatPool.clear();
     }
+
 }

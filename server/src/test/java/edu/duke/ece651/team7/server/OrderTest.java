@@ -48,15 +48,6 @@ public class OrderTest {
         assertFalse(a2.equals(m2));
         assertFalse(a1.equals(a3));
 
-        Order c1 = new CombatOrder(p1, t2, 10);
-        Order c2 = new CombatOrder(p2, t1, 10);
-        Order c3 = new CombatOrder(p3, t2, 9);
-        assertEquals(AttackOrder.class, a1.getClass());
-        assertFalse(c3.equals(null));
-        assertFalse(c1.equals(m1));
-        assertFalse(c2.equals(c3));
-        assertFalse(a1.equals(c3));
-
     }
 
     @Test
@@ -66,20 +57,11 @@ public class OrderTest {
         Player p1 = new Player("null");
         MoveOrder o1 = new MoveOrder(p1, t1, t2, 10);
         AttackOrder a1 = new AttackOrder(p1, t1, t2, 200);
-        CombatOrder c1 = new CombatOrder(a1);
-        CombatOrder c2 = new CombatOrder(p1, t2, 100);
         a1.increaseUnits(4);
+        o1.increaseUnits(3);
         assertEquals(204, a1.getUnits());
-
+        assertEquals(13, o1.getUnits());
         assertThrows(ArithmeticException.class, ()->o1.decreaseUnits(20));
-
-        c1.increaseUnits(15);
-        assertEquals(215, c1.getUnits());
-
-        assertThrows(ArithmeticException.class, ()->c2.decreaseUnits(101));
-
-        c1.decreaseUnits(15);
-        assertEquals(200, c1.getUnits());
     }
 
 

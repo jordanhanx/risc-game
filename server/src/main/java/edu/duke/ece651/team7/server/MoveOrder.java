@@ -4,16 +4,15 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class MoveOrder extends Order {
-    private Territory src;
+    // private Territory src;
 
     public MoveOrder(Player p, Territory s, Territory d, int u) {
-        super(p, d, u);
-        src = s;
+        super(p, s, d, u);
     }
 
-    public Territory getSrc(){
-        return src;
-    }
+    // public Territory getSrc(){
+    //     return src;
+    // }
 
     @Override
     public boolean equals(Object o){

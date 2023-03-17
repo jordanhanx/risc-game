@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import edu.duke.ece651.team7.server.App;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class AppTest {
   @Test

@@ -87,7 +87,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    */
   protected void initGameMap() {
     this.map = new TextMapFactory().createMap();
-    this.ox = new OrderExecuter(map.getTerritories());
+    this.ox = new OrderExecuter(map);
     out.println("GameMap initialized");
   }
 
