@@ -274,7 +274,7 @@ public class CombatTest {
         when(groupE.getName()).thenReturn("E");
         when(groupF.getName()).thenReturn("F");
 
-        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC, groupD, groupD, groupE, groupF));
+        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC, groupD, groupE, groupF));
 
         Territory tScadrial = mock(Territory.class);
         
@@ -284,6 +284,7 @@ public class CombatTest {
         when(tScadrial.getOwner()).thenReturn(groupA);
 
         Combat combat = new Combat(tScadrial);
+        assertNull(combat.resolveCombat());
         combat.pushAttack(groupB, 5);
         combat.pushAttack(groupC, 5);
         combat.pushAttack(groupD, 5);
@@ -296,6 +297,7 @@ public class CombatTest {
         
         assertTrue(combat.getAttackUnitofPlayer(winner) > 0);
         parray.remove(winner);
+
         for(Player p : parray){
             assertEquals(-1, combat.getAttackUnitofPlayer(p));
         }

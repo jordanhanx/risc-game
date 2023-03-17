@@ -61,7 +61,10 @@ public class OrderTest {
         o1.increaseUnits(3);
         assertEquals(204, a1.getUnits());
         assertEquals(13, o1.getUnits());
+        a1.decreaseUnits(4);
+        assertEquals(200, a1.getUnits());
         assertThrows(ArithmeticException.class, ()->o1.decreaseUnits(20));
+
     }
 
 

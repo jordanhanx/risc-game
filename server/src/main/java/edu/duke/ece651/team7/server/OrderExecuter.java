@@ -15,7 +15,7 @@ public class OrderExecuter {
     /**
      * @param CombatOrderPool stores the requested combats
      */
-    // private OrderRuleChecker checker;
+    private OrderRuleChecker checker;
     private GameMap map;
     private List<Combat> combatPool;
 
@@ -26,11 +26,13 @@ public class OrderExecuter {
     public OrderExecuter(GameMap map){
         this.map = map;
         this.combatPool = new ArrayList<Combat>();
+        checker = new PathChecker(null);
+        checker = new UnitNumberChecker(checker);
     }
 
-    public int getCombatsPoolSize(){
-        return combatPool.size();
-    }
+    // public int getCombatsPoolSize(){
+    //     return combatPool.size();
+    // }
     /**
      * Execute one move order, move the unit from one territory to another
      * @param o order to execute
@@ -38,9 +40,13 @@ public class OrderExecuter {
      * @throws IllegalArgumentException if the order is not valid
      */
     public void doOneMove(MoveOrder o) throws IllegalArgumentException{
-        //need rule checker
-        o.getSrc().decreaseUnits(o.getUnits());
-        o.getDest().increaseUnits(o.getUnits());
+        String err = checker.checkOrderValidity(map, o);
+        if(err == null){
+            o.getSrc().decreaseUnits(o.getUnits());
+            o.getDest().increaseUnits(o.getUnits());
+        }else{
+            throw new IllegalArgumentException(err);
+        }
     }
 
     /**
@@ -65,16 +71,21 @@ public class OrderExecuter {
      */
     public void pushCombat(AttackOrder o) throws IllegalArgumentException{
         //need rule checker
-        o.getSrc().decreaseUnits(o.getUnits());
-        Combat targetCombat = isInCombatPool(o.getDest());
-        if(targetCombat != null){
-            targetCombat.pushAttack(o.getPlayer(), o.getUnits());
-            System.out.println("Combine combat Force: " + o.getDest().getName());
+        String err = checker.checkOrderValidity(map, o);
+        if(err == null){
+            o.getSrc().decreaseUnits(o.getUnits());
+            Combat targetCombat = isInCombatPool(o.getDest());
+            if(targetCombat != null){
+                targetCombat.pushAttack(o.getPlayer(), o.getUnits());
+                System.out.println("Combine combat Force: " + o.getDest().getName());
+            }else{
+                targetCombat = new Combat(o.getDest());
+                targetCombat.pushAttack(o.getPlayer(), o.getUnits());
+                combatPool.add(targetCombat);
+                System.out.println("Add new Combat: " + o.getDest().getName());
+            }
         }else{
-            targetCombat = new Combat(o.getDest());
-            targetCombat.pushAttack(o.getPlayer(), o.getUnits());
-            combatPool.add(targetCombat);
-            System.out.println("Add new Combat: " + o.getDest().getName());
+            throw new IllegalArgumentException(err);
         }
     }
 

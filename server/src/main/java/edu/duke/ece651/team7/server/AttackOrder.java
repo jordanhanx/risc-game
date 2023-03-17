@@ -6,7 +6,7 @@ import edu.duke.ece651.team7.shared.Territory;
 public class AttackOrder extends Order{
     // private Territory src;
     public AttackOrder(Player p, Territory s, Territory d, int u) {
-        super(p, s,d, u);
+        super(p, s, d, u);
         // src = s;
     }
 

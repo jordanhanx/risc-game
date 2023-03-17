@@ -18,15 +18,18 @@ import java.util.Map;
 public class OrderExecuterTest {
 
     protected GameMap buildTestMap(){
-        Territory territory1 = new Territory("Narnia");
-        Territory territory2 = new Territory("Elantris");
-        Territory territory3 = new Territory("Midkemia");
-        Territory territory4 = new Territory("Oz");
-        Territory territory5 = new Territory("Scadrial");
-        Territory territory6 = new Territory("Roshar");
-        Territory territory7 = new Territory("Gondor");
-        Territory territory8 = new Territory("Mordor");
-        Territory territory9 = new Territory("Hogwarts");
+        Player playerA = new Player("GroupA");
+        Player playerB = new Player("GroupB");
+        Player playerC = new Player("GroupC");
+        Territory territory1 = new Territory("Narnia", playerA, 10);
+        Territory territory2 = new Territory("Elantris", playerB, 10);
+        Territory territory3 = new Territory("Midkemia", playerA, 10);
+        Territory territory4 = new Territory("Oz", playerA, 10);
+        Territory territory5 = new Territory("Scadrial", playerB, 10);
+        Territory territory6 = new Territory("Roshar", playerB, 10);
+        Territory territory7 = new Territory("Gondor", playerC, 10);
+        Territory territory8 = new Territory("Mordor", playerC, 10);
+        Territory territory9 = new Territory("Hogwarts", playerC, 10);
 
         Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
         territoriesAdjacentList.put(territory1, new ArrayList<Territory>(Arrays.asList(territory2, territory3)));
@@ -45,15 +48,6 @@ public class OrderExecuterTest {
                 new ArrayList<Territory>(Arrays.asList(territory4, territory7, territory5, territory9)));
         territoriesAdjacentList.put(territory9,
                 new ArrayList<Territory>(Arrays.asList(territory6, territory5, territory8)));
-        territory1.increaseUnits(10);
-        territory2.increaseUnits(10);
-        territory3.increaseUnits(10);
-        territory4.increaseUnits(10);
-        territory5.increaseUnits(10);
-        territory6.increaseUnits(10);
-        territory7.increaseUnits(10);
-        territory8.increaseUnits(10);
-        territory9.increaseUnits(10);
         GameMap map = new GameMap(territoriesAdjacentList);
         return map;
     }
@@ -61,62 +55,65 @@ public class OrderExecuterTest {
     public void test_doOneMove(){
         GameMap map = buildTestMap();
         OrderExecuter ox = new OrderExecuter(map);
-        Player p1 = new Player("a");
-        Player p2 = new Player("b");
-        map.getTerritoryByName("Narnia").setOwner(p1);
-        map.getTerritoryByName("Midkemia").setOwner(p1);
-
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
 
         MoveOrder m1 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 5);
         ox.doOneMove(m1);
         assertEquals(5, map.getTerritoryByName("Narnia").getUnits());
         assertEquals(15, map.getTerritoryByName("Midkemia").getUnits());
 
-        map.getTerritoryByName("Gondor").setOwner(p2);
-        map.getTerritoryByName("Mordor").setOwner(p2);
         MoveOrder m2 = new MoveOrder(p2, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 4);
-        ox.doOneMove(m2);
-        assertEquals(6, map.getTerritoryByName("Gondor").getUnits());
-        assertEquals(14, map.getTerritoryByName("Mordor").getUnits());
+        assertThrows(IllegalArgumentException.class, () -> ox.doOneMove(m2));
+
+        MoveOrder m3 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 0);
+        assertThrows(IllegalArgumentException.class, () -> ox.doOneMove(m3));
     };
 
-    // @Test
-    // public void test_isInCombatPool(){
-    //     GameMap map = buildTestMap();
-    //     OrderExecuter ox = new OrderExecuter(map);
-    //     Player p1 = new Player("a");
-    //     Player p2 = new Player("b");
-    //     map.getTerritoryByName("Narnia").setOwner(p1);
-    //     map.getTerritoryByName("Midkemia").setOwner(p1);
+//     @Test
+//     public void test_isInCombatPool(){
+//         GameMap map = buildTestMap();
+//         OrderExecuter ox = new OrderExecuter(map);
+//         Player p1 = new Player("a");
+//         Player p2 = new Player("b");
+//         map.getTerritoryByName("Narnia").setOwner(p1);
+//         map.getTerritoryByName("Midkemia").setOwner(p1);
 
-    //     AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), 5);
-    //     AttackOrder m2 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Elantris"), 5);
+//         AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), 5);
+//         AttackOrder m2 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Elantris"), 5);
 
-    //     AttackOrder m3 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Elantris"), 4);
-    //     AttackOrder m4 = new AttackOrder(p2, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Hogwarts"), 2);
-    //     ox.pushCombat(m1);
-    //     ox.pushCombat(m2);
-    //     ox.pushCombat(m3);
-    //     ox.pushCombat(m4);
-    // }
+//         AttackOrder m3 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Elantris"), 4);
+//         AttackOrder m4 = new AttackOrder(p2, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Hogwarts"), 2);
+//         ox.pushCombat(m1);
+//         ox.pushCombat(m2);
+//         ox.pushCombat(m3);
+//         ox.pushCombat(m4);
+//     }
 
 
 
     @Test
     public void test_PushCombat(){
-        // GameMap map = buildTestMap();
-        // OrderExecuter ox = new OrderExecuter(map);
-        // Player p1 = new Player("a");
-        // Player p2 = new Player("b");
-        // Player p3 = new Player("c");
-        // map.getTerritoryByName("Narnia").setOwner(p1);
-        // map.getTerritoryByName("Midkemia").setOwner(p1);
-        // map.getTerritoryByName("Oz").setOwner(p1);
+        GameMap map = buildTestMap();
+        OrderExecuter ox = new OrderExecuter(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 10);
+        ox.pushCombat(a1);
+        assertNotNull(ox.isInCombatPool(a1.getDest()));
 
-        // map.getTerritoryByName("Narnia").
+        AttackOrder a2 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Gondor"), 10);
+        assertThrows(IllegalArgumentException.class, () -> ox.pushCombat(a2));
+        assertNull(ox.isInCombatPool(map.getTerritoryByName("Gondor")));
 
+        AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 0);
+        assertThrows(IllegalArgumentException.class, () -> ox.pushCombat(a3));
 
-       
+        AttackOrder a4 = new AttackOrder(p1,  map.getTerritoryByName("Midkemia"),  map.getTerritoryByName("Elantris"), 4);
+        ox.pushCombat(a4);
+
     }
 
     @Test

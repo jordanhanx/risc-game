@@ -14,13 +14,27 @@ public class PathChecker extends OrderRuleChecker {
 
     @Override
     protected String checkMyRule(GameMap map, Order o) {
-        if(o.getClass() == AttackOrder.class){
-
-        }else if(o.getClass() == MoveOrder.class){
-
+        if(!o.getSrc().getOwner().equals(o.getPlayer())){
+            return "Access Denied: source Territory does not belong to you";
         }
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkMyRule'");
+        if(o.getClass() == AttackOrder.class){
+            if(o.getDest().getOwner().equals(o.getPlayer())){
+                return "Cannot attack your own territory";
+            }
+            if(!map.isAdjacent(o.getSrc().getName(), o.getDest().getName())){
+                return "Can only attack adjacent territory";
+            }
+        }else if(o.getClass() == MoveOrder.class){
+            //dest is not issuer's
+            if(!o.getDest().getOwner().equals(o.getPlayer())){
+                return "Access Denied: destination Territory does not belong to you";
+            }
+            //do not have a path
+            if(!map.hasPath(o.getSrc().getName(), o.getDest().getName())){
+                return "Path does not exists between these two Territories";
+            }
+        }
+        return null;
     }
     
 }
