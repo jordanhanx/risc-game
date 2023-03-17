@@ -11,22 +11,29 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public class OrderExecuter {
+    /**
+     * @param CombatOrderPool stores the requested combats
+     */
     // private OrderRuleChecker checker;
-    private Map<Territory, ArrayList<CombatOrder> > attackOrderPool;
+    private Map<Territory, ArrayList<CombatOrder> > combatOrderPool;
 
     /**
      * 
      * @param terris territories in the gamemap
      */
     public OrderExecuter(Collection<Territory> terris){
-        attackOrderPool = new HashMap<Territory, ArrayList<CombatOrder> >();
+        combatOrderPool = new HashMap<Territory, ArrayList<CombatOrder> >();
         for(Territory t: terris){
-            attackOrderPool.put(t, new ArrayList<CombatOrder>(Arrays.asList(new CombatOrder(t.getOwner(),t,t.getUnits()))));
+            combatOrderPool.put(t, new ArrayList<CombatOrder>(Arrays.asList(new CombatOrder(t.getOwner(),t,t.getUnits()))));
         }
+        // checker = new PathChecker(null);
+        // checker = new UnitNumberChecker(checker);
+        // checker = new IssuerChecker(checker);
+        // this.checker = checker;
     }
 
     public ArrayList<CombatOrder> getCombatsAt(Territory t){
-        return attackOrderPool.get(t);
+        return combatOrderPool.get(t);
     }
 
     /**
@@ -47,7 +54,7 @@ public class OrderExecuter {
      * @return if the combat exists, return the combat. if not return null.
      */
     public CombatOrder isInAttackPool(AttackOrder o){
-        for(CombatOrder order: attackOrderPool.get(o.getDest())){
+        for(CombatOrder order: combatOrderPool.get(o.getDest())){
             if (order.getPlayer().equals(o.getPlayer())){
                 return order;
             }
@@ -70,7 +77,7 @@ public class OrderExecuter {
             System.out.println("Combine combat Force: " + o.getDest().getName());
         }else{
             System.out.println("Add new Combat: " + o.getDest().getName());
-            attackOrderPool.get(o.getDest()).add(new CombatOrder(o));
+            combatOrderPool.get(o.getDest()).add(new CombatOrder(o));
         }
         return null;
     }
@@ -124,14 +131,14 @@ public class OrderExecuter {
     }
 
     /**
-     * resolve all combats saved in attackOrderPool and update Territory owner
+     * resolve all combats saved in combatOrderPool and update Territory owner
      */
     public void doAllCombats(){
         //for each battle field
         System.out.println("Resolve Combat Result");
-        for(Territory t: attackOrderPool.keySet()){
+        for(Territory t: combatOrderPool.keySet()){
             Player originOwner = t.getOwner();
-            ArrayList<CombatOrder> combats = attackOrderPool.get(t);
+            ArrayList<CombatOrder> combats = combatOrderPool.get(t);
             //no one attacks this territory
             if(combats.size() == 1){
                 // System.out.print(t.getName() + " ");
