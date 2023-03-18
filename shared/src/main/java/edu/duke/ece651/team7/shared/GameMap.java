@@ -2,6 +2,7 @@ package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -142,6 +143,8 @@ public class GameMap implements Serializable {
       ArrayList<Territory> elem = new ArrayList<Territory>();
       for(int j = i*numGroup; j < (i+1)*numGroup; j++){
         tList.get(j).increaseUnits(initialUnit);
+        //modify
+        tList.get(j).setOwner(new Player("Group"+(char)('A'+i)){});
         elem.add(tList.get(j));
       }
       territoryGroups.add(elem);
@@ -149,6 +152,20 @@ public class GameMap implements Serializable {
     return territoryGroups;
   }
 
+  public ArrayList<ArrayList<Territory> > userPickTerritoryGroup(String groupName, String playerName){    
+    ArrayList<ArrayList<Territory> > territoryGroups = groupTerritories(3);
+    for(int i=0;i < territoryGroups.size();i++){
+        if(territoryGroups.get(i).get(0).getOwner().getName().equals(groupName)){
+        for(int j=0; j<territoryGroups.get(i).size();j++){
+            territoryGroups.get(i).set(j,new Territory(territoryGroups.get(i).get(j).getName(), new Player(playerName), territoryGroups.get(i).get(j).getUnits()));
+        }
+    }
+    }
+    return territoryGroups;
+  }
+
+
+  
 
     @Override
     public boolean equals(Object o) {
@@ -159,5 +176,7 @@ public class GameMap implements Serializable {
             return false;
         }
     }
+
+
 
 }

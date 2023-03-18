@@ -237,8 +237,47 @@ public class GameMapTest {
     assertTrue(assignedTerritories.contains(t1));
     assertTrue(assignedTerritories.contains(t2));
     assertEquals(6, assignedTerritories.size());
-
-
   }
+
+  @Test
+  public void test_userPickTerritoryGroup(){
+    Territory territory1 = new Territory("Narnia");
+    Territory territory2 = new Territory("Elantris");
+    Territory territory3 = new Territory("Midkemia");
+    Territory territory4 = new Territory("Oz");
+    Territory territory5 = new Territory("Scadrial");
+    Territory territory6 = new Territory("Roshar");
+    Territory territory7 = new Territory("Gondor");
+    Territory territory8 = new Territory("Mordor");
+    Territory territory9 = new Territory("Hogwarts");
+
+    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    territoriesAdjacentList.put(territory1, new ArrayList<Territory>(Arrays.asList(territory2, territory3)));
+    territoriesAdjacentList.put(territory2,
+            new ArrayList<Territory>(Arrays.asList(territory1, territory3, territory5, territory6)));
+    territoriesAdjacentList.put(territory3,
+            new ArrayList<Territory>(Arrays.asList(territory1, territory2, territory4, territory5)));
+    territoriesAdjacentList.put(territory4,
+            new ArrayList<Territory>(Arrays.asList(territory7, territory3, territory5, territory8)));
+    territoriesAdjacentList.put(territory5, new ArrayList<Territory>(
+            Arrays.asList(territory2, territory3, territory4, territory6, territory9, territory8)));
+    territoriesAdjacentList.put(territory6,
+            new ArrayList<Territory>(Arrays.asList(territory9, territory2, territory5)));
+    territoriesAdjacentList.put(territory7, new ArrayList<Territory>(Arrays.asList(territory4, territory8)));
+    territoriesAdjacentList.put(territory8,
+            new ArrayList<Territory>(Arrays.asList(territory4, territory7, territory5, territory9)));
+    territoriesAdjacentList.put(territory9,
+            new ArrayList<Territory>(Arrays.asList(territory6, territory5, territory8)));
+
+    GameMap newMap = new GameMap(territoriesAdjacentList);
+    ArrayList<ArrayList<Territory> > terrlists = newMap.userPickTerritoryGroup("GroupA", "PlayerA");
+        for(int j=0; j<terrlists.get(0).size();j++){
+            assertEquals(terrlists.get(0).get(j).getOwner().getName(),"PlayerA");
+        }
+    
+  
+  }
+
+
 
 }
