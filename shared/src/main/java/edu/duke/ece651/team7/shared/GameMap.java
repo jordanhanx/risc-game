@@ -144,9 +144,9 @@ public class GameMap implements Serializable {
     for(int i = 0; i < numPlayers; i++){
       ArrayList<Territory> elem = new ArrayList<Territory>();
       for(int j = i*numGroup; j < (i+1)*numGroup; j++){
-        tList.get(j).increaseUnits(initialUnit);
+        // tList.get(j).increaseUnits(initialUnit);
         //let the territory has the initial owner's name like: Player A/B/C...
-        tList.get(j).setOwner(new Player("Group"+(char)('A'+i)){});
+        tList.get(j).setOwner(new Player("Group"+(char)('A'+i)));
         elem.add(tList.get(j));
       }
       territoryGroups.add(elem);
@@ -160,7 +160,7 @@ public class GameMap implements Serializable {
     *@param territoryGroups a list of groups of territories to choose from
     *@param groupName the initial name for the territory
     *@param playerName the player name who choose this territory
-    *@return the group of territories chosen by the player with its owners' name replaced by the player's name
+    *@return the group of territories chosen by the player with its owners' name replaced by the player's name, groupName -> playerName
   */
   public ArrayList<ArrayList<Territory> > userPickTerritoryGroup(ArrayList<ArrayList<Territory> > territoryGroups, String groupName, String playerName){    
     if(territoryGroups.size()==0){

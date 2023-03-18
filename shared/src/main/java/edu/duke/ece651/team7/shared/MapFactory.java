@@ -1,5 +1,8 @@
 package edu.duke.ece651.team7.shared;
 
+import java.util.List;
+import java.util.Map;
+
 public interface MapFactory {
 
  /**

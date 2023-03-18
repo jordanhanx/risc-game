@@ -3,6 +3,7 @@ package edu.duke.ece651.team7.shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,19 +56,23 @@ public class TextMapFactory implements MapFactory {
     }
 
     @Override
-    public GameMap createMapTest() {
-        // List<Territory> territories = new ArrayList<Territory>();
-        Territory territory1 = new Territory("Narnia");
-        Territory territory2 = new Territory("Elantris");
-        Territory territory3 = new Territory("Midkemia");
-        Territory territory4 = new Territory("Oz");
-        Territory territory5 = new Territory("Scadrial");
-        Territory territory6 = new Territory("Roshar");
-        Territory territory7 = new Territory("Gondor");
-        Territory territory8 = new Territory("Mordor");
-        Territory territory9 = new Territory("Hogwarts");
 
-        Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
+    public GameMap createMapTest() {
+        /**
+        apply the userPickTerritoryGroup method to build the map
+         */
+        Territory territory1 = new Territory("Narnia",null, 10);
+        Territory territory7 = new Territory("Elantris", null, 6);
+        Territory territory2 = new Territory("Midkemia", null, 12);
+        Territory territory3 = new Territory("Oz", null, 8);
+        Territory territory8 = new Territory("Scadrial", null, 5);
+        Territory territory9 = new Territory("Roshar", null, 3);
+        Territory territory4 = new Territory("Gondor", null, 13);
+        Territory territory5 = new Territory("Mordor", null, 14);
+        Territory territory6 = new Territory("Hogwarts", null, 3);
+
+    
+        Map<Territory, List<Territory>> territoriesAdjacentList = new LinkedHashMap<>();
         territoriesAdjacentList.put(territory1, new ArrayList<Territory>(Arrays.asList(territory2, territory3)));
         territoriesAdjacentList.put(territory2,
                 new ArrayList<Territory>(Arrays.asList(territory1, territory3, territory5, territory6)));
@@ -84,9 +89,28 @@ public class TextMapFactory implements MapFactory {
                 new ArrayList<Territory>(Arrays.asList(territory4, territory7, territory5, territory9)));
         territoriesAdjacentList.put(territory9,
                 new ArrayList<Territory>(Arrays.asList(territory6, territory5, territory8)));
+    
+        GameMap newMap = new GameMap(territoriesAdjacentList);
+        ArrayList<ArrayList<Territory> > terrgroups = new ArrayList<ArrayList<Territory> >();
+        ArrayList<ArrayList<Territory> > terrlists = newMap.userPickTerritoryGroup(terrgroups, "GroupA", "PlayerA");
+        terrlists = newMap.userPickTerritoryGroup(terrlists, "GroupB", "PlayerB");
+        terrlists = newMap.userPickTerritoryGroup(terrlists, "GroupC", "PlayerC");
 
-        GameMap threePlayerMap = new GameMap(territoriesAdjacentList);
-        return threePlayerMap;
+        for(ArrayList<Territory> terrList: terrgroups){
+           for(Territory terr: terrList){
+                for(Territory terrAdj: territoriesAdjacentList.keySet() ){
+                        if(terr.getName().equals(terrAdj.getName())){
+                                List<Territory> value = territoriesAdjacentList.get(terrAdj);
+                                territoriesAdjacentList.remove(terrAdj); 
+                                territoriesAdjacentList.put(terr,value );
+                        }
+                }
+           }
+        }
+        GameMap finalMap = new GameMap(territoriesAdjacentList);
+        return finalMap;
     }
+
+    
 
 }
