@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
@@ -135,6 +136,7 @@ public class GameMap implements Serializable {
     */
   public ArrayList<ArrayList<Territory> > groupTerritories(int numPlayers) {
     List<Territory> tList = new ArrayList<Territory>(territoriesAdjacentList.keySet());
+
     int initialUnit = 10;
     ArrayList<ArrayList<Territory> >  territoryGroups = new ArrayList<ArrayList<Territory> >();
     int numGroup = tList.size() / numPlayers;
@@ -143,7 +145,7 @@ public class GameMap implements Serializable {
       ArrayList<Territory> elem = new ArrayList<Territory>();
       for(int j = i*numGroup; j < (i+1)*numGroup; j++){
         tList.get(j).increaseUnits(initialUnit);
-        //modify
+        //let the territory has the initial owner's name like: Player A/B/C...
         tList.get(j).setOwner(new Player("Group"+(char)('A'+i)){});
         elem.add(tList.get(j));
       }
@@ -152,20 +154,28 @@ public class GameMap implements Serializable {
     return territoryGroups;
   }
 
-  public ArrayList<ArrayList<Territory> > userPickTerritoryGroup(String groupName, String playerName){    
-    ArrayList<ArrayList<Territory> > territoryGroups = groupTerritories(3);
+
+  /**
+    *Lets the user pick a group of territories from the provided list of territory groups.
+    *@param territoryGroups a list of groups of territories to choose from
+    *@param groupName the initial name for the territory
+    *@param playerName the player name who choose this territory
+    *@return the group of territories chosen by the player with its owners' name replaced by the player's name
+  */
+  public ArrayList<ArrayList<Territory> > userPickTerritoryGroup(ArrayList<ArrayList<Territory> > territoryGroups, String groupName, String playerName){    
+    if(territoryGroups.size()==0){
+        territoryGroups = groupTerritories(3);
+    }
     for(int i=0;i < territoryGroups.size();i++){
         if(territoryGroups.get(i).get(0).getOwner().getName().equals(groupName)){
-        for(int j=0; j<territoryGroups.get(i).size();j++){
-            territoryGroups.get(i).set(j,new Territory(territoryGroups.get(i).get(j).getName(), new Player(playerName), territoryGroups.get(i).get(j).getUnits()));
+            for(int j=0; j<territoryGroups.get(i).size();j++){
+                 territoryGroups.get(i).set(j,new Territory(territoryGroups.get(i).get(j).getName(), new Player(playerName), territoryGroups.get(i).get(j).getUnits()));
+             }
         }
-    }
     }
     return territoryGroups;
   }
 
-
-  
 
     @Override
     public boolean equals(Object o) {
