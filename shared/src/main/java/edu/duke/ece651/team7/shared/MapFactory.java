@@ -13,7 +13,7 @@ public interface MapFactory {
 */
   public GameMap createMap();
 
-  public GameMap createMapTest();
+  public GameMap createMapNew(int initGroupNum);
 
 
 }
