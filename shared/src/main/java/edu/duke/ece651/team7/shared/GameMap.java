@@ -217,6 +217,7 @@ public class GameMap implements Serializable {
     }
 
 
+    
     @Override
     public boolean equals(Object o) {
         if (o != null && o.getClass().equals(getClass())) {
