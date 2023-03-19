@@ -15,6 +15,14 @@ public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
     private Map<Territory, List<Territory>> territoriesAdjacentList;
 
+    // class InitGroupOwner extends Player {
+    // public InitGroupOwner(String name) {
+    // super(name);
+    // }
+    // }
+
+    // private List<Player> initGroupOwners;
+
     /**
      * Constructs a GameMap object with a set of territories.
      * 
@@ -24,6 +32,47 @@ public class GameMap implements Serializable {
     public GameMap(Map<Territory, List<Territory>> territoriesAdjacentList) {
         this.territoriesAdjacentList = territoriesAdjacentList;
     }
+
+    // public GameMap(int initGroupNum) {
+    // initGroupOwners = new ArrayList<>();
+    // for (int i = 1; i <= initGroupNum; ++i) {
+    // initGroupOwners.add(new initGroupOwner("Group" + 1));
+    // }
+    // }
+
+    // public List<Player> getInitGroupOwners() {
+    // return initGroupOwners;
+    // }
+
+    // public void addTerritoryAndNeighbors(Territory t, Territory... neighbors) {
+    // territoriesAdjacentList.put(t, new LinkedList<Territory>());
+    // for (Territory neighbor : neighbors) {
+    // territoriesAdjacentList.get(t).add(neighbor);
+    // }
+    // }
+
+    // private initGroupOwner getInitOwner(String groupName) {
+    // for (initGroupOwner o : initGroupOwners) {
+    // if (o.getName().equals(groupName)) {
+    // return o;
+    // }
+    // }
+    // throw new IllegalArgumentException("Invalid Group Name");
+    // }
+
+    // public void assignGroup(String groupName, Player player) {
+    // int assigenCounter = 0;
+    // InitGroupOwner o = getInitOwner(groupName);
+    // for (Territory t : territoriesAdjacentList.keySet()) {
+    // if (t.getOwner().equals(o)) {
+    // t.setOwner(player);
+    // ++assigenCounter;
+    // }
+    // }
+    // if (assigenCounter == 0) {
+    // throw new IllegalArgumentException("" + o.getName() + "has been occupied");
+    // }
+    // }
 
     /**
      *
@@ -84,7 +133,6 @@ public class GameMap implements Serializable {
         return adjacentTerritories.contains(toTerritory);
     }
 
-
     /**
      * 
      * Determines whether a path exists between two territories which belong to the
@@ -108,14 +156,12 @@ public class GameMap implements Serializable {
         while (!queue.isEmpty()) {
             Territory curTerritory = queue.removeFirst();
             for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory)) {
-                if (neighbourTerritory.equals(destination) 
-                && neighbourTerritory.getOwner().equals(source.getOwner())
-                ) {
+                if (neighbourTerritory.equals(destination)
+                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
                     return true;
                 }
                 if (!territoryVisited.contains(neighbourTerritory)
-                && neighbourTerritory.getOwner().equals(source.getOwner())
-                ) {
+                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
                     territoryVisited.add(neighbourTerritory);
                     queue.add(neighbourTerritory);
                 }
@@ -124,31 +170,32 @@ public class GameMap implements Serializable {
         return false;
     }
 
-
     /**
-     *Splits the territories in the GameMap into numPlayers groups.
-     *Each group will contain an equal number of territories.
-     *The initial number of units for each territory is set to a default value of 10.
-     *@param numPlayers the number of players to divide the territories among
-     *@return an ArrayList of ArrayLists of Territory objects representing the groups of territories
-    */
-  public ArrayList<ArrayList<Territory> > groupTerritories(int numPlayers) {
-    List<Territory> tList = new ArrayList<Territory>(territoriesAdjacentList.keySet());
-    int initialUnit = 10;
-    ArrayList<ArrayList<Territory> >  territoryGroups = new ArrayList<ArrayList<Territory> >();
-    int numGroup = tList.size() / numPlayers;
-    //Collections.shuffle(tList);
-    for(int i = 0; i < numPlayers; i++){
-      ArrayList<Territory> elem = new ArrayList<Territory>();
-      for(int j = i*numGroup; j < (i+1)*numGroup; j++){
-        tList.get(j).increaseUnits(initialUnit);
-        elem.add(tList.get(j));
-      }
-      territoryGroups.add(elem);
+     * Splits the territories in the GameMap into numPlayers groups.
+     * Each group will contain an equal number of territories.
+     * The initial number of units for each territory is set to a default value of
+     * 10.
+     * 
+     * @param numPlayers the number of players to divide the territories among
+     * @return an ArrayList of ArrayLists of Territory objects representing the
+     *         groups of territories
+     */
+    public ArrayList<ArrayList<Territory>> groupTerritories(int numPlayers) {
+        List<Territory> tList = new ArrayList<Territory>(territoriesAdjacentList.keySet());
+        int initialUnit = 10;
+        ArrayList<ArrayList<Territory>> territoryGroups = new ArrayList<ArrayList<Territory>>();
+        int numGroup = tList.size() / numPlayers;
+        // Collections.shuffle(tList);
+        for (int i = 0; i < numPlayers; i++) {
+            ArrayList<Territory> elem = new ArrayList<Territory>();
+            for (int j = i * numGroup; j < (i + 1) * numGroup; j++) {
+                tList.get(j).increaseUnits(initialUnit);
+                elem.add(tList.get(j));
+            }
+            territoryGroups.add(elem);
+        }
+        return territoryGroups;
     }
-    return territoryGroups;
-  }
-
 
     @Override
     public boolean equals(Object o) {
