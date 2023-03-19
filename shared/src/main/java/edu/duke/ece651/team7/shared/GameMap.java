@@ -126,55 +126,45 @@ public class GameMap implements Serializable {
         return false;
     }
 
-
     /**
-     *Splits the territories in the GameMap into numPlayers groups.
-     *Each group will contain an equal number of territories.
-     *The initial number of units for each territory is set to a default value of 10.
-     *@param numPlayers the number of players to divide the territories among
-     *@return an ArrayList of ArrayLists of Territory objects representing the groups of territories
+    *Replaces the owner of all territories owned by a specific group with a new owner.
+    *@param groupName the name of the group to replace the owner
+    *@param newOwner the new owner to set for all territories previously owned by the group (with name groupName)
+    *@throws IllegalArgumentException if the group name to be replaced is not an initial owner
     */
-  public ArrayList<ArrayList<Territory> > groupTerritories(int numPlayers) {
-    List<Territory> tList = new ArrayList<Territory>(territoriesAdjacentList.keySet());
-
-    int initialUnit = 10;
-    ArrayList<ArrayList<Territory> >  territoryGroups = new ArrayList<ArrayList<Territory> >();
-    int numGroup = tList.size() / numPlayers;
-    //Collections.shuffle(tList);
-    for(int i = 0; i < numPlayers; i++){
-      ArrayList<Territory> elem = new ArrayList<Territory>();
-      for(int j = i*numGroup; j < (i+1)*numGroup; j++){
-        // tList.get(j).increaseUnits(initialUnit);
-        //let the territory has the initial owner's name like: Player A/B/C...
-        tList.get(j).setOwner(new Player("Group"+(char)('A'+i)));
-        elem.add(tList.get(j));
-      }
-      territoryGroups.add(elem);
-    }
-    return territoryGroups;
-  }
-
-
-  /**
-    *Lets the user pick a group of territories from the provided list of territory groups.
-    *@param territoryGroups a list of groups of territories to choose from
-    *@param groupName the initial name for the territory
-    *@param playerName the player name who choose this territory
-    *@return the group of territories chosen by the player with its owners' name replaced by the player's name, groupName -> playerName
-  */
-  public ArrayList<ArrayList<Territory> > userPickTerritoryGroup(ArrayList<ArrayList<Territory> > territoryGroups, String groupName, String playerName){    
-    if(territoryGroups.size()==0){
-        territoryGroups = groupTerritories(3);
-    }
-    for(int i=0;i < territoryGroups.size();i++){
-        if(territoryGroups.get(i).get(0).getOwner().getName().equals(groupName)){
-            for(int j=0; j<territoryGroups.get(i).size();j++){
-                 territoryGroups.get(i).set(j,new Territory(territoryGroups.get(i).get(j).getName(), new Player(playerName), territoryGroups.get(i).get(j).getUnits()));
-             }
+    public void setPlayer(String groupName, Player newOwner) {
+        initPlayer groupSet = new initPlayer("initPlayer");
+        if(!groupSet.initgroupName.contains(groupName)){
+            throw new IllegalArgumentException("The owner: " + groupName+ " to be replaced is not an initial owner");
+        }
+        for (Territory terr : territoriesAdjacentList.keySet()) {
+            if (terr.getOwner().getName().equals(groupName)) {
+                terr.setOwner(newOwner);
+                }
         }
     }
-    return territoryGroups;
-  }
+
+    /**
+    *A class representing an initial player group for the game.
+    *It contains a set of initial group names that are allowed to be replaced as owners of territories.
+    */
+    class initPlayer extends Player implements Serializable{
+        //a set of initial group names that are allowed to be replaced as owners of territories.
+        Set<String> initgroupName;
+
+        /**
+        * Constructs an `initPlayer` object with a given name.
+        * Initializes the `initgroupName` set with three initial group names: "GroupA", "GroupB", and "GroupC".
+        * @param name the name of the initial player group
+        */
+        public initPlayer(String name){
+         super(name);
+         initgroupName = new HashSet<>();
+         initgroupName.add("GroupA");
+         initgroupName.add("GroupB");
+         initgroupName.add("GroupC");
+         }
+    }
 
 
     @Override
