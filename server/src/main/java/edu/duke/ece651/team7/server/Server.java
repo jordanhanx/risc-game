@@ -89,7 +89,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    */
   protected void initGameMap() {
     this.map = new TextMapFactory().createMapNew(numPlayers);
-    this.ox = new OrderExecuter(map.getTerritories());
+    this.ox = new OrderExecuter(map);
     out.println("GameMap initialized");
   }
 
@@ -125,6 +125,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     while (true) {
       commitSignal.await();
       /* do all combats here */
+      ox.doAllCombats();
       removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
       returnSignal.countDown(); // release all doCommit() remote invocations
       if (isGameOver()) {
