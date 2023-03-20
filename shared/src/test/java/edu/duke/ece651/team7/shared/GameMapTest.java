@@ -12,10 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.Multiset.Entry;
 
 public class GameMapTest {
 
@@ -204,41 +207,60 @@ public class GameMapTest {
   }
 
   @Test
-  public void test_groupTerritories(){
-    Player player1 = new Player("player1");
-    Player player2 = new Player("player2");
-    Player player3 = new Player("player3");
-    Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
-    Territory t1 = new Territory("t1");
-    Territory t2 = new Territory("t2");
-    Territory t3 = new Territory("t3");
-    Territory t4 = new Territory("t4");
-    Territory t5 = new Territory("t5");
-    Territory t6 = new Territory("t6");
-    territoriesAdjacentList.put(t1, new ArrayList<>(Arrays.asList(t2)));
-    territoriesAdjacentList.put(t2, new ArrayList<>(Arrays.asList(t1, t3)));
-    territoriesAdjacentList.put(t3, new ArrayList<>(Arrays.asList(t2, t4, t5)));
-    territoriesAdjacentList.put(t4, new ArrayList<>(Arrays.asList(t3)));
-    territoriesAdjacentList.put(t5, new ArrayList<>(Arrays.asList(t3, t6)));
-    territoriesAdjacentList.put(t6, new ArrayList<>(Arrays.asList(t5)));
-    GameMap testMap = new GameMap(territoriesAdjacentList);
-    ArrayList<ArrayList<Territory>> territoryGroups = testMap.groupTerritories(3);
-    assertEquals(3, territoryGroups.size());
-    assertEquals(2, territoryGroups.get(0).size());
-    assertEquals(2, territoryGroups.get(1).size());
-    assertEquals(2, territoryGroups.get(2).size());
-    Set<Territory> assignedTerritories = new HashSet<>();
-    for (ArrayList<Territory> group : territoryGroups) {
-        for (Territory territory : group) {
-            assertTrue(!assignedTerritories.contains(territory));
-            assignedTerritories.add(territory);
-        }
-    }
-    assertTrue(assignedTerritories.contains(t1));
-    assertTrue(assignedTerritories.contains(t2));
-    assertEquals(6, assignedTerritories.size());
+  public void test_addTerritoryAndNeighbors(){
 
+    GameMap map = new GameMap(new HashMap<>());
+    Territory t1 = new Territory("territory1");
+    Territory t2 = new Territory("territory2");
+    Territory t3 = new Territory("territory3");
+    map.addTerritoryAndNeighbors(t1, t2, t3);
+    map.addTerritoryAndNeighbors(t2, t1, t3);
+    map.addTerritoryAndNeighbors(t3, t1, t2);
+    assertTrue(map.isAdjacent("territory1", "territory2"));
+    assertEquals(new HashSet<>(Arrays.asList(t1,t3)), new HashSet<>(map.getNeighbors("territory2")));
+    assertEquals(Arrays.asList(t1,t3), map.getNeighbors("territory2"));
+    assertEquals(Arrays.asList(t1,t2), map.getNeighbors("territory3"));
+    assertEquals(Arrays.asList(t2,t3), map.getNeighbors("territory1"));
+  }
+
+  @Test
+  public void test_getInitGroupOwners(){
+    GameMap map = new GameMap(3);
+    // Player initOwner = map.new InitGroupOwner("GroupA");
+    List<Player> expectedList = Arrays.asList(
+      map.new InitGroupOwner("GroupA"),
+      map.new InitGroupOwner("GroupB"),
+      map.new InitGroupOwner("GroupC")
+  );
+  List<Player> expectedList2 = Arrays.asList(
+    new Player("GroupA"),
+    new Player("GroupB"),
+    new Player("GroupC")
+);
+  assertEquals(expectedList, map.getInitGroupOwners());
+  assertNotEquals(expectedList2, map.getInitGroupOwners());
+  }
+
+  @Test
+  public void test_assignGroup(){
+
+    GameMap map = new GameMap(2);
+    List<Player> initGroupOwners = map.getInitGroupOwners();
+    Territory t1 = new Territory("T1", initGroupOwners.get(0),0);
+    Territory t2 = new Territory("T2",initGroupOwners.get(1),0);
+    map.addTerritoryAndNeighbors(t1, t2);
+    map.addTerritoryAndNeighbors(t2, t1);
+    Player p = new Player("Player1");
+    Player p2 = new Player("Player1");
+    map.assignGroup("GroupA", p);
+    assertEquals(p, t1.getOwner());
+    assertEquals(map.new InitGroupOwner("GroupB"), t2.getOwner());
+    assertThrows(IllegalArgumentException.class, () -> map.assignGroup("GroupA", p2));
+    assertThrows(IllegalArgumentException.class, () -> map.assignGroup("GroupC", p2));
 
   }
+
+
+
 
 }
