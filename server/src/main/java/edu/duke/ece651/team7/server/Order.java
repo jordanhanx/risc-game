@@ -4,14 +4,14 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 public abstract class Order {
-    // private Territory src;
+    protected Territory src;
     protected Player issuer;
     protected Territory dest;
     protected int units;
 
-    public Order(Player p, Territory d, int u){
-        // src = s;
+    public Order(Player p, Territory s, Territory d, int u){
         issuer = p;
+        src = s;
         dest = d;
         units = u;
     }
@@ -25,6 +25,9 @@ public abstract class Order {
 
     public int getUnits(){
         return units;
+    }
+    public Territory getSrc(){
+        return src;
     }
 
     public void increaseUnits(int num){
