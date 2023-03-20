@@ -42,7 +42,7 @@ public class GameMap implements Serializable {
      * @param initGroupNum the number of initial group owners to be created
      */
     public GameMap(int initGroupNum) {
-        territoriesAdjacentList = new HashMap();
+        territoriesAdjacentList = new HashMap<>();
         initGroupOwners = new ArrayList<>();
         for (int i = 0; i < initGroupNum; ++i) {
             initGroupOwners.add(new InitGroupOwner("Group" + (char) ('A' + i)));
@@ -80,7 +80,7 @@ public class GameMap implements Serializable {
      */
     private InitGroupOwner getInitOwner(String groupName) {
         for (Player o : initGroupOwners) {
-            if (o.getName().equals(groupName)) {
+            if (o.getName().toLowerCase().equals(groupName.toLowerCase())) {
                 return (InitGroupOwner) o;
             }
         }
@@ -105,11 +105,12 @@ public class GameMap implements Serializable {
         for (Territory t : territoriesAdjacentList.keySet()) {
             if (t.getOwner().equals(o)) {
                 t.setOwner(player);
+                player.addTerritory(t);
                 ++assigenCounter;
             }
         }
         if (assigenCounter == 0) {
-            throw new IllegalArgumentException("" + o.getName() + "has been occupied");
+            throw new IllegalArgumentException("" + o.getName() + " has been occupied");
         }
     }
 

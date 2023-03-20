@@ -49,6 +49,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   protected CountDownLatch commitSignal;
   protected CountDownLatch returnSignal;
 
+  protected boolean isGameBegin = false;
+
   /**
    * Constructs a new `Server` with the specified output stream, number of
    * players, and initial units.
@@ -86,7 +88,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * Initializes the game map for the current game.
    */
   protected void initGameMap() {
-    this.map = new TextMapFactory().createMap();
+    this.map = new TextMapFactory().createMapNew(numPlayers);
     this.ox = new OrderExecuter(map.getTerritories());
     out.println("GameMap initialized");
   }
@@ -127,9 +129,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
       returnSignal.countDown(); // release all doCommit() remote invocations
       if (isGameOver()) {
         notifyAllClientsGameResult(); // End current game.
-        initClientsSet(); // Prepare for next game.
-        initGameMap();
-        setupCountDownLatches(numPlayers);
+        break;
+        // initClientsSet(); // Prepare for next game.
+        // initGameMap();
+        // setupCountDownLatches(numPlayers);
       } else {
         notifyAllWatchers();
         setupCountDownLatches(inGameClients.size());
@@ -141,11 +144,14 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   public synchronized String tryRegisterClient(RemoteClient newClient, String name) throws RemoteException {
     if (inGameClients.containsKey(newClient)) {
       return "Already joined, cannot join repeatly";
-    } else if (inGameClients.size() >= numPlayers) {
-      return "Clients are full";
+    } else if (isGameBegin) {
+      return "the game is in progress";
     } else {
       Player p = new Player(name);
       inGameClients.put(newClient, p);
+      if (inGameClients.size() == numPlayers) {
+        isGameBegin = true;
+      }
       out.println("Player " + p.getName() + " joined game. (" + inGameClients.size() + "/" + numPlayers + ")");
       return null;
     }
@@ -168,18 +174,27 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
 
   @Override
   public synchronized String tryPickTerritoryGroupByName(RemoteClient client, String groupName) throws RemoteException {
-    // TODO to be completed
-    return "To be completed";
+    try {
+      map.assignGroup(groupName, inGameClients.get(client));
+      return null;
+    } catch (RuntimeException e) {
+      return e.getMessage();
+    }
   }
 
   @Override
   public synchronized String tryPlaceUnitsOn(RemoteClient client, String territory, int units) throws RemoteException {
     try {
-      if (map.getTerritoryByName(territory).getOwner().equals(inGameClients.get(client))) {
-        map.getTerritoryByName(territory).increaseUnits(units);
-        return null;
-      } else {
+      Territory t = map.getTerritoryByName(territory);
+      Player p = inGameClients.get(client);
+      int remainingUnits = initialUnit - p.getTotalUnits();
+      if (!t.getOwner().equals(p)) {
         return "Permission denied";
+      } else if (units > remainingUnits) {
+        return "Too many units";
+      } else {
+        t.increaseUnits(units);
+        return null;
       }
     } catch (RuntimeException e) {
       return e.getMessage();
