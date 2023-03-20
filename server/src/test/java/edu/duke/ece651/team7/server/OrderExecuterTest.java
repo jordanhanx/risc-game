@@ -23,7 +23,7 @@ public class OrderExecuterTest {
     @Test
     public void test_doOneMove(){
         MapFactory factory = new TextMapFactory();
-        GameMap map = factory.createMap();
+        GameMap map = factory.createPlayerMap(3);
         OrderExecuter ox = new OrderExecuter(map.getTerritories());
         Player p1 = new Player("a");
         Player p2 = new Player("b");
@@ -42,7 +42,7 @@ public class OrderExecuterTest {
     @Test
     public void test_PushCombat(){
         MapFactory factory = new TextMapFactory();
-        GameMap map = factory.createMap();
+        GameMap map = factory.createPlayerMap(3);
         Player p1 = new Player("a");
         Player p2 = new Player("b");
         Player p3 = new Player("c");
@@ -73,7 +73,7 @@ public class OrderExecuterTest {
     @Test
     public void test_doOneCombat(){
         MapFactory factory = new TextMapFactory();
-        GameMap map = factory.createMap();
+        GameMap map = factory.createPlayerMap(3);
         Player p1 = new Player("a");
         Player p2 = new Player("b");
         Player p3 = new Player("c");
@@ -100,7 +100,7 @@ public class OrderExecuterTest {
     @Test
     public void test_doAllCombat(){
         MapFactory factory = new TextMapFactory();
-        GameMap map = factory.createMap();
+        GameMap map = factory.createPlayerMap(3);
         Player p1 = new Player("a");
         Player p2 = new Player("b");
         Player p3 = new Player("c");
