@@ -8,12 +8,11 @@ import edu.duke.ece651.team7.shared.TextMapFactory;
 
 public class App {
   public static void main(String[] args) {
-    if (args.length == 2) {
+    if (args.length == 3) {
       try {
-        // MapFactory factory = new TextMapFactory();
-        // Server server = new Server(Integer.parseInt(args[1]), System.out, 10,
-        // factory.createMapTest());
-        // server.start(Integer.parseInt(args[0]));
+        Server server = new Server(System.out, Integer.parseInt(args[0]), Integer.parseInt(args[1]),
+            Integer.parseInt(args[2]));
+        server.start();
       } catch (Exception e) {
         System.err.println("Exception: " + e);
       }
