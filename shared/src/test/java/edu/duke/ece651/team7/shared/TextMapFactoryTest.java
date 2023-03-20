@@ -3,6 +3,7 @@ package edu.duke.ece651.team7.shared;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -51,10 +52,10 @@ public class TextMapFactoryTest {
     @Test
     public void createMapNew(){
         TextMapFactory mf = new TextMapFactory();
-        GameMap newMap = mf.createMapNew(3);
-        Player p1 = newMap.new InitGroupOwner("GroupA");
-        Player p2 = newMap.new InitGroupOwner("GroupB");
-        Player p3 = newMap.new InitGroupOwner("GroupC");
+        GameMap threePlayersMap = mf.createMapNew(3);
+        Player p1 = threePlayersMap.new InitGroupOwner("GroupA");
+        Player p2 = threePlayersMap.new InitGroupOwner("GroupB");
+        Player p3 = threePlayersMap.new InitGroupOwner("GroupC");
         Territory territory1 = new Territory("Narnia", p1, 10);
         Territory territory2 = new Territory("Elantris", p2, 6);
         Territory territory3 = new Territory("Midkemia", p1,12);
@@ -64,7 +65,7 @@ public class TextMapFactoryTest {
         Territory territory7 = new Territory("Gondor",p3,13);
         Territory territory8 = new Territory("Mordor",p3,14);
         Territory territory9 = new Territory("Hogwarts",p3,3);
-        Collection<Territory> terr = newMap.getTerritories();
+        Collection<Territory> terr = threePlayersMap.getTerritories();
         assertEquals(true, terr.contains(territory1));
         assertEquals(true, terr.contains(territory2));
         assertEquals(true, terr.contains(territory3));
@@ -75,12 +76,16 @@ public class TextMapFactoryTest {
         assertEquals(true, terr.contains(territory8));
         assertEquals(true, terr.contains(territory9));
 
-        Territory terr2 = newMap.getTerritoryByName("Narnia");
+        Territory terr2 = threePlayersMap.getTerritoryByName("Narnia");
         Player p11 = terr2.getOwner();
         Player p12 = new Player("GroupA");
-        Player p13 = newMap.new InitGroupOwner("GroupA");
+        Player p13 = threePlayersMap.new InitGroupOwner("GroupA");
         assertNotEquals(p11, p12);
         assertEquals(p11, p13);
+
+        assertThrows(IllegalArgumentException.class, ()->mf.createMapNew(5));
+        GameMap twoPlayersMap = mf.createMapNew(2);
+        GameMap fourPlayersMap = mf.createMapNew(4);
 
   
     }
