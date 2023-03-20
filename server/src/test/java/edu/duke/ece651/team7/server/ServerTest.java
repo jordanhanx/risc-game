@@ -139,7 +139,7 @@ public class ServerTest {
     assertEquals(null, server.tryRegisterClient(cBlue, "Blue"));
     assertEquals("Already joined, cannot join repeatly", server.tryRegisterClient(cBlue, "ImNotBlue"));
     assertEquals(null, server.tryRegisterClient(cGreen, "Green"));
-    assertEquals("Clients are full", server.tryRegisterClient(cRed, "Red"));
+    assertEquals("the game is in progress", server.tryRegisterClient(cRed, "Red"));
     assertEquals(outputs.toString(), bytes.toString());
 
     assertEquals(2, inGameClients.size());
@@ -188,14 +188,34 @@ public class ServerTest {
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     RemoteClient cBlue = mock(RemoteClient.class);
+    RemoteClient cGreen = mock(RemoteClient.class);
     Player pBlue = mock(Player.class);
+    Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
     Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
+    // Setup mock
     inGameClients.put(cBlue, pBlue);
-    assertEquals("To be completed", server.tryPickTerritoryGroupByName(cBlue, "GroupA"));
+    inGameClients.put(cGreen, pGreen);
+
+    doNothing().when(mockMap).assignGroup("GroupA", pBlue);
+    doThrow(new IllegalArgumentException("GroupA has been Occupied")).when(mockMap).assignGroup("GroupA",
+        pGreen);
+    doThrow(new IllegalArgumentException("Blue is not a Group")).when(mockMap).assignGroup("Blue",
+        pGreen);
+    doNothing().when(mockMap).assignGroup("GroupB", pGreen);
+    // Test
+    assertEquals(null, server.tryPickTerritoryGroupByName(cBlue, "GroupA"));
+    assertEquals("GroupA has been Occupied", server.tryPickTerritoryGroupByName(cGreen, "GroupA"));
+    assertEquals("Blue is not a Group", server.tryPickTerritoryGroupByName(cGreen, "Blue"));
+    assertEquals(null, server.tryPickTerritoryGroupByName(cGreen, "GroupB"));
+    // Verify
+    verify(mockMap, times(1)).assignGroup("GroupA", pBlue);
+    verify(mockMap, times(1)).assignGroup("GroupA", pGreen);
+    verify(mockMap, times(1)).assignGroup("Blue", pGreen);
+    verify(mockMap, times(1)).assignGroup("GroupB", pGreen);
   }
 
   @Test
@@ -221,11 +241,15 @@ public class ServerTest {
     inGameClients.put(cGreen, pGreen);
     when(tMordor.getOwner()).thenReturn(pBlue);
     when(tHogwarts.getOwner()).thenReturn(pGreen);
-    // Test
+    when(pBlue.getTotalUnits()).thenReturn(0, 0, 5, 20);
     doThrow(new IllegalArgumentException("units cannot be less than 0")).when(tMordor).increaseUnits(-1);
-    assertEquals(null, server.tryPlaceUnitsOn(cBlue, "Mordor", 5));
-    assertEquals("Permission denied", server.tryPlaceUnitsOn(cBlue, "Hogwarts", 5));
+    // Test
     assertEquals("units cannot be less than 0", server.tryPlaceUnitsOn(cBlue, "Mordor", -1));
+    assertEquals(null, server.tryPlaceUnitsOn(cBlue, "Mordor", 5));
+    assertEquals(null, server.tryPlaceUnitsOn(cBlue, "Mordor", 15));
+    assertEquals("Too many units", server.tryPlaceUnitsOn(cBlue, "Mordor", 1));
+    assertEquals("Permission denied", server.tryPlaceUnitsOn(cBlue, "Hogwarts", 5));
+
   }
 
   @Test
@@ -300,8 +324,6 @@ public class ServerTest {
     // Test
     assertDoesNotThrow(() -> server.doCommitOrder(cBlue));
     // Verify
-    verify(cBlue, times(1)).ping();
-    verify(cGreen, times(1)).ping();
     verify(commitLatch, times(1)).countDown();
     verify(commitLatch, never()).await();
     verify(returnLatch, never()).countDown();
@@ -388,7 +410,7 @@ public class ServerTest {
   }
 
   @Test
-  public void test_notifyAllWatchersDisplay() throws RemoteException {
+  public void test_notifyAllWatchers() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -409,18 +431,18 @@ public class ServerTest {
     assertTrue(watchingClients.contains(cBlue));
     assertTrue(watchingClients.contains(cGreen));
     // notify
-    assertDoesNotThrow(() -> server.notifyAllWatchersDisplay());
+    assertDoesNotThrow(() -> server.notifyAllWatchers());
     // after notify
-    assertEquals(1, watchingClients.size());
+    assertEquals(2, watchingClients.size());
     assertTrue(watchingClients.contains(cBlue));
-    assertFalse(watchingClients.contains(cGreen));
+    assertTrue(watchingClients.contains(cGreen));
     // Verify
     verify(cBlue, times(1)).doDisplay(any(GameMap.class));
     verify(cGreen, times(1)).doDisplay(any(GameMap.class));
   }
 
   @Test
-  public void test_doEndGame() throws RemoteException {
+  public void test_notifyAllClientsGameResult() throws RemoteException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -438,9 +460,7 @@ public class ServerTest {
     watchingClients.add(cRed);
     doThrow(RemoteException.class).when(cRed).doDisplay(anyString());
     // Test
-    assertDoesNotThrow(() -> server.doEndGame());
-    assertTrue(inGameClients.isEmpty());
-    assertTrue(watchingClients.isEmpty());
+    assertDoesNotThrow(() -> server.notifyAllClientsGameResult());
   }
 
   @Test
@@ -448,7 +468,6 @@ public class ServerTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
-    RemoteClient cBlue = mock(RemoteClient.class);
     Map<RemoteClient, Player> mockInGameClients = mock(HashMap.class);
 
     HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
@@ -459,15 +478,14 @@ public class ServerTest {
         commitLatch, returnLatch);
 
     // Setup mocks
-    when(mockInGameClients.size()).thenReturn(2, 1, 1).thenThrow(RuntimeException.class);
-    when(mockInGameClients.keySet()).thenReturn(new HashMap<RemoteClient, Player>().keySet());
+    when(mockInGameClients.size()).thenReturn(3, 3, 2, 2, 1);
     // Test
-    assertThrows(RuntimeException.class, () -> server.start());
-    verify(mockInGameClients, times(4)).size();
+    assertDoesNotThrow(() -> server.start());
+    verify(mockInGameClients, times(5)).size();
     verify(mockInGameClients, times(4)).keySet();
     verify(commitLatch, never()).countDown();
     verify(commitLatch, times(3)).await();
-    verify(returnLatch, times(1)).countDown();
+    verify(returnLatch, times(3)).countDown();
     verify(returnLatch, never()).await();
   }
 }

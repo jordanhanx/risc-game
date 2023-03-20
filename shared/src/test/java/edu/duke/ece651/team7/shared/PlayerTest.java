@@ -124,9 +124,10 @@ public class PlayerTest {
         assertTrue(pBlue.compareTo(pRed) < 0);
         assertThrows(IllegalArgumentException.class, () -> pGreen.compareTo(null));
         // Create an anonymous subclass
-        Player anonymousPlayer = new Player("orginal name") {
+        Player anonymousPlayer = new Player("anonymous name") {
         };
-        assertThrows(IllegalArgumentException.class, () -> pGreen.compareTo(anonymousPlayer));
+        assertTrue(pGreen.compareTo(anonymousPlayer) < 0);
+        assertThrows(IllegalArgumentException.class, () -> pGreen.compareTo(null));
     }
 
     @Test
