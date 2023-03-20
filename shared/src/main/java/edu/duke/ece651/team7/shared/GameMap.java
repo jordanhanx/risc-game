@@ -2,6 +2,7 @@ package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
     private Map<Territory, List<Territory>> territoriesAdjacentList;
 
+<<<<<<< HEAD
     // class InitGroupOwner extends Player {
     // public InitGroupOwner(String name) {
     // super(name);
@@ -22,6 +25,18 @@ public class GameMap implements Serializable {
     // }
 
     // private List<Player> initGroupOwners;
+=======
+
+    class InitGroupOwner extends Player {
+
+        public InitGroupOwner(String name) {
+            super(name);
+        }
+    }
+
+
+    private List<Player> initGroupOwners;
+>>>>>>> origin/master
 
     /**
      * Constructs a GameMap object with a set of territories.
@@ -33,6 +48,7 @@ public class GameMap implements Serializable {
         this.territoriesAdjacentList = territoriesAdjacentList;
     }
 
+<<<<<<< HEAD
     // public GameMap(int initGroupNum) {
     // initGroupOwners = new ArrayList<>();
     // for (int i = 1; i <= initGroupNum; ++i) {
@@ -73,6 +89,85 @@ public class GameMap implements Serializable {
     // throw new IllegalArgumentException("" + o.getName() + "has been occupied");
     // }
     // }
+=======
+
+    /**
+    * Constructs a GameMap object with a specified number of initial group owners.
+    *
+    *@param initGroupNum the number of initial group owners to be created
+    */
+    public GameMap(int initGroupNum) {
+        territoriesAdjacentList = new HashMap();
+        initGroupOwners = new ArrayList<>();
+        for (int i = 0; i < initGroupNum; ++i) {
+            initGroupOwners.add(new InitGroupOwner("Group" + (char)('A' + i)));
+        }
+    }
+
+
+    /**
+ * Return a list of the initial group owners for the game map.
+ *
+ * @return a list of the initial group owners for the game map
+ */
+    public List<Player> getInitGroupOwners() {
+        return initGroupOwners;
+    }
+
+
+    /**
+ * Adds the specified territory and its neighbors to the GameMap.
+ *
+ * @param t         the territory to add
+ * @param neighbors the neighboring territories of the specified territory
+ */
+    public void addTerritoryAndNeighbors(Territory t, Territory... neighbors) {
+        territoriesAdjacentList.put(t, new LinkedList<>());
+        for (Territory neighbor : neighbors) {
+            territoriesAdjacentList.get(t).add(neighbor);
+        }
+    }
+
+
+    /**
+ * Returns the InitGroupOwner object which has the specified 'groupName'.
+ * @param groupName the name of the group to retrieve the InitGroupOwner for
+ * @return the InitGroupOwner object for the specified group name
+ * @throws IllegalArgumentException if the specified group name is not found
+ */
+    private InitGroupOwner getInitOwner(String groupName) {
+        for (Player o : initGroupOwners) {
+            if (o.getName().equals(groupName)) {
+                 return (InitGroupOwner) o;
+             }
+         }
+        throw new IllegalArgumentException("Group "+ groupName + " not found");
+    }
+
+
+    /**
+ * Assigns the specified player to all territories owned by the owners with 'groupName'.
+ * @param groupName the name of the group whose territories will be assigned to the player
+ * @param player the player to assign the territories to
+ * @throws IllegalArgumentException if the specified group name is found in initGroupOwners, but the territories owned by it
+ *                                  have already assigned to another player
+ */
+    public void assignGroup(String groupName, Player player) {
+            int assigenCounter = 0;
+            InitGroupOwner o = getInitOwner(groupName);
+            for (Territory t : territoriesAdjacentList.keySet()) {
+                if (t.getOwner().equals(o)) {
+                     t.setOwner(player);
+                     ++assigenCounter;
+                }
+             }
+            if (assigenCounter == 0) {
+                 throw new IllegalArgumentException("" + o.getName() + "has been occupied");
+             }
+    }
+
+    
+>>>>>>> origin/master
 
     /**
      *
@@ -83,6 +178,7 @@ public class GameMap implements Serializable {
     public Collection<Territory> getTerritories() {
         return territoriesAdjacentList.keySet();
     }
+
 
     /**
      *
@@ -98,6 +194,7 @@ public class GameMap implements Serializable {
         Territory terr = getTerritoryByName(name);
         return territoriesAdjacentList.get(terr);
     }
+
 
     /**
      * Returns the territory with the specified name.
@@ -170,6 +267,7 @@ public class GameMap implements Serializable {
         return false;
     }
 
+<<<<<<< HEAD
     /**
      * Splits the territories in the GameMap into numPlayers groups.
      * Each group will contain an equal number of territories.
@@ -197,6 +295,10 @@ public class GameMap implements Serializable {
         return territoryGroups;
     }
 
+=======
+
+    
+>>>>>>> origin/master
     @Override
     public boolean equals(Object o) {
         if (o != null && o.getClass().equals(getClass())) {
@@ -206,5 +308,7 @@ public class GameMap implements Serializable {
             return false;
         }
     }
+
+
 
 }
