@@ -162,8 +162,8 @@ public class Combat {
             doOneUnitCombat(participants.get(defender), participants.get(attacker));
             defender = updateParticipantList(defender, attacker);
             if(combatEnd()){ //combats end
-                battleField.setOwner(participants.get(0));
                 originOwner.removeTerritory(battleField);
+                battleField.setOwner(participants.get(0));
                 participants.get(0).addTerritory(battleField);
                 //for testing
                 System.out.println("Winner of Combat in " +battleField.getName() + " is: " + participants.get(0).getName());

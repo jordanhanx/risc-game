@@ -113,12 +113,52 @@ public class OrderExecuterTest {
 
         AttackOrder a4 = new AttackOrder(p1,  map.getTerritoryByName("Midkemia"),  map.getTerritoryByName("Elantris"), 4);
         ox.pushCombat(a4);
+        Combat targetCombat = ox.isInCombatPool(a4.getDest());
+        assertEquals(14,targetCombat.getAttackUnitofPlayer(p1));
 
     }
 
     @Test
     public void test_doAllCombat(){
-       
+        GameMap map = buildTestMap();
+        OrderExecuter ox = new OrderExecuter(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        p2.addTerritory(map.getTerritoryByName("Scadrial"));
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        p3.addTerritory(map.getTerritoryByName("Mordor"));
+        Player p4 = new Player("green");
+        Player p5 = new Player("blue");
+        map.getTerritoryByName("Elantris").setOwner(p4);
+        p4.addTerritory(map.getTerritoryByName("Elantris"));
+
+        map.getTerritoryByName("Roshar").setOwner(p5);
+        p5.addTerritory(map.getTerritoryByName("Roshar"));
+
+        AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Scadrial"), 10);
+        AttackOrder m2 = new AttackOrder(p4, map.getTerritoryByName("Elantris"), map.getTerritoryByName("Scadrial"), 3);
+        AttackOrder m3 = new AttackOrder(p5, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Scadrial"), 2);
+
+        AttackOrder m4 = new AttackOrder(p3, map.getTerritoryByName("Mordor"), map.getTerritoryByName("Scadrial"), 3);
+
+
+        AttackOrder m5 = new AttackOrder(p1, map.getTerritoryByName("Oz"), map.getTerritoryByName("Mordor"), 5);
+        AttackOrder m6 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Mordor"), 1);
+        ox.pushCombat(m1);
+        ox.pushCombat(m2);
+        ox.pushCombat(m3);
+        ox.pushCombat(m4);
+
+        ox.pushCombat(m5);
+        ox.pushCombat(m6);
+
+        // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
+        // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
+        ox.doAllCombats();
+        // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
+        // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
+        assertNull(ox.isInCombatPool(m4.getDest()));
+        assertNull(ox.isInCombatPool(m6.getDest()));
     }
     
     
