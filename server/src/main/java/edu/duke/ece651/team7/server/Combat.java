@@ -112,8 +112,13 @@ public class Combat {
      * @return false if defender succeeds
      */
     public boolean doOneUnitCombat(Player defender, Player attacker){
-        // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
-        //  +"defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
+        //the original owner of the territory should always be defender
+        if(attacker == battleField.getOwner()){
+            attacker = defender;
+            defender = battleField.getOwner();
+        }
+        System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
+         +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
         //if the player does not have any units combating, return 
         if(attackPool.get(defender) == 0){
             return true;
@@ -175,7 +180,7 @@ public class Combat {
      * @return player that wins in the combat
      */
     public Player resolveCombat(){
-        System.out.print("\nResolving Combat...");
+        System.out.println("\nResolving Combat...");
         if (!hasCombat()){
             return null;
         }
