@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class GameMap implements Serializable {
      * @param initGroupNum the number of initial group owners to be created
      */
     public GameMap(int initGroupNum) {
-        territoriesAdjacentList = new HashMap<>();
+        territoriesAdjacentList = new LinkedHashMap<>();
         initGroupOwners = new ArrayList<>();
         for (int i = 0; i < initGroupNum; ++i) {
             initGroupOwners.add(new InitGroupOwner("Group" + (char) ('A' + i)));
