@@ -38,6 +38,13 @@ public class TerritoryTest {
   }
 
   @Test
+  public void test_setUnits() {
+    Territory t = new Territory("test");
+    assertThrows(IllegalArgumentException.class, () -> t.setUnits(-1));
+    assertDoesNotThrow(() -> t.setUnits(0));
+  }
+
+  @Test
   public void test_increaseUnits() {
     Territory t = new Territory("test");
     assertEquals(0, t.getUnits());
