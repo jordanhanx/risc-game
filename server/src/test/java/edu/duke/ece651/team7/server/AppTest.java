@@ -20,6 +20,6 @@ public class AppTest {
     } finally {
       System.setErr(oldErr);
     }
-    assertEquals("Usage: server <port> <client capacity> <init units per playe>\n", bytes.toString());
+    assertEquals("Usage: server <port> <players number> <player's init units>\n", bytes.toString());
   }
 }
