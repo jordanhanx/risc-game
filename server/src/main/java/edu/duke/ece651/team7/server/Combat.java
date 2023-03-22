@@ -73,7 +73,7 @@ public class Combat {
      * @return false if not
      */
     public boolean hasCombat(){
-        if (participants.size() > 1 && attackPool.size() > 1){
+        if (participants.size() >= 1 && attackPool.size() >= 1){
             return true;
         }
         return false;
@@ -149,13 +149,13 @@ public class Combat {
      * @return player that wins in the combat
      */
     public Player resolveCombat(){
+        if (!hasCombat()){
+            return null;
+        }
          //owner of the territory participate in the combat
         pushAttack(battleField.getOwner(), battleField.getUnits());
         battleField.decreaseUnits(battleField.getUnits());
         Player originOwner = battleField.getOwner();
-        if (!hasCombat()){
-            return null;
-        }
         int defender = 0;
         while (true){
             //wrap around
