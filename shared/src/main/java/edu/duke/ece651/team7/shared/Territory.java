@@ -54,6 +54,14 @@ public class Territory implements Serializable {
     owner = p;
   }
 
+  public void setUnits(int num) {
+    if (num < 0) {
+      throw new IllegalArgumentException("input num must be greater than 0");
+    } else {
+      units = num;
+    }
+  }
+
   public void increaseUnits() {
     units++;
   }
