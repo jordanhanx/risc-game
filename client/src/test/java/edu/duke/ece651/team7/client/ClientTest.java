@@ -13,6 +13,7 @@ import java.io.StringReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
+import java.util.concurrent.BrokenBarrierException;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,11 @@ public class ClientTest {
         RemoteServer mockServer = mock(RemoteServer.class);
         createMockedClient(mockServer, "", bytes);
         assertEquals("Connected to MockHost:0 successfully.\n", bytes.toString());
+
+        // test real constructor
+        PrintStream output = new PrintStream(bytes, true);
+        BufferedReader input = new BufferedReader(new StringReader(""));
+        assertThrows(RemoteException.class, () -> new Client("Localhost", 0, input, output));
     }
 
     @Test
@@ -380,7 +386,8 @@ public class ClientTest {
     }
 
     @Test
-    public void test_requestContinueGame() throws RemoteException, NotBoundException, InterruptedException {
+    public void test_requestContinueGame()
+            throws RemoteException, NotBoundException, InterruptedException, BrokenBarrierException {
         StringBuilder outputs = new StringBuilder();
         outputs.append("Waiting for other players...\n");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -433,7 +440,8 @@ public class ClientTest {
     }
 
     @Test
-    public void test_playOneTurn() throws RemoteException, NotBoundException, InterruptedException, IOException {
+    public void test_playOneTurn()
+            throws RemoteException, NotBoundException, InterruptedException, IOException, BrokenBarrierException {
         StringBuilder inputs = new StringBuilder();
         inputs.append("evom Mordor Hogwarts 5\n");
         inputs.append("Move Mordor Hogwarts 5\n");
@@ -618,7 +626,7 @@ public class ClientTest {
         verify(mockServer, atLeastOnce()).getGameMap();
         verify(mockServer, atLeastOnce()).getSelfStatus(client);
         verify(mockServer, atLeastOnce()).getInitUints();
-        verify(mockServer, times(2)).isGameOver();
+        verify(mockServer, times(3)).isGameOver();
         verify(pGreen, times(3)).isLose();
     }
 
@@ -733,7 +741,7 @@ public class ClientTest {
         verify(mockServer, atLeastOnce()).getSelfStatus(client);
         verify(mockServer, atLeastOnce()).getInitUints();
         verify(mockServer, times(3)).isGameOver();
-        verify(pGreen, times(3)).isLose();
+        verify(pGreen, times(2)).isLose();
     }
 
     @Test
@@ -814,5 +822,13 @@ public class ClientTest {
         bytes.reset();
         assertDoesNotThrow(() -> client.doDisplay(""));
         assertEquals("\n", bytes.toString());
+    }
+
+    @Test
+    public void test_close() throws RemoteException, NotBoundException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        RemoteServer mockServer = mock(RemoteServer.class);
+        Client client = createMockedClient(mockServer, "", bytes);
+        assertDoesNotThrow(() -> client.close());
     }
 }
