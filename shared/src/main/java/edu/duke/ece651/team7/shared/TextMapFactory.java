@@ -1,14 +1,8 @@
 package edu.duke.ece651.team7.shared;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TextMapFactory implements MapFactory {
-
 
         @Override
         public GameMap createPlayerMap(int initGroupNum) {

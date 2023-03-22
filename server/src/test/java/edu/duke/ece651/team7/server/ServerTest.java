@@ -11,11 +11,11 @@ import java.io.PrintStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ public class ServerTest {
 
   public static Server createMockedServer(OutputStream bytes, int numPlayers, int initUnits, GameMap mockMap,
       OrderExecuter mockOX, Map<RemoteClient, Player> mockInGameClients,
-      Set<RemoteClient> mockWatchingClients)
+      Map<RemoteClient, Player> mockWatchingClients)
       throws RemoteException {
     PrintStream output = new PrintStream(bytes, true);
     Server server = new Server(output, 0, numPlayers, initUnits) {
@@ -70,7 +70,7 @@ public class ServerTest {
 
   public static Server createMockedCountDownLatchServer(OutputStream bytes, int numPlayers, int initUnits,
       GameMap mockMap, OrderExecuter mockOX, Map<RemoteClient, Player> mockInGameClients,
-      Set<RemoteClient> mockWatchingClients, CountDownLatch commitLatch, CountDownLatch returnLatch)
+      Map<RemoteClient, Player> mockWatchingClients, CountDownLatch commitLatch, CyclicBarrier returnBarrier)
       throws RemoteException {
     PrintStream output = new PrintStream(bytes, true);
     Server server = new Server(output, 0, numPlayers, initUnits) {
@@ -96,7 +96,7 @@ public class ServerTest {
       @Override
       protected void setupCountDownLatches(int numInGame) {
         this.commitSignal = commitLatch;
-        this.returnSignal = returnLatch;
+        this.returnSignal = returnBarrier;
       }
     };
     return server;
@@ -116,6 +116,12 @@ public class ServerTest {
     assertEquals(outputs.toString(), bytes.toString());
     assertThrows(IllegalArgumentException.class, () -> createServer(bytes, 1, 20, mockMap, mockOX));
     assertThrows(IllegalArgumentException.class, () -> createServer(bytes, 3, 0, mockMap, mockOX));
+
+    // Test real constructor
+    bytes.reset();
+    PrintStream output = new PrintStream(bytes, true);
+    assertDoesNotThrow(() -> new Server(output, 8082, 2, 20));
+    assertEquals(outputs.toString(), bytes.toString());
   }
 
   @Test
@@ -127,7 +133,7 @@ public class ServerTest {
     RemoteClient cGreen = mock(RemoteClient.class);
     RemoteClient cRed = mock(RemoteClient.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 2, 20, mockMap, mockOX, inGameClients, watchingClients);
 
@@ -138,6 +144,7 @@ public class ServerTest {
     bytes.reset();
     assertEquals(null, server.tryRegisterClient(cBlue, "Blue"));
     assertEquals("Already joined, cannot join repeatly", server.tryRegisterClient(cBlue, "ImNotBlue"));
+    assertEquals("the Player Blue exists, please retry", server.tryRegisterClient(cGreen, "Blue"));
     assertEquals(null, server.tryRegisterClient(cGreen, "Green"));
     assertEquals("the game is in progress", server.tryRegisterClient(cRed, "Red"));
     assertEquals(outputs.toString(), bytes.toString());
@@ -162,15 +169,21 @@ public class ServerTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     RemoteClient cBlue = mock(RemoteClient.class);
+    RemoteClient cGreen = mock(RemoteClient.class);
+    RemoteClient cRed = mock(RemoteClient.class);
     Player pBlue = mock(Player.class);
+    Player pGreen = mock(Player.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
     inGameClients.put(cBlue, pBlue);
+    watchingClients.put(cGreen, pGreen);
     assertEquals(pBlue, server.getSelfStatus(cBlue));
+    assertEquals(pGreen, server.getSelfStatus(cGreen));
+    assertEquals(null, server.getSelfStatus(cRed));
   }
 
   @Test
@@ -192,7 +205,7 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
@@ -228,7 +241,7 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
 
@@ -257,26 +270,23 @@ public class ServerTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
-    RemoteClient cBlue = mock(RemoteClient.class);
     Server server = createServer(bytes, 3, 20, mockMap, mockOX);
+
     // Setup mockMap
     Territory tMordor = mock(Territory.class);
     Territory tHogwarts = mock(Territory.class);
     when(mockMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
     when(mockMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
     // Setup mockOX
-    // when(mockOX.doOneMove(any(MoveOrder.class))).thenReturn(null)
-    //     .thenThrow(new IllegalArgumentException("Invalid input"));
-
-    // doThrow(new IllegalArgumentException("Invalid input")).when(mockOX).doOneMove(any(MoveOrder.class));
+    doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(mockOX).doOneMove(any(MoveOrder.class));
     // Test
-    assertEquals(null, server.tryRegisterClient(cBlue, "Blue"));
-    assertEquals(null, server.tryMoveOrder(cBlue, "Hogwarts", "Mordor", 5));
-    // assertEquals("Invalid input", server.tryMoveOrder(cBlue, "Hogwarts", "Mordor", 5));
+    assertEquals(null, server.tryMoveOrder(any(RemoteClient.class), "Hogwarts", "Mordor", 5));
+    assertEquals("Invalid Input:", server.tryMoveOrder(any(RemoteClient.class), "Hogwarts", "Mordor", 5));
+
     // Verify
-    // verify(mockOX, times(2)).doOneMove(any(MoveOrder.class));
     verify(mockMap, atLeastOnce()).getTerritoryByName("Hogwarts");
     verify(mockMap, atLeastOnce()).getTerritoryByName("Mordor");
+    verify(mockOX, times(2)).doOneMove(any(MoveOrder.class));
   }
 
   @Test
@@ -284,7 +294,6 @@ public class ServerTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
-    RemoteClient cBlue = mock(RemoteClient.class);
     Server server = createServer(bytes, 3, 20, mockMap, mockOX);
     // Setup mockMap
     Territory tMordor = mock(Territory.class);
@@ -292,20 +301,19 @@ public class ServerTest {
     when(mockMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
     when(mockMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
     // Setup mockOX
-    // when(mockOX.pushCombat(any(AttackOrder.class))).thenReturn(null)
-    //     .thenThrow(new IllegalArgumentException("Invalid input"));
-    doThrow(new IllegalArgumentException("Invalid input")).when(mockOX).pushCombat(any(AttackOrder.class));
+    doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(mockOX).pushCombat(any(AttackOrder.class));
     // Test
-    // assertEquals(null, server.tryAttackOrder(cBlue, "Hogwarts", "Mordor", 5));
-    assertEquals("Invalid input", server.tryAttackOrder(cBlue, "Hogwarts", "Mordor", 5));
+    assertEquals(null, server.tryAttackOrder(any(RemoteClient.class), "Hogwarts", "Mordor", 5));
+    assertEquals("Invalid Input:", server.tryAttackOrder(any(RemoteClient.class), "Hogwarts", "Mordor", 5));
+
     // Verify
-    // verify(mockOX, times(2)).pushCombat(any(AttackOrder.class));
     verify(mockMap, atLeastOnce()).getTerritoryByName("Hogwarts");
     verify(mockMap, atLeastOnce()).getTerritoryByName("Mordor");
+    verify(mockOX, times(2)).pushCombat(any(AttackOrder.class));
   }
 
   @Test
-  public void test_doCommitOrder() throws RemoteException, InterruptedException {
+  public void test_doCommitOrder() throws RemoteException, InterruptedException, BrokenBarrierException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
@@ -314,13 +322,13 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
     CountDownLatch commitLatch = mock(CountDownLatch.class);
-    CountDownLatch returnLatch = mock(CountDownLatch.class);
+    CyclicBarrier returnBarrier = mock(CyclicBarrier.class);
 
     Server server = createMockedCountDownLatchServer(bytes, 3, 20, mockMap,
         mockOX, inGameClients, watchingClients,
-        commitLatch, returnLatch);
+        commitLatch, returnBarrier);
     // Setup mock
     inGameClients.put(cBlue, pBlue);
     inGameClients.put(cGreen, pGreen);
@@ -329,8 +337,7 @@ public class ServerTest {
     // Verify
     verify(commitLatch, times(1)).countDown();
     verify(commitLatch, never()).await();
-    verify(returnLatch, never()).countDown();
-    verify(returnLatch, times(1)).await();
+    verify(returnBarrier, times(1)).await();
   }
 
   @Test
@@ -343,7 +350,7 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new ConcurrentHashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     // Test
@@ -386,7 +393,7 @@ public class ServerTest {
     Player pBlue = mock(Player.class);
     Player pGreen = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     // Setup mockPlayer
@@ -406,7 +413,7 @@ public class ServerTest {
     assertTrue(inGameClients.containsKey(cBlue));
     assertFalse(inGameClients.containsKey(cGreen));
     assertEquals(1, watchingClients.size());
-    assertTrue(watchingClients.contains(cGreen));
+    assertTrue(watchingClients.containsKey(cGreen));
     // verify
     verify(pBlue, times(1)).isLose();
     verify(pGreen, times(1)).isLose();
@@ -420,25 +427,25 @@ public class ServerTest {
     RemoteClient cBlue = mock(RemoteClient.class);
     RemoteClient cGreen = mock(RemoteClient.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     // Setup mockClient
     doNothing().when(cBlue).doDisplay(any(GameMap.class));
     doThrow(RemoteException.class).when(cGreen).doDisplay(any(GameMap.class));
-    watchingClients.add(cBlue);
-    watchingClients.add(cGreen);
+    watchingClients.put(cBlue, null);
+    watchingClients.put(cGreen, null);
     // Test
     // before notify
     assertEquals(2, watchingClients.size());
-    assertTrue(watchingClients.contains(cBlue));
-    assertTrue(watchingClients.contains(cGreen));
+    assertTrue(watchingClients.containsKey(cBlue));
+    assertTrue(watchingClients.containsKey(cGreen));
     // notify
     assertDoesNotThrow(() -> server.notifyAllWatchers());
     // after notify
     assertEquals(2, watchingClients.size());
-    assertTrue(watchingClients.contains(cBlue));
-    assertTrue(watchingClients.contains(cGreen));
+    assertTrue(watchingClients.containsKey(cBlue));
+    assertTrue(watchingClients.containsKey(cGreen));
     // Verify
     verify(cBlue, times(1)).doDisplay(any(GameMap.class));
     verify(cGreen, times(1)).doDisplay(any(GameMap.class));
@@ -454,41 +461,73 @@ public class ServerTest {
     RemoteClient cRed = mock(RemoteClient.class);
     Player pBlue = mock(Player.class);
     Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
-    Set<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
 
     Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
     // Setup mock
     inGameClients.put(cBlue, pBlue);
-    watchingClients.add(cGreen);
-    watchingClients.add(cRed);
+    watchingClients.put(cGreen, null);
+    watchingClients.put(cRed, null);
     doThrow(RemoteException.class).when(cRed).doDisplay(anyString());
     // Test
     assertDoesNotThrow(() -> server.notifyAllClientsGameResult());
   }
 
   @Test
-  public void test_start() throws RemoteException, InterruptedException, NotBoundException {
+  public void test_start() throws RemoteException, InterruptedException, NotBoundException, BrokenBarrierException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     GameMap mockMap = mock(GameMap.class);
     OrderExecuter mockOX = mock(OrderExecuter.class);
     Map<RemoteClient, Player> mockInGameClients = mock(HashMap.class);
 
-    HashSet<RemoteClient> watchingClients = new HashSet<RemoteClient>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
     CountDownLatch commitLatch = mock(CountDownLatch.class);
-    CountDownLatch returnLatch = mock(CountDownLatch.class);
+    CyclicBarrier returnBarrier = mock(CyclicBarrier.class);
     Server server = createMockedCountDownLatchServer(bytes, 3, 20, mockMap,
         mockOX, mockInGameClients, watchingClients,
-        commitLatch, returnLatch);
+        commitLatch, returnBarrier);
 
     // Setup mocks
     when(mockInGameClients.size()).thenReturn(3, 3, 2, 2, 1);
     // Test
+    bytes.reset();
     assertDoesNotThrow(() -> server.start());
-    verify(mockInGameClients, times(5)).size();
-    verify(mockInGameClients, times(4)).keySet();
+    assertEquals("RiscGameServer is closed\n", bytes.toString());
+
+    verify(mockInGameClients, times(6)).size();
+    verify(mockInGameClients, times(5)).keySet();
     verify(commitLatch, never()).countDown();
-    verify(commitLatch, times(3)).await();
-    verify(returnLatch, times(3)).countDown();
-    verify(returnLatch, never()).await();
+    verify(commitLatch, times(4)).await();
+    verify(returnBarrier, times(4)).await();
+  }
+
+  @Test
+  public void test_closeAllClients() throws RemoteException {
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    GameMap mockMap = mock(GameMap.class);
+    OrderExecuter mockOX = mock(OrderExecuter.class);
+    RemoteClient cBlue = mock(RemoteClient.class);
+    RemoteClient cGreen = mock(RemoteClient.class);
+    RemoteClient cRed = mock(RemoteClient.class);
+    RemoteClient cCyan = mock(RemoteClient.class);
+    Map<RemoteClient, Player> inGameClients = new HashMap<RemoteClient, Player>();
+    Map<RemoteClient, Player> watchingClients = new HashMap<RemoteClient, Player>();
+
+    Server server = createMockedServer(bytes, 3, 20, mockMap, mockOX, inGameClients, watchingClients);
+
+    // Setup mockClient
+    inGameClients.put(cBlue, null);
+    inGameClients.put(cGreen, null);
+    watchingClients.put(cRed, null);
+    watchingClients.put(cCyan, null);
+    doThrow(RemoteException.class).when(cGreen).close();
+    doThrow(RemoteException.class).when(cCyan).close();
+    // Test
+    assertDoesNotThrow(() -> server.closeAllClients());
+    // Verify
+    verify(cBlue, times(1)).close();
+    verify(cGreen, times(1)).close();
+    verify(cRed, times(1)).close();
+    verify(cCyan, times(1)).close();
   }
 }

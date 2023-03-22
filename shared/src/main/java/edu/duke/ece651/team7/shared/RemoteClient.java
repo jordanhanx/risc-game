@@ -11,7 +11,7 @@ public interface RemoteClient extends Remote {
     /**
      * Detect if the remote Client is alive.
      * 
-     * @throws RemoteException
+     * @throws RemoteException if there is an error with the remote connection
      */
     public void ping() throws RemoteException;
 
@@ -27,7 +27,14 @@ public interface RemoteClient extends Remote {
      * Force the client to display the String message.
      * 
      * @param msg is the message
-     * @throws RemoteException
+     * @throws RemoteException if there is an error with the remote connection
      */
     public void doDisplay(String msg) throws RemoteException;
+
+    /**
+     * Force the close the client.
+     * 
+     * @throws RemoteException if there is an error with the remote connection
+     */
+    public void close() throws RemoteException;
 }
