@@ -117,8 +117,8 @@ public class Combat {
             attacker = defender;
             defender = battleField.getOwner();
         }
-        System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
-         +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
+        // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
+        //  +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
         //if the player does not have any units combating, return 
         if(attackPool.get(defender) == 0){
             return true;
@@ -166,13 +166,13 @@ public class Combat {
     }
 
 
-    public void printCombat(){
-        System.out.print(battleField.getName() + ": ");
-        for(Player p: participants){
-            System.out.print( "(" + p.getName() + ": " + attackPool.get(p) + "), ");
-        }
-        System.out.println();
-    }
+    // public void printCombat(){
+    //     System.out.print(battleField.getName() + ": ");
+    //     for(Player p: participants){
+    //         System.out.print( "(" + p.getName() + ": " + attackPool.get(p) + "), ");
+    //     }
+    //     System.out.println();
+    // }
     /**
      * resolve combats, do one unit attack recurcively, 0/1, 1/2, 2/3....5/0
      * until only one player left
@@ -180,14 +180,14 @@ public class Combat {
      * @return player that wins in the combat
      */
     public Player resolveCombat(){
-        System.out.println("\nResolving Combat...");
+        // System.out.println("\nResolving Combat...");
         if (!hasCombat()){
             return null;
         }
          //owner of the territory participate in the combat
         pushAttack(battleField.getOwner(), battleField.getUnits());
         battleField.setUnits(0);;
-        printCombat();
+        // printCombat();
         Player originOwner = battleField.getOwner();
         int defender = 0;
         while (true){

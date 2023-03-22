@@ -39,8 +39,8 @@ public class OrderExecuter {
     public void doOneMove(MoveOrder o) throws IllegalArgumentException{
         String err = checker.checkOrderValidity(map, o);
         if(err == null){
-            System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-            System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
+            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             o.getSrc().decreaseUnits(o.getUnits());
             o.getDest().increaseUnits(o.getUnits());
         }else{
@@ -76,15 +76,15 @@ public class OrderExecuter {
             Combat targetCombat = isInCombatPool(o.getDest());
             if(targetCombat != null){
                 targetCombat.pushAttack(o.getPlayer(), o.getUnits());
-                System.out.print("Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-                System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " from " + o.getSrc().getName() +" with " + o.getUnits() + " units");
+                // System.out.print("Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+                // System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " from " + o.getSrc().getName() +" with " + o.getUnits() + " units");
                 
             }else{
                 targetCombat = new Combat(o.getDest());
                 targetCombat.pushAttack(o.getPlayer(), o.getUnits());
                 combatPool.add(targetCombat);
-                System.out.print( "Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-                System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
+                // System.out.print( "Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+                // System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
             }
         }else{
             throw new IllegalArgumentException(err);

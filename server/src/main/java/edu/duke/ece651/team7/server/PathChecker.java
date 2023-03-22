@@ -24,7 +24,7 @@ public class PathChecker extends OrderRuleChecker {
             if(!map.isAdjacent(o.getSrc().getName(), o.getDest().getName())){
                 return "Can only attack adjacent territory";
             }
-        }else if(o.getClass() == MoveOrder.class){
+        }else{
             //dest is not issuer's
             if(!o.getDest().getOwner().equals(o.getPlayer())){
                 return "Access Denied: destination Territory does not belong to you";
