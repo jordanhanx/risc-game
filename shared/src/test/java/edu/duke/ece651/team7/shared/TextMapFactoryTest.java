@@ -1,19 +1,13 @@
 package edu.duke.ece651.team7.shared;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +21,7 @@ public class TextMapFactoryTest {
         Player p1 = threePlayersMap.new InitGroupOwner("GroupA");
         Player p2 = threePlayersMap.new InitGroupOwner("GroupB");
         Player p3 = threePlayersMap.new InitGroupOwner("GroupC");
+        Player p4 = threePlayersMap.new InitGroupOwner("GroupD");
         Territory territory1 = new Territory("Narnia", p1, 10);
         Territory territory2 = new Territory("Elantris", p2, 6);
         Territory territory3 = new Territory("Midkemia", p1,12);
@@ -47,6 +42,7 @@ public class TextMapFactoryTest {
         assertEquals(true, terr.contains(territory8));
         assertEquals(true, terr.contains(territory9));
 
+        //test the onwer is the initial owner
         Territory terr2 = threePlayersMap.getTerritoryByName("Narnia");
         Player p11 = terr2.getOwner();
         Player p12 = new Player("GroupA");
@@ -57,6 +53,60 @@ public class TextMapFactoryTest {
         assertThrows(IllegalArgumentException.class, ()->mf.createPlayerMap(5));
         GameMap twoPlayersMap = mf.createPlayerMap(2);
         GameMap fourPlayersMap = mf.createPlayerMap(4);
+
+        assertEquals(twoPlayersMap.getTerritories().size(), 24);
+        assertEquals(threePlayersMap.getTerritories().size(), 24);
+
+        assertEquals(true,twoPlayersMap.hasPath("Pyke", "Dragonstone"));
+        assertEquals(true,twoPlayersMap.hasPath("Pyke", "Oz"));
+        assertEquals(true,twoPlayersMap.hasPath("Galadria", "Winterfell"));
+        assertEquals(true,twoPlayersMap.hasPath("Galadria", "Winterfell"));
+
+        //test each player has the same number of territories
+        Map<Player, Integer> twoPlayersNameCount= new HashMap<>();
+        for(Territory terr3: twoPlayersMap.getTerritories()){
+           if(twoPlayersNameCount.get(terr3.getOwner()) == null){
+                twoPlayersNameCount.put(terr3.getOwner(),1);
+            }else{
+                int countNew = twoPlayersNameCount.get(terr3.getOwner()) +1;
+                twoPlayersNameCount.put(terr3.getOwner(),countNew);
+            }
+        }
+        assertEquals(2,twoPlayersNameCount.size());
+        assertEquals(12, twoPlayersNameCount.get(p1));
+        assertEquals(12, twoPlayersNameCount.get(p2));
+
+
+        Map<Player, Integer> threePlayersNameCount= new HashMap<>();
+        for(Territory terr4: threePlayersMap.getTerritories()){
+           if(threePlayersNameCount.get(terr4.getOwner()) == null){
+                threePlayersNameCount.put(terr4.getOwner(),1);
+            }else{
+                int countNew = threePlayersNameCount.get(terr4.getOwner()) +1;
+                threePlayersNameCount.put(terr4.getOwner(),countNew);
+            }
+        }
+        assertEquals(3,threePlayersNameCount.size());
+        assertEquals(8, threePlayersNameCount.get(p1));
+        assertEquals(8, threePlayersNameCount.get(p2));
+        assertEquals(8, threePlayersNameCount.get(p3));
+
+
+        Map<Player, Integer> fourPlayersNameCount= new HashMap<>();
+        for(Territory terr5: fourPlayersMap.getTerritories()){
+           if(fourPlayersNameCount.get(terr5.getOwner()) == null){
+                fourPlayersNameCount.put(terr5.getOwner(),1);
+            }else{
+                int countNew = fourPlayersNameCount.get(terr5.getOwner()) +1;
+                fourPlayersNameCount.put(terr5.getOwner(),countNew);
+            }
+        }
+        assertEquals(4,fourPlayersNameCount.size());
+        assertEquals(6, fourPlayersNameCount.get(p1));
+        assertEquals(6, fourPlayersNameCount.get(p2));
+        assertEquals(6, fourPlayersNameCount.get(p3));
+        assertEquals(6, fourPlayersNameCount.get(p4));
+        
 
   
     }
@@ -472,14 +522,14 @@ public class TextMapFactoryTest {
 
 
         assertEquals(twoPlayersMap.getTerritories().size(), tmap.getTerritories().size());
-        int c=0;
+        int index=0;
         LinkedList<Territory> tt = (LinkedList<Territory>) tmap.getTerritories();
         for(Territory terr: twoPlayersMap.getTerritories()){          
-            assertEquals(terr.getName(), tt.get(c).getName());
-            assertEquals(terr.getOwner().getName(), tt.get(c).getOwner().getName());
-            assertEquals(terr.getUnits(), tt.get(c).getUnits());
+            assertEquals(terr.getName(), tt.get(index).getName());
+            assertEquals(terr.getOwner().getName(), tt.get(index).getOwner().getName());
+            assertEquals(terr.getUnits(), tt.get(index).getUnits());
             // System.out.println("twoMap: "+terr.getName()+" tmap " + tt.get(c).getName());
-            c++;
+            index++;
         }
 
         verify(t1).getUnits();
@@ -490,14 +540,49 @@ public class TextMapFactoryTest {
         verify(t6).getUnits();
         verify(t7).getUnits();
         verify(t8).getUnits();
-        //....
+        verify(t9).getUnits();
+        verify(t10).getUnits();
+        verify(t11).getUnits();
+        verify(t12).getUnits();
+        verify(t13).getUnits();
+        verify(t14).getUnits();
+        verify(t15).getUnits();
+        verify(t16).getUnits();
+        verify(t17).getUnits();
+        verify(t18).getUnits();
+        verify(t19).getUnits();
+        verify(t20).getUnits();
+        verify(t21).getUnits();
+        verify(t22).getUnits();
+        verify(t23).getUnits();
+        verify(t24).getUnits();
+
 
         verify(t1).getName();
         verify(t2).getName();
         verify(t3).getName();
         verify(t4).getName();
         verify(t5).getName();
-        //...
+        verify(t6).getName();
+        verify(t7).getName();
+        verify(t8).getName();
+        verify(t9).getName();
+        verify(t10).getName();
+        verify(t11).getName();
+        verify(t12).getName();
+        verify(t13).getName();
+        verify(t14).getName();
+        verify(t15).getName();
+        verify(t16).getName();
+        verify(t17).getName();
+        verify(t18).getName();
+        verify(t19).getName();
+        verify(t20).getName();
+        verify(t21).getName();
+        verify(t22).getName();
+        verify(t23).getName();
+        verify(t24).getName();
+
 
         verify(t1).getOwner();
         verify(t2).getOwner();
@@ -507,15 +592,31 @@ public class TextMapFactoryTest {
         verify(t6).getOwner();
         verify(t7).getOwner();
         verify(t8).getOwner();
-        //..
+        verify(t9).getOwner();
+        verify(t10).getOwner();
+        verify(t11).getOwner();
+        verify(t12).getOwner();
+        verify(t13).getOwner();
+        verify(t14).getOwner();
+        verify(t15).getOwner();
+        verify(t16).getOwner();
+        verify(t17).getOwner();
+        verify(t18).getOwner();
+        verify(t19).getOwner();
+        verify(t20).getOwner();
+        verify(t21).getOwner();
+        verify(t22).getOwner();
+        verify(t23).getOwner();
+        verify(t24).getOwner();
+
 
         for(Territory terr: twoPlayersMap.getTerritories()){  
-            int c2=0;
+            int index2=0;
             LinkedList<Territory> tt2 = (LinkedList<Territory>) tmap.getNeighbors(terr.getName());
             for(Territory terr2: twoPlayersMap.getNeighbors(terr.getName())){
                 // System.out.println("twoMap: "+terr2.getName()+" tmap " + tt2.get(c2).getName());
-                assertEquals(terr2.getName(), tt2.get(c2).getName());
-                c2++;
+                assertEquals(terr2.getName(), tt2.get(index2).getName());
+                index2++;
             }
 
         }
@@ -524,7 +625,26 @@ public class TextMapFactoryTest {
         verify(tmap).getNeighbors("Midkemia");
         verify(tmap).getNeighbors("Oz");
         verify(tmap).getNeighbors("Gondor");
-        //...
+        verify(tmap).getNeighbors("Elantris");
+        verify(tmap).getNeighbors("Scadrial");
+        verify(tmap).getNeighbors("Roshar");
+        verify(tmap).getNeighbors("Mordor");
+        verify(tmap).getNeighbors("Hogwarts");
+        verify(tmap).getNeighbors("Westeros");
+        verify(tmap).getNeighbors("Essos");
+        verify(tmap).getNeighbors("Dorne");
+        verify(tmap).getNeighbors("Aranthia");
+        verify(tmap).getNeighbors("Drakoria");
+        verify(tmap).getNeighbors("Galadria");
+        verify(tmap).getNeighbors("Highgarden");
+        verify(tmap).getNeighbors("Winterfell");
+        verify(tmap).getNeighbors("Helvoria");
+        verify(tmap).getNeighbors("Dragonstone");
+        verify(tmap).getNeighbors("Pyke");
+        verify(tmap).getNeighbors("Oldtown");
+        verify(tmap).getNeighbors("Braavos");
+        verify(tmap).getNeighbors("Pentos");
+        verify(tmap).getNeighbors("Volantis");
     
     }
 
