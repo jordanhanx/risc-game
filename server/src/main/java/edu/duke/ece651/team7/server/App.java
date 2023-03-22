@@ -3,9 +3,6 @@
  */
 package edu.duke.ece651.team7.server;
 
-import edu.duke.ece651.team7.shared.MapFactory;
-import edu.duke.ece651.team7.shared.TextMapFactory;
-
 public class App {
   public static void main(String[] args) {
     if (args.length == 3) {
@@ -17,7 +14,7 @@ public class App {
         System.err.println("Exception: " + e);
       }
     } else {
-      System.err.println("Usage: server <port> <clientCapacity>");
+      System.err.println("Usage: server <port> <players number> <player's init units>");
     }
   }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 public class TextMapFactory implements MapFactory {
 
-
         @Override
         public GameMap createPlayerMap(int initGroupNum) {
 

@@ -8,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.BrokenBarrierException;
 
 import edu.duke.ece651.team7.shared.*;
 
@@ -148,11 +149,13 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   /**
    * Requests Server to continue the Game until all clients are ready.
    *
-   * @throws RemoteException      if there is an error with the remote connection
-   * @throws InterruptedException if there is an error while waiting for the
-   *                              server to respond
+   * @throws RemoteException        if there is an error with the remote
+   *                                connection
+   * @throws InterruptedException   if there is an error while waiting for the
+   *                                server to respond
+   * @throws BrokenBarrierException if the barrier that is in a broken state
    */
-  public void requestContinueGame() throws RemoteException, InterruptedException {
+  public void requestContinueGame() throws RemoteException, InterruptedException, BrokenBarrierException {
     out.println("Waiting for other players...");
     server.doCommitOrder(this);
   }
@@ -184,13 +187,16 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    * Plays one turn of the game, allowing the user to enter orders until they
    * choose to end their turn.
    *
-   * @throws RemoteException      if there is an error communicating with the
-   *                              server
-   * @throws InterruptedException if the thread is interrupted while waiting for a
-   *                              response from the server
-   * @throws IOException          if there is an error reading input from the user
+   * @throws RemoteException        if there is an error communicating with the
+   *                                server
+   * @throws InterruptedException   if the thread is interrupted while waiting for
+   *                                a
+   *                                response from the server
+   * @throws IOException            if there is an error reading input from the
+   *                                user
+   * @throws BrokenBarrierException if the barrier that is in a broken state
    */
-  public void playOneTurn() throws RemoteException, InterruptedException, IOException {
+  public void playOneTurn() throws RemoteException, InterruptedException, IOException, BrokenBarrierException {
     view.display(server.getGameMap());
     while (true) {
       String input = readUserInput(
@@ -213,18 +219,21 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    * Registers the player with the server, plays the game until it is over, and
    * prints a message to the user indicating whether they won or lost.
    *
-   * @throws RemoteException      if there is an error communicating with the
-   *                              server
-   * @throws InterruptedException if the thread is interrupted while waiting for a
-   *                              response from the server
-   * @throws IOException          if there is an error reading input from the user
+   * @throws RemoteException        if there is an error communicating with the
+   *                                server
+   * @throws InterruptedException   if the thread is interrupted while waiting for
+   *                                a
+   *                                response from the server
+   * @throws IOException            if there is an error reading input from the
+   *                                user
+   * @throws BrokenBarrierException if the barrier that is in a broken state
    */
-  public void start() throws RemoteException, InterruptedException, IOException {
+  public void start() throws RemoteException, InterruptedException, IOException, BrokenBarrierException {
     registerPlayer();
     pickTerritoryGroup();
     placeUnits();
     requestContinueGame();
-    while (!server.getSelfStatus(this).isLose() && !server.isGameOver()) {
+    while (!server.isGameOver() && !server.getSelfStatus(this).isLose()) {
       playOneTurn();
     }
   }
@@ -241,5 +250,10 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
   @Override
   public void doDisplay(String msg) throws RemoteException {
     view.display(msg);
+  }
+
+  @Override
+  public void close() throws RemoteException {
+    UnicastRemoteObject.unexportObject(this, true);
   }
 }

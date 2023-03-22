@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
     private Map<Territory, List<Territory>> territoriesAdjacentList;

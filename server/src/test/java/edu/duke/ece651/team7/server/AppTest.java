@@ -1,16 +1,25 @@
 package edu.duke.ece651.team7.server;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
-import edu.duke.ece651.team7.server.App;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
-class AppTest {
+public class AppTest {
   @Test
-  void test_GetMessage() {
-    // App a = new App();
-    // assertEquals("Hello from the server for team7", a.getMessage());
+  public void test_serverApp_main() {
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bytes, true);
+
+    PrintStream oldErr = System.err;
+    try {
+      System.setErr(out);
+      App.main(new String[0]);
+    } finally {
+      System.setErr(oldErr);
+    }
+    assertEquals("Usage: server <port> <players number> <player's init units>\n", bytes.toString());
   }
 }
