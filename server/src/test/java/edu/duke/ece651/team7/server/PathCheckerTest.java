@@ -89,5 +89,6 @@ public class PathCheckerTest {
 
         AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 10);
         assertNull(checker.checkOrderValidity(map, a3));
+
     }
 }

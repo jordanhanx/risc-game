@@ -178,6 +178,7 @@ public class CombatTest {
     public void test_doOneUnitCombat(){
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
+        Player groupC = mock(Player.class);
         Territory tScadrial = mock(Territory.class);
         int u1 = 5;
         int u2 = 5;
@@ -199,6 +200,28 @@ public class CombatTest {
                 assertEquals(u2,combat.getAttackUnitofPlayer(groupB));
             }
         }
+
+        Territory t2 = mock(Territory.class);
+
+        when(t2.getUnits()).thenReturn(0);
+        when(t2.getOwner()).thenReturn(groupC);
+
+        Combat combat2 = new Combat(t2);
+        combat2.pushAttack(groupC, 0);
+        combat2.pushAttack(groupA, 5);
+
+        assertTrue(combat2.doOneUnitCombat(groupC, groupA));
+
+        Territory t3 = mock(Territory.class);
+
+        when(t3.getUnits()).thenReturn(0);
+        when(t3.getOwner()).thenReturn(groupA);
+        Combat combat3 = new Combat(t3);
+        combat3.pushAttack(groupC, 0);
+        combat3.pushAttack(groupB, 5);
+
+        assertFalse(combat3.doOneUnitCombat(groupB, groupC));
+
 
     }
 

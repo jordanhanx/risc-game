@@ -56,37 +56,37 @@ public class Territory implements Serializable {
 
   public void setUnits(int num) {
     if (num < 0) {
-      throw new IllegalArgumentException("input num must be greater than 0");
+      throw new IllegalArgumentException("Set Territory Units: input num must be greater than or equal to 0");
     } else {
       units = num;
     }
   }
 
-  public void increaseUnits() {
-    units++;
-  }
+  // public void increaseUnits() {
+  //   units++;
+  // }
 
   public void increaseUnits(int num) {
     if (num <= 0) {
-      throw new IllegalArgumentException("input num must be greater than 0");
+      throw new IllegalArgumentException("Increase Territory Units: input num must be greater than 0");
     } else {
       units += num;
     }
   }
 
-  public void decreaseUnits() {
-    if (units <= 0) {
-      throw new ArithmeticException("units cannot be less than 0");
-    } else {
-      units--;
-    }
-  }
+  // public void decreaseUnits() {
+  //   if (units <= 0) {
+  //     throw new ArithmeticException("units cannot be less than 0");
+  //   } else {
+  //     units--;
+  //   }
+  // }
 
   public void decreaseUnits(int num) {
     if (num <= 0) {
-      throw new IllegalArgumentException("input num must be greater than 0");
+      throw new IllegalArgumentException("Decrease Territory Units: input num must be greater than 0");
     } else if (units < num) {
-      throw new ArithmeticException("units cannot be less than 0");
+      throw new ArithmeticException("Decrease Territory Units: units cannot be less than 0");
     } else {
       units -= num;
     }

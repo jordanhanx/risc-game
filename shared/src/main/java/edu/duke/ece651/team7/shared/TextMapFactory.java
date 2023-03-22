@@ -4,6 +4,40 @@ import java.util.List;
 
 public class TextMapFactory implements MapFactory {
 
+        // public GameMap createTestMap() {
+        //         GameMap map = new GameMap(3);
+        //         List<Player> initGroupOwners = map.getInitGroupOwners();
+
+        //         Territory territory1 = new Territory("Narnia", initGroupOwners.get(0), 0);
+        //         initGroupOwners.get(0).addTerritory(territory1);
+        //         Territory territory2 = new Territory("Elantris", initGroupOwners.get(1), 0);
+        //         initGroupOwners.get(1).addTerritory(territory2);
+        //         Territory territory3 = new Territory("Midkemia", initGroupOwners.get(0), 0);
+        //         initGroupOwners.get(0).addTerritory(territory3);
+        //         Territory territory4 = new Territory("Oz", initGroupOwners.get(0), 0);
+        //         initGroupOwners.get(0).addTerritory(territory4);
+        //         Territory territory5 = new Territory("Scadrial", initGroupOwners.get(1), 0);
+        //         initGroupOwners.get(1).addTerritory(territory5);
+        //         Territory territory6 = new Territory("Roshar", initGroupOwners.get(1), 0);
+        //         initGroupOwners.get(1).addTerritory(territory6);
+        //         Territory territory7 = new Territory("Gondor", initGroupOwners.get(2), 0);
+        //         initGroupOwners.get(2).addTerritory(territory7);
+        //         Territory territory8 = new Territory("Mordor", initGroupOwners.get(2), 0);
+        //         initGroupOwners.get(2).addTerritory(territory8);
+        //         Territory territory9 = new Territory("Hogwarts", initGroupOwners.get(2), 0);
+        //         initGroupOwners.get(2).addTerritory(territory9);
+        //         map.addTerritoryAndNeighbors(territory1, territory2, territory3);
+        //         map.addTerritoryAndNeighbors(territory2, territory1, territory3, territory5, territory6);
+        //         map.addTerritoryAndNeighbors(territory3, territory1, territory2, territory4, territory5);
+        //         map.addTerritoryAndNeighbors(territory4, territory7, territory3, territory5, territory8);
+        //         map.addTerritoryAndNeighbors(territory5, territory2, territory3, territory4, territory6, territory9, territory8);
+        //         map.addTerritoryAndNeighbors(territory6, territory9, territory2, territory5);
+        //         map.addTerritoryAndNeighbors(territory7, territory4, territory8);
+        //         map.addTerritoryAndNeighbors(territory8, territory4, territory7, territory5, territory9);
+        //         map.addTerritoryAndNeighbors(territory9, territory6, territory5, territory8);
+        //         return map;
+        // }
+
         @Override
         public GameMap createPlayerMap(int initGroupNum) {
 
