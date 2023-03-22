@@ -42,6 +42,7 @@ public class OrderExecuter {
     public void doOneMove(MoveOrder o) throws IllegalArgumentException{
         String err = checker.checkOrderValidity(map, o);
         if(err == null){
+            System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             o.getSrc().decreaseUnits(o.getUnits());
             o.getDest().increaseUnits(o.getUnits());
         }else{
@@ -77,12 +78,12 @@ public class OrderExecuter {
             Combat targetCombat = isInCombatPool(o.getDest());
             if(targetCombat != null){
                 targetCombat.pushAttack(o.getPlayer(), o.getUnits());
-                System.out.println("Combine combat Force: " + o.getDest().getName());
+                System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " with " + o.getUnits() + " units");
             }else{
                 targetCombat = new Combat(o.getDest());
                 targetCombat.pushAttack(o.getPlayer(), o.getUnits());
                 combatPool.add(targetCombat);
-                System.out.println("Add new Combat: " + o.getDest().getName());
+                System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " with " + o.getUnits() + " units");
             }
         }else{
             throw new IllegalArgumentException(err);
