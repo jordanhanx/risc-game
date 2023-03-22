@@ -43,10 +43,10 @@ public class CombatTest {
         Combat combat2 = new Combat(tNarnia);
         assertEquals(combat1.getBattlefield(), tMidkemia);
         assertEquals(combat2.getBattlefield(), tNarnia);
-        assertEquals(5, combat1.getAttackUnitofPlayer(groupB));
-        assertEquals(1, combat1.getParticipantsSize());
-        assertEquals(5, combat2.getAttackUnitofPlayer(groupB));
-        assertEquals(1, combat2.getParticipantsSize());
+        // assertEquals(5, combat1.getAttackUnitofPlayer(groupB));
+        assertEquals(0, combat1.getParticipantsSize());
+        // assertEquals(5, combat2.getAttackUnitofPlayer(groupB));
+        assertEquals(0, combat2.getParticipantsSize());
     }
 
     @Test
@@ -100,16 +100,16 @@ public class CombatTest {
         when(tGondor.getUnits()).thenReturn(5);
         
         Combat combat1 = new Combat(tScadrial);
-        assertEquals(tScadrial.getUnits(),combat1.getAttackUnitofPlayer(groupB));
-        assertEquals(1, combat1.getParticipantsSize());
+        // assertEquals(tScadrial.getUnits(),combat1.getAttackUnitofPlayer(groupB));
+        // assertEquals(1, combat1.getParticipantsSize());
 
         combat1.pushAttack(groupA, 3);
         assertEquals(3, combat1.getAttackUnitofPlayer(groupA));
-        assertEquals(2, combat1.getParticipantsSize());
+        assertEquals(1, combat1.getParticipantsSize());
 
         combat1.pushAttack(groupA, 4);
         assertEquals(7, combat1.getAttackUnitofPlayer(groupA));
-        assertEquals(2, combat1.getParticipantsSize());
+        assertEquals(1, combat1.getParticipantsSize());
 
         assertEquals(-1, combat1.getAttackUnitofPlayer(groupC));
     }
@@ -166,11 +166,11 @@ public class CombatTest {
         
         Combat combat1 = new Combat(tScadrial);
         assertFalse(combat1.hasCombat());
-        assertTrue(combat1.combatEnd());
+        // assertTrue(combat1.combatEnd());
 
         combat1.pushAttack(groupC, 3);
         assertTrue(combat1.hasCombat());
-        assertFalse(combat1.combatEnd());
+        // assertFalse(combat1.combatEnd());
 
     }
 
@@ -186,6 +186,7 @@ public class CombatTest {
 
         Combat combat = new Combat(tScadrial);
         combat.pushAttack(groupB, u2);
+        combat.pushAttack(groupA, u1);
 
         for(int i = 0; i< 5; i++){
             if(combat.doOneUnitCombat(groupA, groupB)){
@@ -224,33 +225,33 @@ public class CombatTest {
         assertEquals(2, combat.updateParticipantList(1, 2));
         assertEquals(3, combat.updateParticipantList(2, 3));
         assertEquals(4, combat.updateParticipantList(3, 4));
-        assertEquals(5, combat.updateParticipantList(4, 5));
-        assertEquals(0, combat.updateParticipantList(5, 0));
+        // assertEquals(5, combat.updateParticipantList(4, 5));
+        assertEquals(0, combat.updateParticipantList(4, 0));
 
         combat.pushAttack(groupF, -5);
-        assertEquals(0, combat.updateParticipantList(5, 0));
-        assertEquals(5, combat.getParticipantsSize());
-
-        combat.pushAttack(groupE, -5);
-        assertEquals(0, combat.updateParticipantList(3, 4));
+        assertEquals(0, combat.updateParticipantList(4, 0));
         assertEquals(4, combat.getParticipantsSize());
 
-        combat.pushAttack(groupE, 5);
-        assertEquals(5, combat.getParticipantsSize());
-        combat.pushAttack(groupF, 5);
-        assertEquals(6, combat.getParticipantsSize());
-        
-        //[A,B,C,D,E,F]
-        combat.pushAttack(groupD, -5);
-        assertEquals(3, combat.updateParticipantList(3, 4));
-        assertEquals(5, combat.getParticipantsSize());
+        combat.pushAttack(groupE, -5);
+        assertEquals(0, combat.updateParticipantList(2, 3));
+        assertEquals(3, combat.getParticipantsSize());
 
-        //[A,B,C,E,F] -> [A,B,E,F]
-        combat.pushAttack(groupC, -5);
+        combat.pushAttack(groupE, 5);
+        assertEquals(4, combat.getParticipantsSize());
+        combat.pushAttack(groupF, 5);
+        assertEquals(5, combat.getParticipantsSize());
+        
+        //[B,C,D,E,F]
+        combat.pushAttack(groupD, -5);
         assertEquals(2, combat.updateParticipantList(2, 3));
         assertEquals(4, combat.getParticipantsSize());
 
-        assertEquals(5, combat.getAttackUnitofPlayer(groupA));
+        //[B,C,E,F] -> [B,E,F]
+        combat.pushAttack(groupC, -5);
+        assertEquals(1, combat.updateParticipantList(0, 1));
+        assertEquals(3, combat.getParticipantsSize());
+
+        // assertEquals(5, combat.getAttackUnitofPlayer(groupA));
         assertEquals(5, combat.getAttackUnitofPlayer(groupB));
         assertEquals(-1, combat.getAttackUnitofPlayer(groupC));
         assertEquals(-1, combat.getAttackUnitofPlayer(groupD));

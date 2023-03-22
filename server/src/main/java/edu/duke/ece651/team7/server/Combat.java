@@ -26,7 +26,6 @@ public class Combat {
         this.battleField = t;
         this.attackPool = new HashMap<Player, Integer>();
         this.participants = new ArrayList<Player>();
-        pushAttack(battleField.getOwner(), battleField.getUnits());
     }
 
     public Territory getBattlefield(){
@@ -74,7 +73,7 @@ public class Combat {
      * @return false if not
      */
     public boolean hasCombat(){
-        if (participants.size() > 1 && attackPool.size() > 1){
+        if (participants.size() >= 1 && attackPool.size() >= 1){
             return true;
         }
         return false;
@@ -102,6 +101,8 @@ public class Combat {
      * @return false if defender succeeds
      */
     public boolean doOneUnitCombat(Player defender, Player attacker){
+        // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
+        //  +"defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
         Dice attackD = new Dice(20);
         Dice defenseD = new Dice(20);
         if(attackD.throwDice()> defenseD.throwDice()){
@@ -148,10 +149,13 @@ public class Combat {
      * @return player that wins in the combat
      */
     public Player resolveCombat(){
-        Player originOwner = battleField.getOwner();
         if (!hasCombat()){
             return null;
         }
+         //owner of the territory participate in the combat
+        pushAttack(battleField.getOwner(), battleField.getUnits());
+        battleField.decreaseUnits(battleField.getUnits());
+        Player originOwner = battleField.getOwner();
         int defender = 0;
         while (true){
             //wrap around
@@ -162,11 +166,14 @@ public class Combat {
             doOneUnitCombat(participants.get(defender), participants.get(attacker));
             defender = updateParticipantList(defender, attacker);
             if(combatEnd()){ //combats end
+                // System.out.println("Winner is " + participants.get(0) + " with " + attackPool.get(participants.get(0)) + " units");
                 originOwner.removeTerritory(battleField);
                 battleField.setOwner(participants.get(0));
                 participants.get(0).addTerritory(battleField);
+                battleField.setUnits(attackPool.get(participants.get(0)));
+
                 //for testing
-                System.out.println("Winner of Combat in " +battleField.getName() + " is: " + participants.get(0).getName());
+                System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnits()+") is: " + participants.get(0).getName());
                 return participants.get(0);
             }
         }
