@@ -12,13 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Multiset.Entry;
 
 public class GameMapTest {
 
@@ -226,7 +223,6 @@ public class GameMapTest {
   @Test
   public void test_getInitGroupOwners(){
     GameMap map = new GameMap(3);
-    // Player initOwner = map.new InitGroupOwner("GroupA");
     List<Player> expectedList = Arrays.asList(
       map.new InitGroupOwner("GroupA"),
       map.new InitGroupOwner("GroupB"),
