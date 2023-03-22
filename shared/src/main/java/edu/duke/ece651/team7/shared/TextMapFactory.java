@@ -9,60 +9,9 @@ import java.util.Map;
 
 public class TextMapFactory implements MapFactory {
 
-        @Override
-        public GameMap createMap() {
-                /**
-                 * Use Player's Anonymous Class as initial Territories group owner.
-                 * Player realPlayer = new Player();
-                 * Player subtypePlayer = new Player() {} ;
-                 * realPlayer.equals(subtypePlayer) == false ;
-                 */
-                Player placeholderA = new Player("GroupA") {
-                };
-                Player placeholderB = new Player("GroupB") {
-                };
-                Player placeholderC = new Player("GroupC") {
-                };
-                Territory territory1 = new Territory("Narnia", placeholderA, 10);
-                Territory territory2 = new Territory("Elantris", placeholderB, 6);
-                Territory territory3 = new Territory("Midkemia", placeholderA, 12);
-                Territory territory4 = new Territory("Oz", placeholderA, 8);
-                Territory territory5 = new Territory("Scadrial", placeholderB, 5);
-                Territory territory6 = new Territory("Roshar", placeholderB, 3);
-                Territory territory7 = new Territory("Gondor", placeholderC, 13);
-                Territory territory8 = new Territory("Mordor", placeholderC, 14);
-                Territory territory9 = new Territory("Hogwarts", placeholderC, 3);
-
-                Map<Territory, List<Territory>> territoriesAdjacentList = new HashMap<>();
-                territoriesAdjacentList.put(territory1,
-                                new ArrayList<Territory>(Arrays.asList(territory2, territory3)));
-                territoriesAdjacentList.put(territory2,
-                                new ArrayList<Territory>(
-                                                Arrays.asList(territory1, territory3, territory5, territory6)));
-                territoriesAdjacentList.put(territory3,
-                                new ArrayList<Territory>(
-                                                Arrays.asList(territory1, territory2, territory4, territory5)));
-                territoriesAdjacentList.put(territory4,
-                                new ArrayList<Territory>(
-                                                Arrays.asList(territory7, territory3, territory5, territory8)));
-                territoriesAdjacentList.put(territory5, new ArrayList<Territory>(
-                                Arrays.asList(territory2, territory3, territory4, territory6, territory9, territory8)));
-                territoriesAdjacentList.put(territory6,
-                                new ArrayList<Territory>(Arrays.asList(territory9, territory2, territory5)));
-                territoriesAdjacentList.put(territory7,
-                                new ArrayList<Territory>(Arrays.asList(territory4, territory8)));
-                territoriesAdjacentList.put(territory8,
-                                new ArrayList<Territory>(
-                                                Arrays.asList(territory4, territory7, territory5, territory9)));
-                territoriesAdjacentList.put(territory9,
-                                new ArrayList<Territory>(Arrays.asList(territory6, territory5, territory8)));
-
-                GameMap newMap = new GameMap(territoriesAdjacentList);
-                return newMap;
-        }
 
         @Override
-        public GameMap createMapNew(int initGroupNum) {
+        public GameMap createPlayerMap(int initGroupNum) {
 
                 if (initGroupNum == 2) {
                         return createTwoPlayersMap();
@@ -109,17 +58,17 @@ public class TextMapFactory implements MapFactory {
                 initGroupOwners.get(0).addTerritory(territory11);
                 Territory territory12 = new Territory("Dorne", initGroupOwners.get(0), 0);
                 initGroupOwners.get(0).addTerritory(territory12);
-                Territory territory13 = new Territory("The Wall", initGroupOwners.get(0), 0);
+                Territory territory13 = new Territory("Aranthia", initGroupOwners.get(0), 0);
                 initGroupOwners.get(0).addTerritory(territory13);
-                Territory territory14 = new Territory("King's Landing", initGroupOwners.get(1), 0);
+                Territory territory14 = new Territory("Drakoria", initGroupOwners.get(1), 0);
                 initGroupOwners.get(1).addTerritory(territory14);
-                Territory territory15 = new Territory("Casterly Rock", initGroupOwners.get(1), 0);
+                Territory territory15 = new Territory("Galadria", initGroupOwners.get(1), 0);
                 initGroupOwners.get(1).addTerritory(territory15);
                 Territory territory16 = new Territory("Highgarden", initGroupOwners.get(1), 0);
                 initGroupOwners.get(1).addTerritory(territory16);
                 Territory territory17 = new Territory("Winterfell", initGroupOwners.get(1), 0);
                 initGroupOwners.get(1).addTerritory(territory17);
-                Territory territory18 = new Territory("The Eyrie", initGroupOwners.get(0), 0);
+                Territory territory18 = new Territory("Helvoria", initGroupOwners.get(0), 0);
                 initGroupOwners.get(0).addTerritory(territory18);
                 Territory territory19 = new Territory("Dragonstone", initGroupOwners.get(0), 0);
                 initGroupOwners.get(0).addTerritory(territory19);
@@ -172,30 +121,54 @@ public class TextMapFactory implements MapFactory {
 
                 GameMap map = new GameMap(3);
                 List<Player> initGroupOwners = map.getInitGroupOwners();
-                Territory territory1 = new Territory("Narnia", initGroupOwners.get(0), 5);
-                Territory territory2 = new Territory("Midkemia", initGroupOwners.get(1), 6);
-                Territory territory3 = new Territory("Oz", initGroupOwners.get(2), 7);
-                Territory territory4 = new Territory("Gondor", initGroupOwners.get(2), 4);
-                Territory territory5 = new Territory("Elantris", initGroupOwners.get(1), 5);
-                Territory territory6 = new Territory("Scadrial", initGroupOwners.get(2), 6);
-                Territory territory7 = new Territory("Roshar", initGroupOwners.get(0), 7);
-                Territory territory8 = new Territory("Mordor", initGroupOwners.get(2), 4);
+                Territory territory1 = new Territory("Narnia", initGroupOwners.get(0), 10);
+                initGroupOwners.get(0).addTerritory(territory1);
+                Territory territory2 = new Territory("Midkemia", initGroupOwners.get(1), 12);
+                initGroupOwners.get(1).addTerritory(territory2);
+                Territory territory3 = new Territory("Oz", initGroupOwners.get(2), 8);
+                initGroupOwners.get(2).addTerritory(territory3);
+                Territory territory4 = new Territory("Gondor", initGroupOwners.get(2), 13);
+                initGroupOwners.get(2).addTerritory(territory4);
+                Territory territory5 = new Territory("Elantris", initGroupOwners.get(1), 6);
+                initGroupOwners.get(1).addTerritory(territory5);
+                Territory territory6 = new Territory("Scadrial", initGroupOwners.get(2), 5);
+                initGroupOwners.get(2).addTerritory(territory6);
+                Territory territory7 = new Territory("Roshar", initGroupOwners.get(0), 3);
+                initGroupOwners.get(0).addTerritory(territory7);
+                Territory territory8 = new Territory("Mordor", initGroupOwners.get(2), 14);
+                initGroupOwners.get(2).addTerritory(territory8);
                 Territory territory9 = new Territory("Hogwarts", initGroupOwners.get(1), 3);
+                initGroupOwners.get(1).addTerritory(territory9);
                 Territory territory10 = new Territory("Westeros", initGroupOwners.get(2), 4);
+                initGroupOwners.get(2).addTerritory(territory10);
                 Territory territory11 = new Territory("Essos", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory11);
                 Territory territory12 = new Territory("Dorne", initGroupOwners.get(1), 6);
-                Territory territory13 = new Territory("The Wall", initGroupOwners.get(2), 3);
-                Territory territory14 = new Territory("King's Landing", initGroupOwners.get(2), 4);
-                Territory territory15 = new Territory("Casterly Rock", initGroupOwners.get(0), 5);
+                initGroupOwners.get(1).addTerritory(territory12);
+                Territory territory13 = new Territory("Aranthia", initGroupOwners.get(2), 3);
+                initGroupOwners.get(2).addTerritory(territory13);
+                Territory territory14 = new Territory("Drakoria", initGroupOwners.get(2), 4);
+                initGroupOwners.get(2).addTerritory(territory14);
+                Territory territory15 = new Territory("Galadria", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory15);
                 Territory territory16 = new Territory("Highgarden", initGroupOwners.get(1), 6);
+                initGroupOwners.get(1).addTerritory(territory16);
                 Territory territory17 = new Territory("Winterfell", initGroupOwners.get(1), 3);
-                Territory territory18 = new Territory("The Eyrie", initGroupOwners.get(0), 4);
+                initGroupOwners.get(1).addTerritory(territory17);
+                Territory territory18 = new Territory("Helvoria", initGroupOwners.get(0), 4);
+                initGroupOwners.get(0).addTerritory(territory18);
                 Territory territory19 = new Territory("Dragonstone", initGroupOwners.get(1), 5);
+                initGroupOwners.get(1).addTerritory(territory19);
                 Territory territory20 = new Territory("Pyke", initGroupOwners.get(0), 6);
+                initGroupOwners.get(0).addTerritory(territory20);
                 Territory territory21 = new Territory("Oldtown", initGroupOwners.get(2), 3);
+                initGroupOwners.get(2).addTerritory(territory21);
                 Territory territory22 = new Territory("Braavos", initGroupOwners.get(1), 4);
+                initGroupOwners.get(1).addTerritory(territory22);
                 Territory territory23 = new Territory("Pentos", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory23);
                 Territory territory24 = new Territory("Volantis", initGroupOwners.get(0), 6);
+                initGroupOwners.get(0).addTerritory(territory24);
 
                 map.addTerritoryAndNeighbors(territory1, territory2, territory4, territory10);
                 map.addTerritoryAndNeighbors(territory2, territory1, territory3, territory4, territory5, territory11);
@@ -235,30 +208,54 @@ public class TextMapFactory implements MapFactory {
         public GameMap createFourPlayersMap() {
                 GameMap map = new GameMap(4);
                 List<Player> initGroupOwners = map.getInitGroupOwners();
-                Territory territory1 = new Territory("Narnia", initGroupOwners.get(0), 5);
-                Territory territory2 = new Territory("Midkemia", initGroupOwners.get(1), 6);
-                Territory territory3 = new Territory("Oz", initGroupOwners.get(2), 7);
-                Territory territory4 = new Territory("Gondor", initGroupOwners.get(1), 4);
-                Territory territory5 = new Territory("Elantris", initGroupOwners.get(0), 5);
-                Territory territory6 = new Territory("Scadrial", initGroupOwners.get(2), 6);
-                Territory territory7 = new Territory("Roshar", initGroupOwners.get(1), 7);
-                Territory territory8 = new Territory("Mordor", initGroupOwners.get(3), 4);
-                Territory territory9 = new Territory("Hogwarts", initGroupOwners.get(0), 3);
-                Territory territory10 = new Territory("Westeros", initGroupOwners.get(1), 4);
-                Territory territory11 = new Territory("Essos", initGroupOwners.get(3), 5);
-                Territory territory12 = new Territory("Dorne", initGroupOwners.get(0), 6);
-                Territory territory13 = new Territory("The Wall", initGroupOwners.get(1), 3);
-                Territory territory14 = new Territory("King's Landing", initGroupOwners.get(2), 4);
-                Territory territory15 = new Territory("Casterly Rock", initGroupOwners.get(1), 5);
-                Territory territory16 = new Territory("Highgarden", initGroupOwners.get(0), 6);
-                Territory territory17 = new Territory("Winterfell", initGroupOwners.get(2), 3);
-                Territory territory18 = new Territory("The Eyrie", initGroupOwners.get(3), 4);
-                Territory territory19 = new Territory("Dragonstone", initGroupOwners.get(0), 5);
-                Territory territory20 = new Territory("Pyke", initGroupOwners.get(2), 6);
-                Territory territory21 = new Territory("Oldtown", initGroupOwners.get(3), 3);
-                Territory territory22 = new Territory("Braavos", initGroupOwners.get(3), 4);
-                Territory territory23 = new Territory("Pentos", initGroupOwners.get(2), 5);
-                Territory territory24 = new Territory("Volantis", initGroupOwners.get(3), 6);
+                Territory territory1 = new Territory("Narnia", initGroupOwners.get(0), 10);
+                initGroupOwners.get(0).addTerritory(territory1);
+                Territory territory2 = new Territory("Midkemia", initGroupOwners.get(1), 12);
+                initGroupOwners.get(1).addTerritory(territory2);
+                Territory territory3 = new Territory("Oz", initGroupOwners.get(2), 8);
+                initGroupOwners.get(2).addTerritory(territory3);
+                Territory territory4 = new Territory("Gondor", initGroupOwners.get(2), 13);
+                initGroupOwners.get(2).addTerritory(territory4);
+                Territory territory5 = new Territory("Elantris", initGroupOwners.get(1), 6);
+                initGroupOwners.get(1).addTerritory(territory5);
+                Territory territory6 = new Territory("Scadrial", initGroupOwners.get(2), 5);
+                initGroupOwners.get(2).addTerritory(territory6);
+                Territory territory7 = new Territory("Roshar", initGroupOwners.get(0), 3);
+                initGroupOwners.get(0).addTerritory(territory7);
+                Territory territory8 = new Territory("Mordor", initGroupOwners.get(2), 14);
+                initGroupOwners.get(2).addTerritory(territory8);
+                Territory territory9 = new Territory("Hogwarts", initGroupOwners.get(1), 3);
+                initGroupOwners.get(1).addTerritory(territory9);
+                Territory territory10 = new Territory("Westeros", initGroupOwners.get(2), 4);
+                initGroupOwners.get(2).addTerritory(territory10);
+                Territory territory11 = new Territory("Essos", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory11);
+                Territory territory12 = new Territory("Dorne", initGroupOwners.get(1), 6);
+                initGroupOwners.get(1).addTerritory(territory12);
+                Territory territory13 = new Territory("Aranthia", initGroupOwners.get(2), 3);
+                initGroupOwners.get(2).addTerritory(territory13);
+                Territory territory14 = new Territory("Drakoria", initGroupOwners.get(2), 4);
+                initGroupOwners.get(2).addTerritory(territory14);
+                Territory territory15 = new Territory("Galadria", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory15);
+                Territory territory16 = new Territory("Highgarden", initGroupOwners.get(1), 6);
+                initGroupOwners.get(1).addTerritory(territory16);
+                Territory territory17 = new Territory("Winterfell", initGroupOwners.get(1), 3);
+                initGroupOwners.get(1).addTerritory(territory17);
+                Territory territory18 = new Territory("Helvoria", initGroupOwners.get(0), 4);
+                initGroupOwners.get(0).addTerritory(territory18);
+                Territory territory19 = new Territory("Dragonstone", initGroupOwners.get(1), 5);
+                initGroupOwners.get(1).addTerritory(territory19);
+                Territory territory20 = new Territory("Pyke", initGroupOwners.get(0), 6);
+                initGroupOwners.get(0).addTerritory(territory20);
+                Territory territory21 = new Territory("Oldtown", initGroupOwners.get(2), 3);
+                initGroupOwners.get(2).addTerritory(territory21);
+                Territory territory22 = new Territory("Braavos", initGroupOwners.get(1), 4);
+                initGroupOwners.get(1).addTerritory(territory22);
+                Territory territory23 = new Territory("Pentos", initGroupOwners.get(0), 5);
+                initGroupOwners.get(0).addTerritory(territory23);
+                Territory territory24 = new Territory("Volantis", initGroupOwners.get(0), 6);
+                initGroupOwners.get(0).addTerritory(territory24);
 
                 map.addTerritoryAndNeighbors(territory1, territory2, territory4, territory10);
                 map.addTerritoryAndNeighbors(territory2, territory1, territory3, territory4, territory5, territory11);
