@@ -48,8 +48,8 @@ public class TerritoryTest {
   public void test_increaseUnits() {
     Territory t = new Territory("test");
     assertEquals(0, t.getUnits());
-    t.increaseUnits();
-    t.increaseUnits();
+    t.increaseUnits(1);
+    t.increaseUnits(1);
     assertEquals(2, t.getUnits());
     t.increaseUnits(3);
     assertEquals(5, t.getUnits());
@@ -61,7 +61,7 @@ public class TerritoryTest {
   public void test_decreaseUnits() {
     Territory t = new Territory("test", null, 5);
     assertEquals(5, t.getUnits());
-    t.decreaseUnits();
+    t.decreaseUnits(1);
     assertEquals(4, t.getUnits());
     t.decreaseUnits(2);
     assertEquals(2, t.getUnits());
@@ -69,7 +69,7 @@ public class TerritoryTest {
     assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(-1));
     assertThrows(ArithmeticException.class, () -> t.decreaseUnits(3));
     assertDoesNotThrow(() -> t.decreaseUnits(2));
-    assertThrows(ArithmeticException.class, () -> t.decreaseUnits());
+    assertThrows(ArithmeticException.class, () -> t.decreaseUnits(1));
   }
 
   @Test

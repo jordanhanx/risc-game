@@ -18,7 +18,16 @@ import edu.duke.ece651.team7.shared.*;
  */
 public class Server extends UnicastRemoteObject implements RemoteServer {
   /**
-   * The output stream used for logging.
+   * @param out The output stream used for logging.
+   * @param numPlayers The number of players in the game.
+   * @param initialUnit The initial number of units each player has.
+   * @param inGameClients A table of connected clients and their corresponding players in the game.
+   * @param watchingClients  A table of clients that are watching the game as spectators.
+   * @param map The risk game map.
+   * @param ox The order executor used for executing player orders.
+   * @param commitSignal The countdownlatch used to block the server's main thread until all clients commit.
+   * @param returnSignal The barrier used to block all clients until server is ready to next turn.
+   * @param isGameBegin The flag, true if game is bagun.
    */
   protected final PrintStream out;
   /**

@@ -68,6 +68,10 @@ public class Player implements Serializable, Comparable<Player> {
         territories.remove(t);
     }
 
+    /**
+     * 
+     * @return the sum of units in all territories
+     */
     public int getTotalUnits() {
         int totalUnits = 0;
         for (Territory t : territories) {
