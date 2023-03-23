@@ -77,7 +77,7 @@ public class GameMap implements Serializable {
      */
     private InitGroupOwner getInitOwner(String groupName) {
         for (Player o : initGroupOwners) {
-            if (o.getName().toLowerCase().equals(groupName.toLowerCase())) {
+            if (o.getName().equalsIgnoreCase(groupName)) {
                 return (InitGroupOwner) o;
             }
         }
@@ -146,7 +146,7 @@ public class GameMap implements Serializable {
      */
     public Territory getTerritoryByName(String name) {
         for (Territory terr : territoriesAdjacentList.keySet()) {
-            if (terr.getName().equals(name)) {
+            if (terr.getName().equalsIgnoreCase(name)) {
                 return terr;
             }
         }
