@@ -29,6 +29,11 @@ public class GameMapTest {
     GameMap map = new GameMap(territoriesAdjacentList);
     assertEquals(t1, map.getTerritoryByName("territory1"));
     assertEquals(t2, map.getTerritoryByName("territory2"));
+    assertEquals(t2, map.getTerritoryByName("Territory2"));
+
+    //test equalIgnoreCase
+    assertDoesNotThrow(()->map.getTerritoryByName("territOry2"));
+    assertThrows(IllegalArgumentException.class, ()->map.getTerritoryByName("Territory22"));
     assertThrows(IllegalArgumentException.class, () -> map.getTerritoryByName("territory3"));
   }
 
@@ -240,20 +245,25 @@ public class GameMapTest {
   @Test
   public void test_assignGroup(){
 
-    GameMap map = new GameMap(2);
+    GameMap map = new GameMap(3);
     List<Player> initGroupOwners = map.getInitGroupOwners();
     Territory t1 = new Territory("T1", initGroupOwners.get(0),0);
     Territory t2 = new Territory("T2",initGroupOwners.get(1),0);
     map.addTerritoryAndNeighbors(t1, t2);
     map.addTerritoryAndNeighbors(t2, t1);
     Player p = new Player("Player1");
-    Player p2 = new Player("Player1");
+    Player p2 = new Player("Player2");
+    Player p3 = new Player("Player3");
     map.assignGroup("GroupA", p);
     assertEquals(p, t1.getOwner());
     assertEquals(map.new InitGroupOwner("GroupB"), t2.getOwner());
     assertThrows(IllegalArgumentException.class, () -> map.assignGroup("GroupA", p2));
-    assertThrows(IllegalArgumentException.class, () -> map.assignGroup("GroupC", p2));
+    assertThrows(IllegalArgumentException.class, () -> map.assignGroup("GroupD", p2));
 
+    //test equalsIgnoreCase
+    assertDoesNotThrow(() -> map.assignGroup("groupb", p2));
+    assertThrows(IllegalArgumentException.class, () -> map.assignGroup("groubdd", p3));
+    assertEquals(p2, t2.getOwner());
   }
 
 
