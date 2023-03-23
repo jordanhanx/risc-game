@@ -293,6 +293,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     for (RemoteClient watcher : watchingClients.keySet()) {
       try {
         watcher.doDisplay(map);
+        watcher.doDisplay("Watcher Mode: Press Ctrl-C to exit");
       } catch (RemoteException e) {
         /*
          * RemoteException because the remote Client has disconnected, can be ignored
