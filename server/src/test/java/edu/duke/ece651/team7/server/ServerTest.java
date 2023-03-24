@@ -494,11 +494,11 @@ public class ServerTest {
     assertDoesNotThrow(() -> server.start());
     assertEquals("RiscGameServer is closed\n", bytes.toString());
 
-    verify(mockInGameClients, times(6)).size();
+    verify(mockInGameClients, times(5)).size();
     verify(mockInGameClients, times(5)).keySet();
     verify(commitLatch, never()).countDown();
-    verify(commitLatch, times(4)).await();
-    verify(returnBarrier, times(4)).await();
+    verify(commitLatch, times(5)).await();
+    verify(returnBarrier, times(5)).await();
   }
 
   @Test

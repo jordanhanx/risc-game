@@ -1,7 +1,6 @@
 package edu.duke.ece651.team7.server;
 
 import java.io.PrintStream;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
@@ -124,33 +123,35 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
   /**
-   * Starts the game server on the specified port.
+   * Starts the game server and one game.
    *
    * @throws RemoteException        if a remote error occurs
    * @throws InterruptedException   if a interrupt error occurs
-   * @throws NotBoundException      if the server is not bound
    * @throws BrokenBarrierException if the barrier that is in a broken state
    */
-  public void start() throws RemoteException, InterruptedException, NotBoundException, BrokenBarrierException {
-    // Placement phase
-    commitSignal.await();
+  public void start() throws RemoteException, InterruptedException, BrokenBarrierException {
+    /* Placement Phase */
+    commitSignal.await(); // waits for all players picking groups of territories
     returnSignal.await(); // ready to next state
-    setupCountDownLatches(inGameClients.size()); // reset locks
-    // GamePlay phase
+    setupCountDownLatches(numPlayers); // reset locks
+    commitSignal.await(); // waits for all players placing their initial units
+    returnSignal.await(); // ready to next state
+    setupCountDownLatches(numPlayers); // reset locks
+    /* GamePlay phase */
     while (true) {
       commitSignal.await();
       ox.doAllCombats();
       removeLostPlayer(); // move lost Clients from inGameClients to watchingClients
       returnSignal.await(); // ready to next state
-      if (isGameOver()) {
-        notifyAllClientsGameResult(); // send game result to all clients
-        closeAllClients();
-        UnicastRemoteObject.unexportObject(this, true); // close remoteObj
-        out.println("RiscGameServer is closed");
-        break;
-      } else {
+      if (!isGameOver()) {
         notifyAllWatchers(); // send game status to all watching clients
         setupCountDownLatches(inGameClients.size()); // reset locks
+      } else {
+        notifyAllClientsGameResult(); // send game result to all clients
+        closeAllClients(); // close all clients
+        UnicastRemoteObject.unexportObject(this, true); // close this server
+        out.println("RiscGameServer is closed");
+        break;
       }
     }
   }
@@ -308,7 +309,9 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * @throws RemoteException if a remote error occurs
    */
   void notifyAllClientsGameResult() throws RemoteException {
-    /* Precondition: isGameOver() == true ,so the outer loop should be run once */
+    /*
+     * Precondition: isGameOver() == true, so the outer loop should loop once only
+     */
     for (RemoteClient winner : inGameClients.keySet()) {
       winner.doDisplay(map);
       winner.doDisplay("You Win!");
@@ -350,3 +353,4 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   }
 
 }
+/* EOF */
