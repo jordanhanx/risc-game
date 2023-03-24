@@ -165,9 +165,8 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    *
    * @param input the user's input
    * @throws RemoteException if there is an error with the remote connection
-   * @throws IOException     if there is an error reading user input
    */
-  public void parseOrder(String input) throws RemoteException, IOException {
+  public void parseOrder(String input) throws RemoteException {
     String response = null;
     if (input.matches("^(?i)(M(?:ove)?)\\s+\\w+\\s+\\w+\\s+\\d+$")) {
       String[] substr = input.split("\\s+");
@@ -229,10 +228,11 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    * @throws BrokenBarrierException if the barrier that is in a broken state
    */
   public void start() throws RemoteException, InterruptedException, IOException, BrokenBarrierException {
-    registerPlayer();
-    pickTerritoryGroup();
-    placeUnits();
-    requestContinueGame();
+    registerPlayer(); // registers self on the game server
+    pickTerritoryGroup(); // picks a group of territories
+    requestContinueGame(); // waits for other players
+    placeUnits(); // places units on self territories
+    requestContinueGame(); // waits for other players
     while (!server.isGameOver() && !server.getSelfStatus(this).isLose()) {
       playOneTurn();
     }

@@ -535,6 +535,7 @@ public class ClientTest {
         outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
         outputs.append("\n");
         outputs.append("Please choose your Territory Group:\n");
+        outputs.append("Waiting for other players...\n");
         outputs.append("Green player:\n");
         outputs.append("-------------\n");
         outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
@@ -649,6 +650,7 @@ public class ClientTest {
         outputs.append("  0 units in Hogwarts (next to: Mordor)\n");
         outputs.append("\n");
         outputs.append("Please choose your Territory Group:\n");
+        outputs.append("Waiting for other players...\n");
         outputs.append("Green player:\n");
         outputs.append("-------------\n");
         outputs.append("  0 units in Mordor (next to: Hogwarts)\n");
