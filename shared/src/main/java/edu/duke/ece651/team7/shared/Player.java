@@ -75,7 +75,7 @@ public class Player implements Serializable, Comparable<Player> {
     public int getTotalUnits() {
         int totalUnits = 0;
         for (Territory t : territories) {
-            totalUnits += t.getUnits();
+            totalUnits += t.getUnitsNumber();
         }
         return totalUnits;
     }

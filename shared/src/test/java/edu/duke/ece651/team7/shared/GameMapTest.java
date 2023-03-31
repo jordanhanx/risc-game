@@ -220,9 +220,10 @@ public class GameMapTest {
     map.addTerritoryAndNeighbors(t3, t1, t2);
     assertTrue(map.isAdjacent("territory1", "territory2"));
     assertEquals(new HashSet<>(Arrays.asList(t1,t3)), new HashSet<>(map.getNeighbors("territory2")));
-    assertEquals(Arrays.asList(t1,t3), map.getNeighbors("territory2"));
-    assertEquals(Arrays.asList(t1,t2), map.getNeighbors("territory3"));
-    assertEquals(Arrays.asList(t2,t3), map.getNeighbors("territory1"));
+    // assertEquals(Arrays.asList(t1,t3), map.getNeighbors("territory2"));
+
+    assertEquals(new HashSet<>(Arrays.asList(t1,t2)), map.getNeighbors("territory3"));
+    assertEquals(new HashSet<>(Arrays.asList(t2,t3)), map.getNeighbors("territory1"));
   }
 
   @Test

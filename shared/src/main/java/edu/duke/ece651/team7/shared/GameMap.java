@@ -3,6 +3,7 @@ package edu.duke.ece651.team7.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -12,7 +13,8 @@ import java.util.Set;
 
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
-    private Map<Territory, List<Territory>> territoriesAdjacentList;
+    // private Map<Territory, List<Territory> > territoriesAdjacentList;
+    private Map<Territory, Map<Territory, Integer> > territoriesAdjacentList;
 
     class InitGroupOwner extends Player {
 
@@ -29,8 +31,17 @@ public class GameMap implements Serializable {
      * @param territoriesAdjacentList a mapping between a Territory object and a
      *                                list of adjacent territories
      */
-    public GameMap(Map<Territory, List<Territory>> territoriesAdjacentList) {
-        this.territoriesAdjacentList = territoriesAdjacentList;
+    public GameMap(Map<Territory, List<Territory>> AdjacentList) {
+
+        // this.territoriesAdjacentList = territoriesAdjacentList;
+        this.territoriesAdjacentList = new HashMap<>();
+        for(Territory t : AdjacentList.keySet()){
+            this.territoriesAdjacentList.put(t, new HashMap<>());
+            for(Territory neighbor: AdjacentList.get(t)){
+                this.territoriesAdjacentList.get(t).put(neighbor, 1);
+            }
+        }
+
     }
 
     /**
@@ -62,12 +73,39 @@ public class GameMap implements Serializable {
      * @param neighbors the neighboring territories of the specified territory
      */
     public void addTerritoryAndNeighbors(Territory t, Territory... neighbors) {
-        territoriesAdjacentList.put(t, new LinkedList<>());
-        for (Territory neighbor : neighbors) {
-            territoriesAdjacentList.get(t).add(neighbor);
+        // territoriesAdjacentList.put(t, new LinkedList<>());
+        // for (Territory neighbor : neighbors) {
+        //     territoriesAdjacentList.get(t).add(neighbor);
+        // }
+
+        this.territoriesAdjacentList.put(t, new LinkedHashMap<>());
+        for(Territory neighbor: neighbors){
+            this.territoriesAdjacentList.get(t).put(neighbor, 1);
         }
     }
 
+    /**
+     * Adds the specified territory and its neighbors with cost to the GameMap
+     * 
+     * @param t the territory to add
+     * @param neighbors the neighboring territories of the specified territory with cost to get there
+     */
+    public void addTerritoryAndNeighbors(Territory t, Object... neighbors) {
+        this.territoriesAdjacentList.put(t, new LinkedHashMap<>());
+        for (int i = 0; i < neighbors.length; i+=2) {
+            Territory neighbor = (Territory) neighbors[i];
+            int cost = (Integer) neighbors[i+1];
+            this.territoriesAdjacentList.get(t).put(neighbor, cost);
+        }
+    }
+
+    public int getCostBetween(String from, String to){
+        Territory fromTerritory = getTerritoryByName(from);
+        Territory toTerritory = getTerritoryByName(to);
+        return territoriesAdjacentList.get(fromTerritory).get(toTerritory);
+
+    }
+ 
     /**
      * Returns the InitGroupOwner object which has the specified 'groupName'.
      * 
@@ -133,7 +171,7 @@ public class GameMap implements Serializable {
      */
     public Collection<Territory> getNeighbors(String name) {
         Territory terr = getTerritoryByName(name);
-        return territoriesAdjacentList.get(terr);
+        return territoriesAdjacentList.get(terr).keySet();
     }
 
     /**
@@ -166,7 +204,8 @@ public class GameMap implements Serializable {
     public boolean isAdjacent(String from, String to) {
         Territory fromTerritory = getTerritoryByName(from);
         Territory toTerritory = getTerritoryByName(to);
-        List<Territory> adjacentTerritories = territoriesAdjacentList.get(fromTerritory);
+        Set<Territory> adjacentTerritories = territoriesAdjacentList.get(fromTerritory).keySet();
+
         return adjacentTerritories.contains(toTerritory);
     }
 
@@ -192,7 +231,7 @@ public class GameMap implements Serializable {
         territoryVisited.add(source);
         while (!queue.isEmpty()) {
             Territory curTerritory = queue.removeFirst();
-            for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory)) {
+            for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory).keySet()) {
                 if (neighbourTerritory.equals(destination)
                         && neighbourTerritory.getOwner().equals(source.getOwner())) {
                     return true;
@@ -205,6 +244,18 @@ public class GameMap implements Serializable {
             }
         }
         return false;
+    }
+
+    public int findShortestPath(String from, String to){
+        Territory source = getTerritoryByName(from);
+        Territory destination = getTerritoryByName(to);
+        Player p = source.getOwner();
+        Collection<Territory> territories = p.getTerritories();
+        territories.size();
+
+
+        
+        return 1;
     }
 
     @Override

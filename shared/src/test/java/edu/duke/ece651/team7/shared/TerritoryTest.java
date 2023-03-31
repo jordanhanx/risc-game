@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,13 +18,13 @@ public class TerritoryTest {
   public void test_constructor() {
     Territory t1 = new Territory("test1");
     assertEquals("test1", t1.getName());
-    assertEquals(0, t1.getUnits());
+    assertEquals(0, t1.getUnitsNumber());
     assertEquals(null, t1.getOwner());
 
     Player p = mock(Player.class);
     Territory t2 = new Territory("test2", p, 3);
     assertEquals("test2", t2.getName());
-    assertEquals(3, t2.getUnits());
+    assertEquals(3, t2.getUnitsNumber());
     assertEquals(p, t2.getOwner());
 
     assertThrows(IllegalArgumentException.class, () -> new Territory("", p, -1));
@@ -40,37 +42,84 @@ public class TerritoryTest {
   @Test
   public void test_setUnits() {
     Territory t = new Territory("test");
-    assertThrows(IllegalArgumentException.class, () -> t.setUnits(-1));
-    assertDoesNotThrow(() -> t.setUnits(0));
+    ArrayList<Unit> units = new ArrayList<>();
+    units.add(new Unit());
+    units.add(new Unit());
+    units.add(new Unit());
+    units.add(new Unit());
+    units.add(new Unit());
+    t.setUnits(units);
+    assertEquals(5, t.getUnitsNumber());
+
+    // assertThrows(IllegalArgumentException.class, () -> t.setUnits(-1));
+    // assertDoesNotThrow(() -> t.setUnits(0));
+
   }
 
   @Test
-  public void test_increaseUnits() {
+  public void test_addunit(){
     Territory t = new Territory("test");
-    assertEquals(0, t.getUnits());
-    t.increaseUnits(1);
-    t.increaseUnits(1);
-    assertEquals(2, t.getUnits());
-    t.increaseUnits(3);
-    assertEquals(5, t.getUnits());
-    assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(0));
-    assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(-1));
+    t.addUnits(new Unit());
+    Unit u1 = new Unit();
+    u1.upgrade(1);
+    t.addUnits(u1);
+    ArrayList<Unit> units = new ArrayList<>();
+    units.add(new Unit());
+    units.add(new Unit());
+    units.add(new Unit());
+    t.addUnits(units);
+    assertEquals(5, t.getUnitsNumber());
+    assertTrue(t.getUnits().contains(u1));
   }
 
+
   @Test
-  public void test_decreaseUnits() {
-    Territory t = new Territory("test", null, 5);
-    assertEquals(5, t.getUnits());
-    t.decreaseUnits(1);
-    assertEquals(4, t.getUnits());
-    t.decreaseUnits(2);
-    assertEquals(2, t.getUnits());
-    assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(0));
-    assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(-1));
-    assertThrows(ArithmeticException.class, () -> t.decreaseUnits(3));
-    assertDoesNotThrow(() -> t.decreaseUnits(2));
-    assertThrows(ArithmeticException.class, () -> t.decreaseUnits(1));
+  public void test_removeunit(){
+    Territory t = new Territory("test");
+    t.addUnits(new Unit());
+    Unit u1 = new Unit();
+    u1.upgrade(1);
+    t.addUnits(u1);
+    ArrayList<Unit> units = new ArrayList<>();
+    units.add(new Unit());
+    units.add(new Unit());
+    units.add(new Unit());
+    t.addUnits(units);
+
+    t.removeUnits(Level.INFANTRY, 3);
+    assertEquals(2, t.getUnitsNumber());
+    assertTrue(t.getUnits().contains(u1));
+    assertNull(t.removeUnits(Level.INFANTRY, 3));
+    assertTrue(t.removeUnits(Level.CAVALRY, 1).contains(u1));
   }
+
+  // @Test
+  // public void test_increaseUnits() {
+  //   Territory t = new Territory("test");
+  //   assertEquals(0, t.getUnits().size());
+  //   t.increaseUnits(1);
+  //   t.increaseUnits(1);
+  //   assertEquals(2, t.getUnits().size());
+  //   t.increaseUnits(3);
+  //   assertEquals(5, t.getUnits().size());
+  //   // assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(0));
+  //   // assertThrows(IllegalArgumentException.class, () -> t.increaseUnits(-1));
+  // }
+
+  // @Test
+  // public void test_decreaseUnits() {
+  //   Territory t = new Territory("test", null, 5);
+  //   assertEquals(5, t.getUnits());
+  //   t.decreaseUnits(1);
+  //   assertEquals(4, t.getUnits());
+  //   t.decreaseUnits(2);
+  //   assertEquals(2, t.getUnits());
+  //   assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(0));
+  //   assertThrows(IllegalArgumentException.class, () -> t.decreaseUnits(-1));
+  //   assertThrows(ArithmeticException.class, () -> t.decreaseUnits(3));
+  //   assertDoesNotThrow(() -> t.decreaseUnits(2));
+  //   assertThrows(ArithmeticException.class, () -> t.decreaseUnits(1));
+  // }
 
   @Test
   public void test_toString() {

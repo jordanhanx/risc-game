@@ -212,7 +212,10 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
       } else if (units > remainingUnits) {
         return "Too many units";
       } else {
-        t.increaseUnits(units);
+        for(int i = 0; i <units; i++){
+          t.addUnits(new Unit());
+        }
+        // t.increaseUnits(units);
         return null;
       }
     } catch (RuntimeException e) {

@@ -18,7 +18,7 @@ public class UnitNumberChecker extends OrderRuleChecker{
         if(o.getUnits() <= 0){
             return "Number of Units must be > 0";
         }
-        if(o.getUnits() > o.getSrc().getUnits()){
+        if(o.getUnits() > o.getSrc().getUnits().size()){
             return "No enough units in the source Territory";
         }
         return null;
