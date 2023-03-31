@@ -227,6 +227,33 @@ public class GameMapTest {
   }
 
   @Test
+  public void test_addTerritoryAndNeighborsWithCost(){
+
+    GameMap map = new GameMap(new HashMap<>());
+    Territory t1 = new Territory("territory1");
+    Territory t2 = new Territory("territory2");
+    Territory t3 = new Territory("territory3");
+    map.addTerritoryAndNeighbors(t1, t2, 3, t3, 4);
+    map.addTerritoryAndNeighbors(t2, t1, 3, t3, 5);
+    map.addTerritoryAndNeighbors(t3, t1,4,  t2, 5);
+    assertTrue(map.isAdjacent("territory1", "territory2"));
+    assertEquals(new HashSet<>(Arrays.asList(t1,t3)), new HashSet<>(map.getNeighbors("territory2")));
+    // assertEquals(Arrays.asList(t1,t3), map.getNeighbors("territory2"));
+
+    assertEquals(new HashSet<>(Arrays.asList(t1,t2)), map.getNeighbors("territory3"));
+    assertEquals(new HashSet<>(Arrays.asList(t2,t3)), map.getNeighbors("territory1"));
+
+    assertEquals(4,map.getCostBetween("territory1", "territory3") );
+    assertEquals(4,map.getCostBetween("territory3", "territory1") );
+
+    assertEquals(5,map.getCostBetween("territory2", "territory3") );
+    assertEquals(5,map.getCostBetween("territory3", "territory2") );
+
+    assertEquals(3,map.getCostBetween("territory1", "territory2") );
+    assertEquals(3,map.getCostBetween("territory2", "territory1") );
+
+  }
+  @Test
   public void test_getInitGroupOwners(){
     GameMap map = new GameMap(3);
     List<Player> expectedList = Arrays.asList(
@@ -265,6 +292,34 @@ public class GameMapTest {
     assertDoesNotThrow(() -> map.assignGroup("groupb", p2));
     assertThrows(IllegalArgumentException.class, () -> map.assignGroup("groubdd", p3));
     assertEquals(p2, t2.getOwner());
+  }
+
+  @Test
+  public void test_findShortestPath(){
+    MapFactory mf = new TextMapFactory();
+    GameMap map = mf.createPlayerMap(2);
+
+    Map<Territory, Integer> shortestPath = map.findShortestPath("Midkemia");
+
+    assertEquals(7,shortestPath.get(map.getTerritoryByName("Gondor")));
+    assertEquals(10,shortestPath.get(map.getTerritoryByName("Roshar")));
+
+
+    Map<Territory, Integer> shortestPath2 = map.findShortestPath("Essos");
+    assertEquals(12 , shortestPath2.get(map.getTerritoryByName("Hogwarts")));
+    //Essos -> Mordor -> Elantris -> Gondor -> Westeros
+    assertEquals(18 , shortestPath2.get(map.getTerritoryByName( "Westeros")));
+
+    Map<Territory, Integer> shortestPath3 = map.findShortestPath("Hogwarts");
+    //Hogwarts -> Elantris -> Gondor - >Westeros
+    assertEquals(6 ,shortestPath3.get(map.getTerritoryByName( "Westeros")));
+
+    Map<Territory, Integer> shortestPath4 = map.findShortestPath("Dorne");
+    //Dorne -> Hogwarts -> Elantris -> Gondor - >Westeros
+    assertEquals(11 ,shortestPath4.get(map.getTerritoryByName( "Westeros")));
+    assertEquals(7 ,shortestPath4.get(map.getTerritoryByName( "Mordor")));
+    assertEquals(11 ,shortestPath4.get(map.getTerritoryByName( "Roshar")));
+    assertEquals(14 ,shortestPath4.get(map.getTerritoryByName( "Scadrial")));
   }
 
 

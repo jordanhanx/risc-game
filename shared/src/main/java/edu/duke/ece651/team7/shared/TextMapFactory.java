@@ -62,18 +62,8 @@ public class TextMapFactory implements MapFactory {
                 }else{
                         return createMap(initGroupNum);
                 }
-                // if (initGroupNum == 2) {
-                //         return createTwoPlayersMap();
-                // } else if (initGroupNum == 3) {
-                //         return createThreePlayersMap();
-                // } else if (initGroupNum == 4) {
-                //         return createFourPlayersMap();
-                // } else {
-                //         throw new IllegalArgumentException("Only support 2 to 4 players game");
-                // }
 
         }
-
 
         public GameMap createMap(int initGroupNum){
                 GameMap map = new GameMap(initGroupNum);
@@ -102,30 +92,30 @@ public class TextMapFactory implements MapFactory {
                 Territory territory22 = new Territory("Braavos", 0);
                 Territory territory23 = new Territory("Pentos", 0);
                 Territory territory24 = new Territory("Volantis", 0);
-                map.addTerritoryAndNeighbors(territory1, territory2, 2, territory3,3);
-                map.addTerritoryAndNeighbors(territory2, territory1, 2, territory3, 3);
+                map.addTerritoryAndNeighbors(territory1, territory2, 2, territory3, 3, territory19, 4);
+                map.addTerritoryAndNeighbors(territory2, territory1, 2, territory3, 3, territory24, 8);
                 map.addTerritoryAndNeighbors(territory3, territory1, 3, territory2, 3, territory4, 4, territory5, 9, territory6, 8);
                 map.addTerritoryAndNeighbors(territory4, territory3, 4, territory5, 1, territory9, 6, territory10, 1);
-                map.addTerritoryAndNeighbors(territory5, territory3, territory4, territory6, territory7, territory8, territory9);
-                map.addTerritoryAndNeighbors(territory6, territory3, territory5, territory7);
-                map.addTerritoryAndNeighbors(territory7, territory5, territory6, territory8);
-                map.addTerritoryAndNeighbors(territory8, territory5, territory7, territory9, territory11);
-                map.addTerritoryAndNeighbors(territory9, territory4, territory5, territory8, territory10, territory11, territory12, territory13);
-                map.addTerritoryAndNeighbors(territory10, territory4, territory9, territory13);
-                map.addTerritoryAndNeighbors(territory11, territory8, territory9, territory12);
-                map.addTerritoryAndNeighbors(territory12, territory9, territory11, territory13);
-                map.addTerritoryAndNeighbors(territory13, territory9, territory10, territory12, territory14, territory15, territory16);
-                map.addTerritoryAndNeighbors(territory14, territory13, territory15, territory18, territory19, territory20);
-                map.addTerritoryAndNeighbors(territory15, territory13, territory14, territory16, territory18);
-                map.addTerritoryAndNeighbors(territory16, territory13, territory15, territory17, territory18);
-                map.addTerritoryAndNeighbors(territory17, territory16, territory18);
-                map.addTerritoryAndNeighbors(territory18, territory14, territory15, territory16, territory17, territory20, territory22);
-                map.addTerritoryAndNeighbors(territory19, territory14, territory20);
-                map.addTerritoryAndNeighbors(territory20, territory14, territory18, territory19, territory22, territory23, territory24);
-                map.addTerritoryAndNeighbors(territory21, territory22);
-                map.addTerritoryAndNeighbors(territory22, territory18, territory20, territory21, territory23);
-                map.addTerritoryAndNeighbors(territory23, territory20, territory22, territory24);
-                map.addTerritoryAndNeighbors(territory24, territory20, territory23);
+                map.addTerritoryAndNeighbors(territory5, territory3, 9, territory4, 1, territory6, 5, territory7, 2, territory8, 4, territory9, 4);
+                map.addTerritoryAndNeighbors(territory6, territory3, 8, territory5, 5, territory7, 4);
+                map.addTerritoryAndNeighbors(territory7, territory5, 2, territory6, 4, territory8, 7);
+                map.addTerritoryAndNeighbors(territory8, territory5, 4, territory7, 7, territory9, 2, territory11, 12);
+                map.addTerritoryAndNeighbors(territory9, territory4, 6, territory5, 4, territory8, 2, territory10, 8, territory11, 15, territory12, 5, territory13, 4);
+                map.addTerritoryAndNeighbors(territory10, territory4, 1, territory9, 8, territory13, 2);
+                map.addTerritoryAndNeighbors(territory11, territory8, 12, territory9, 15, territory12, 7);
+                map.addTerritoryAndNeighbors(territory12, territory9, 5, territory11, 7, territory13, 3, territory16, 7);
+                map.addTerritoryAndNeighbors(territory13, territory9, 4, territory10, 2, territory12, 3, territory14, 11, territory15, 9, territory16, 14);
+                map.addTerritoryAndNeighbors(territory14, territory13, 11, territory15, 5, territory18, 3, territory19, 3, territory20, 6);
+                map.addTerritoryAndNeighbors(territory15, territory13, 9, territory14, 5, territory16, 2, territory18, 3);
+                map.addTerritoryAndNeighbors(territory16, territory12, 7, territory13, 14, territory15, 2, territory17, 2, territory18, 4);
+                map.addTerritoryAndNeighbors(territory17, territory16, 2, territory18, 6);
+                map.addTerritoryAndNeighbors(territory18, territory14, 3, territory15, 3, territory16, 4, territory17, 6, territory20, 8, territory22, 1);
+                map.addTerritoryAndNeighbors(territory19, territory1, 4, territory14, 3, territory20, 5);
+                map.addTerritoryAndNeighbors(territory20, territory14, 6, territory18, 8, territory19, 5, territory22, 6, territory23, 10, territory24, 7);
+                map.addTerritoryAndNeighbors(territory21, territory22, 2);
+                map.addTerritoryAndNeighbors(territory22, territory18, 1, territory20, 6, territory21, 2, territory23, 6);
+                map.addTerritoryAndNeighbors(territory23, territory20, 10, territory22, 6, territory24, 5);
+                map.addTerritoryAndNeighbors(territory24, territory2, 8, territory20, 7, territory23, 5);
 
                 //assign initial groups
                 int numTperP = 24/initGroupNum;

@@ -16,7 +16,14 @@ import org.junit.jupiter.api.Test;
 
 public class TextMapFactoryTest {
     @Test
-    public void test_createMapv2(){
+    public void test_invalidGameMap(){
+        MapFactory mf = new TextMapFactory();
+        assertThrows(IllegalArgumentException.class, ()->mf.createPlayerMap(5));
+        assertThrows(IllegalArgumentException.class, ()->mf.createPlayerMap(1));
+
+    }
+    @Test
+    public void test_create3playerMap(){
         MapFactory mf = new TextMapFactory();
         GameMap threePlayersMap = mf.createPlayerMap(3);
         List<Player> initGroupOwners = threePlayersMap.getInitGroupOwners();
@@ -47,8 +54,20 @@ public class TextMapFactoryTest {
        assertEquals(3,threePlayersMap.getCostBetween("Narnia", "Oz") );
 
        assertEquals(9,threePlayersMap.getCostBetween("Oz", "Elantris") );
-       assertEquals(3,threePlayersMap.getCostBetween("Narnia", "Oz") );
+       assertEquals(9,threePlayersMap.getCostBetween("Elantris", "Oz") );
 
+       assertEquals(4,threePlayersMap.getCostBetween("Highgarden", "Helvoria") );
+       assertEquals(4,threePlayersMap.getCostBetween("Helvoria","Highgarden") );
+
+       assertEquals(14,threePlayersMap.getCostBetween("Highgarden", "Aranthia") );
+       assertEquals(14,threePlayersMap.getCostBetween("Aranthia","Highgarden") );
+
+       assertEquals(12,threePlayersMap.getCostBetween("Mordor", "Essos") );
+       assertEquals(12,threePlayersMap.getCostBetween("Essos", "Mordor") );
+
+       assertEquals(10,threePlayersMap.getCostBetween("Pyke", "Pentos") );
+       assertEquals(10,threePlayersMap.getCostBetween("Pentos", "Pyke") );
+    
     }
     // @Test
     // public void test_createMap(){

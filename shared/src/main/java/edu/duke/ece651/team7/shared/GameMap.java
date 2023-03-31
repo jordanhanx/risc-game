@@ -9,7 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
+
+import javax.print.attribute.HashPrintJobAttributeSet;
 
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
@@ -246,16 +249,43 @@ public class GameMap implements Serializable {
         return false;
     }
 
-    public int findShortestPath(String from, String to){
+    /**
+     * Use Dijkstra’s Algorithm to find the shortest path from the source territory to every territory
+     * the player owns, if no path exists, the value is Integer.MAX_VALUE
+     * 
+     * @param from the name of the source territory
+     * @return the map of destination territory and the shortest distance to get there
+     */
+    public Map<Territory, Integer> findShortestPath(String from){
         Territory source = getTerritoryByName(from);
-        Territory destination = getTerritoryByName(to);
+
         Player p = source.getOwner();
-        Collection<Territory> territories = p.getTerritories();
-        territories.size();
+        ArrayList<Territory> territories = new ArrayList<>(p.getTerritories());
+        Map<Territory, Integer> distances = new LinkedHashMap<>();
 
+        for (Territory t: territories){
+            distances.put(t,Integer.MAX_VALUE);
+            if(t == source){
+                distances.put(t,0);
+            }
+        }
+        PriorityQueue<Map<Territory, Integer>> pq = new PriorityQueue<>(
+            (v1, v2) -> v1.values().iterator().next() - v2.values().iterator().next());
 
-        
-        return 1;
+        pq.add(Map.of(source, 0));
+        while(pq.size() > 0){
+            Territory currentTerri= pq.poll().keySet().iterator().next();
+            for (Territory next : territoriesAdjacentList.get(currentTerri).keySet()) {
+                if(next.getOwner() != p){
+                    continue;
+                }
+                if(distances.get(currentTerri) + territoriesAdjacentList.get(currentTerri).get(next) < distances.get(next)){
+                    distances.put(next, distances.get(currentTerri) + territoriesAdjacentList.get(currentTerri).get(next));
+                    pq.add(Map.of(next, distances.get(next)));
+                }
+            }
+        }
+        return distances;
     }
 
     @Override
