@@ -1,5 +1,7 @@
 package edu.duke.ece651.team7.logingate.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.List;
@@ -16,6 +18,8 @@ import edu.duke.ece651.team7.server.Server;
 
 @Repository
 public class InMemoryGameRepo {
+
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryGameRepo.class);
 
     @Autowired
     private Registry registry;
@@ -46,7 +50,7 @@ public class InMemoryGameRepo {
                 };
                 server.start();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Game[" + gameName + "] aborted because: ", e);
             } finally {
                 allGames.remove(gameName);
             }
@@ -59,15 +63,9 @@ public class InMemoryGameRepo {
 
     public void joinGame(String username, String game) {
         if (!allGames.containsKey(game)) {
-            throw new IllegalArgumentException("Game:" + game + "doesn't exist");
+            throw new IllegalStateException("Game:" + game + "doesn't exist");
+        } else {
+            allGames.get(game).addUser(username);
         }
-        allGames.get(game).addUser(username);
-    }
-
-    public void removeGame(String game) {
-        if (!allGames.containsKey(game)) {
-            throw new IllegalArgumentException("Game:" + game + "doesn't exist");
-        }
-        allGames.remove(game);
     }
 }

@@ -27,8 +27,9 @@ public class InMemoryUserRepo extends InMemoryUserDetailsManager {
     @Override
     public void createUser(UserDetails user) {
         if (userExists(user.getUsername())) {
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalStateException("User[" + user.getUsername() + "] already exists");
+        } else {
+            super.createUser(user);
         }
-        super.createUser(user);
     }
 }

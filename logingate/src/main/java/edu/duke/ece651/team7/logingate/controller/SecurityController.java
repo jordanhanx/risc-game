@@ -1,5 +1,7 @@
 package edu.duke.ece651.team7.logingate.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +12,8 @@ import edu.duke.ece651.team7.logingate.service.UserService;
 
 @RestController
 public class SecurityController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
     @Autowired
     private UserService userService;
@@ -28,6 +32,8 @@ public class SecurityController {
     public String requestCreateUser(@RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password) {
         userService.createUser(username, password);
-        return "user added to system";
+        String msg = "New user[" + username + "] registered";
+        logger.info(msg);
+        return msg;
     }
 }
