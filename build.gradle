@@ -5,22 +5,41 @@
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
 plugins {
-    id 'com.bmuschko.clover' version '2.2.3'
-    id 'java'
+    id 'com.bmuschko.clover' version '2.2.3' // thrid-party Gradle plugin
 }
 
-
-subprojects{
-    apply plugin: "java"
-    apply plugin: "com.bmuschko.clover"
-    repositories {
-        // jcenter()  // jcenter is deprecated
-        mavenCentral()
+/** extends clover plugin */ 
+clover {
+    report{
+        xml=true
+        html=true
     }
+}
+
+/** configures subprojects */
+subprojects{
+    apply plugin: 'java' // core Gradle plugin
+    apply plugin: 'com.bmuschko.clover'
+
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    clover{
+        compiler{
+            additionalArgs = "-g:lines,source,vars"
+        }
+        report{
+            xml=true
+            html=true
+        }
+    }
+
+    repositories {
+        // jcenter()  // jcenter is deprecated
+        mavenCentral()
+    }
+
     dependencies {
         // Use JUnit Jupiter for testing.
         testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
@@ -32,50 +51,37 @@ subprojects{
         // Use Mockito
         testImplementation "org.mockito:mockito-core:3.+"
     }
-    clover{
-        compiler{
-            additionalArgs = "-g:lines,source,vars"
-        }
-        report{
-            xml=true
-            html=true
-        }
-    }
+
     test{
+        useJUnitPlatform() // Use junit platform for unit tests
         testLogging{
             showStandardStreams = true
             exceptionFormat = 'full'
         }
     }
-    test {
-        // Use junit platform for unit tests
-        useJUnitPlatform()
-    }
-
 }
 
-// Project specific stuff
+/** configures projects' dependencies */
 project (':shared'){
 }
 project (':server'){
     dependencies {
         implementation project(':shared')
-//        testImplementation project(path: ':shared', configuration: "testPkg")
     }
 }
 project (':client'){
     dependencies {
         implementation project(':shared')
-//        testImplementation project(path: ':shared', configuration: "testPkg")
     }
 }
-clover {
-    report{
-        xml=true
-        html=true
+project (':logingate'){
+    dependencies {
+        implementation project(':server')
+        implementation project(':shared')
     }
 }
 
+/** customized taks */
 tasks.register("run-server") {
     dependsOn project('server').getTasksByName('run',false)
     group = 'Run Client/Server'
@@ -87,29 +93,6 @@ tasks.register("run-client") {
     group = 'Run Client/Server'
     description = 'Run the Client'
 }
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-
-// task resolveDependencies {
-//    doLast {
-//        project.rootProject.allprojects.each { subProject ->
-//            subProject.buildscript.configurations.each { configuration->
-//               if(configuration.canBeResolved) {
-//                  configuration.resolve()
-//               }
-//            }
-//            subProject.configurations.each { configuration ->
-//               if(configuration.canBeResolved) {
-//                  configuration.resolve()
-//               }
-//            }
-//        }
-//    }
-// }
 
 tasks.register("resolveDependencies") {
     dependsOn project('server').getTasksByName('resolveDependencies',false)
