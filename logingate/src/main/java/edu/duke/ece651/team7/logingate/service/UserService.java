@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import edu.duke.ece651.team7.logingate.dao.InMemoryUserRepo;
+import edu.duke.ece651.team7.logingate.repository.InMemoryUserRepo;
 
 @Service
 public class UserService {

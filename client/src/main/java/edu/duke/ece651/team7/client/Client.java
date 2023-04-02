@@ -62,7 +62,9 @@ public class Client extends UnicastRemoteObject implements RemoteClient {
    * @throws NotBoundException if the server is not bound
    */
   protected void connectRemoteServer(String host, int port) throws RemoteException, NotBoundException {
-    this.server = (RemoteServer) LocateRegistry.getRegistry(host, port).lookup("RiscGameServer");
+    // this.server = (RemoteServer) LocateRegistry.getRegistry(host,
+    // port).lookup("RiscGameServer");
+    this.server = (RemoteServer) LocateRegistry.getRegistry(host, port).lookup("RiscGame1");
     out.println("Connected to " + host + ":" + port + " successfully.");
   }
 

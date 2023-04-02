@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.logingate.dao;
+package edu.duke.ece651.team7.logingate.repository;
 
 import javax.annotation.PostConstruct;
 
