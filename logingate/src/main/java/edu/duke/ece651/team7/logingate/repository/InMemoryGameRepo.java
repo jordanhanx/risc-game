@@ -59,6 +59,7 @@ public class InMemoryGameRepo {
         GameEntity newGameEntity = new GameEntity(host, port, gameName, capacity, initUnits, runnable);
         newGameEntity.addUser(username);
         allGames.put(gameName, newGameEntity);
+        newGameEntity.startGameServer();
     }
 
     public void joinGame(String username, String game) {

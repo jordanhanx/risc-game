@@ -5,6 +5,7 @@
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
 plugins {
+    id 'java'
     id 'com.bmuschko.clover' version '2.2.3' // thrid-party Gradle plugin
 }
 

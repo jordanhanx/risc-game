@@ -20,6 +20,9 @@ public class GameEntity {
         this.initUnits = initUnits;
         this.inGameUsers = new HashSet<String>();
         this.thread = new Thread(runnable);
+    }
+
+    public void startGameServer() {
         thread.start();
     }
 

@@ -7,6 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,21 +41,22 @@ public class GameController {
     }
 
     @PostMapping("/new")
-    public String requestCreateNewGame(@RequestParam(value = "capacity") int capacity,
+    public ResponseEntity<String> requestCreateNewGame(@RequestParam(value = "capacity") int capacity,
             @RequestParam(value = "initUnits") int initUnits) throws UnknownHostException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         gameService.createNewGame(auth.getName(), capacity, initUnits);
         String msg = "User[" + auth.getName() + "] created a new game";
         logger.info(msg);
-        return msg;
+        return new ResponseEntity<String>(msg, HttpStatus.CREATED);
     }
 
     @PostMapping("/join")
-    public String requestJoinGame(@RequestParam(value = "gamename") String game) throws RemoteException {
+    public ResponseEntity<String> requestJoinGame(@RequestParam(value = "gamename") String game)
+            throws RemoteException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         gameService.joinGame(auth.getName(), game);
         String msg = "User[" + auth.getName() + "] joined game[" + game + "]";
         logger.info(msg);
-        return msg;
+        return new ResponseEntity<String>(msg, HttpStatus.ACCEPTED);
     }
 }
