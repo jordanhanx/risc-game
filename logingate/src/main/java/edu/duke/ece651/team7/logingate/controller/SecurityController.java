@@ -30,7 +30,7 @@ public class SecurityController {
         return "Admin page";
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<String> requestCreateUser(@RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password) {
         userService.createUser(username, password);

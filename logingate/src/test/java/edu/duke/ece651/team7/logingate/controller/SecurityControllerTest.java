@@ -46,10 +46,10 @@ public class SecurityControllerTest {
     void testRequestCreateUser() throws Exception {
         doNothing().doThrow(IllegalStateException.class).when(userService).createUser("player", "pswd");
         ResultActions response1 = mockMvc
-                .perform(post("/signup").param("username", "player").param("password", "pswd"));
+                .perform(post("/api/signup").param("username", "player").param("password", "pswd"));
         response1.andExpectAll(status().isCreated());
         ResultActions response2 = mockMvc
-                .perform(post("/signup").param("username", "player").param("password", "pswd"));
+                .perform(post("/api/signup").param("username", "player").param("password", "pswd"));
         response2.andExpectAll(status().isInternalServerError());
     }
 
