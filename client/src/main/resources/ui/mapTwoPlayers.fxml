@@ -69,7 +69,7 @@
                         <Text layoutX="173.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                         <Text layoutX="173.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                         <Text layoutX="245.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text fx:id="Oz" layoutX="92.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                        <Text fx:id="a1" layoutX="92.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                     </children>
                 </Pane>
             </items>
