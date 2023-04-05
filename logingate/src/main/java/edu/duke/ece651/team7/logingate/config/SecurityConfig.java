@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,7 +20,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests().anyRequest().authenticated()
                 .and()
-                .formLogin();
+                .exceptionHandling().authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                .and()
+                .formLogin().loginPage("/api/login").permitAll();
         return http.build();
     }
 
