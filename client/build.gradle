@@ -12,14 +12,14 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.13'
 
     //spring
-    id 'org.springframework.boot' version '3.0.0'
-    id 'io.spring.dependency-management' version '1.1.0'
+//    id 'org.springframework.boot' version '3.0.0'
+//    id 'io.spring.dependency-management' version '1.1.0'
 
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+//group = 'com.example'
+//version = '0.0.1-SNAPSHOT'
+//sourceCompatibility = '17'
 
 javafx {
     version = "19.0.2.1"
@@ -49,8 +49,8 @@ dependencies {
 
 
     // Spring
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//     implementation 'org.springframework.boot:spring-boot-starter-web'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 }
 
@@ -59,9 +59,9 @@ application {
     // Define the main class for the application.
     mainClassName = 'edu.duke.ece651.team7.client.App'
 }
-run{
-    standardInput = System.in
-}
+//run{
+//    standardInput = System.in
+//}
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
@@ -83,6 +83,8 @@ clover {
     }
 }
 
-compileJava {
-    options.release = 17
-}
+//compileJava {
+//    options.release = 17
+//}
+
+
