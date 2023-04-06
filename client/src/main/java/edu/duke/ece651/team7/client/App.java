@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.HashMap;
 
 import edu.duke.ece651.team7.client.Model.LoginModel;
-import edu.duke.ece651.team7.client.Controller.GameBeginController;
+import edu.duke.ece651.team7.client.Controller.GameStartController;
 
 public class App extends Application {
   public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class App extends Application {
        FXMLLoader loader = new FXMLLoader(xmlResource);
 
        HashMap<Class<?>,Object> controllers = new HashMap<>();
-       controllers.put(GameBeginController.class, new GameBeginController(new LoginModel(),window));
+       controllers.put(GameStartController.class, new GameStartController(new LoginModel(),window));
        loader.setControllerFactory((c) -> {
          return controllers.get(c);
        });

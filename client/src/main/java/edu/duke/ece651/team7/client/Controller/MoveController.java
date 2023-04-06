@@ -1,6 +1,5 @@
 package edu.duke.ece651.team7.client.Controller;
 
-import edu.duke.ece651.team7.client.Controller.GameBeginController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -44,7 +43,7 @@ public class MoveController implements Initializable{
         window.close();
 
         //go back to the map page
-        URL xmlResource = getClass().getResource("/ui/MapTwoPlayers.fxml");
+        URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 

@@ -15,7 +15,7 @@ import javafx.scene.Scene;
 
 import java.util.HashMap;
 
-public class GameBeginController {
+public class GameStartController {
     @FXML
     TextField userName;
     @FXML
@@ -26,12 +26,12 @@ public class GameBeginController {
     private final LoginModel logModel;
     private final Stage window;
 
-    public GameBeginController() {
+    public GameStartController() {
         window = null;
         logModel=null;
     }
 
-    public GameBeginController(LoginModel logModel, Stage window) {
+    public GameStartController(LoginModel logModel, Stage window) {
         this.logModel=logModel;
         this.window = window;
 
@@ -50,7 +50,7 @@ public class GameBeginController {
     }
 
     private void showMapTwoPlayers() throws IOException{
-        URL xmlResource = getClass().getResource("/ui/MapTwoPlayers.fxml");
+        URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
