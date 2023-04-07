@@ -60,7 +60,7 @@ public class GameStartController {
         GridPane gp = loader.load();
 
 //        GridPane gp = FXMLLoader.load(xmlResource);
-        Scene scene = new Scene(gp, 840, 480);
+        Scene scene = new Scene(gp, 830, 480);
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 

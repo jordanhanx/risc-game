@@ -23,3 +23,24 @@
     -fx-background-radius: 10, 10;
     -fx-background-insets: 2, 5;
 }
+
+
+.btn-custom {
+    -fx-background-color: #8B0000;
+    -fx-text-fill: white;
+    -fx-background-radius: 10, 10;
+    -fx-background-insets: 2, 5;
+}
+
+.btn-custom:hover {
+    -fx-background-color: #800000;
+    -fx-background-radius: 10, 10;
+    -fx-background-insets: 2, 5;
+}
+
+.btn-custom:pressed {
+    -fx-background-color: #700000;
+    -fx-background-radius: 10, 10;
+    -fx-background-insets: 2, 5;
+}
+
