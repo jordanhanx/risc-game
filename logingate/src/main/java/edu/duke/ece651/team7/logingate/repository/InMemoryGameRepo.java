@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import edu.duke.ece651.team7.logingate.model.GameEntity;
-import edu.duke.ece651.team7.server.Server;
 
 @Repository
 public class InMemoryGameRepo {
@@ -33,33 +32,27 @@ public class InMemoryGameRepo {
 
     public List<GameEntity> getGamesByUser(String username) {
         return allGames.values().stream()
-                .filter(e -> e.getInGameUsers().contains(username))
+                .filter(e -> e.getUsers().contains(username))
                 .collect(Collectors.toList());
     }
 
-    public void createNewGame(String host, int port, String username, int capacity, int initUnits) {
+    public void createNewGame(String host, int port, String username, int capacity, int initUnits)
+            throws RemoteException {
         String gameName = "RiscGame" + gameCounter.addAndGet(1);
-
-        Runnable runnable = () -> {
+        GameEntity newGameEntity = new GameEntity(host, port, gameName, capacity, initUnits);
+        newGameEntity.addUser(username);
+        registry.rebind(gameName, newGameEntity);
+        allGames.put(gameName, newGameEntity);
+        // start
+        new Thread(() -> {
             try {
-                Server server = new Server(System.out, port, capacity, initUnits) {
-                    @Override
-                    protected void bindGameOnPort(int port) throws RemoteException {
-                        registry.rebind(gameName, this);
-                    }
-                };
-                server.start();
+                newGameEntity.start();
             } catch (Exception e) {
                 logger.error("Game[" + gameName + "] aborted because: ", e);
             } finally {
                 allGames.remove(gameName);
             }
-        };
-
-        GameEntity newGameEntity = new GameEntity(host, port, gameName, capacity, initUnits, runnable);
-        newGameEntity.addUser(username);
-        allGames.put(gameName, newGameEntity);
-        newGameEntity.startGameServer();
+        }).start();
     }
 
     public void joinGame(String username, String game) {

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.rmi.AccessException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -21,8 +20,8 @@ import edu.duke.ece651.team7.logingate.model.GameEntity;
 @ExtendWith(MockitoExtension.class)
 public class InMemoryGameRepoTest {
 
-    // @Mock
-    // private Registry registry;
+    @Mock
+    private Registry registry;
     @Spy
     private HashMap<String, GameEntity> allGames = new HashMap<>();
 
@@ -34,20 +33,17 @@ public class InMemoryGameRepoTest {
         // doNothing().doThrow(AccessException.class).when(registry).rebind(anyString(),
         // any(Remote.class));
         assertEquals(0, inMemoryGameRepo.getAllGames().size());
-        allGames.put("game1", new GameEntity("host", 0, "game1", 2, 10, () -> {
-        }));
+        allGames.put("game1", new GameEntity("host", 0, "game1", 2, 10));
         assertEquals(1, inMemoryGameRepo.getAllGames().size());
-        allGames.put("game2", new GameEntity("host", 0, "game2", 2, 10, () -> {
-        }));
+        allGames.put("game2", new GameEntity("host", 0, "game2", 2, 10));
         assertEquals(2, inMemoryGameRepo.getAllGames().size());
     }
 
     @Test
-    public void testGetGamesByUser() {
+    public void testGetGamesByUser() throws RemoteException {
         assertEquals(0, inMemoryGameRepo.getGamesByUser("player1").size());
         assertEquals(0, inMemoryGameRepo.getGamesByUser("player2").size());
-        GameEntity game1 = new GameEntity("host", 0, "game1", 2, 10, () -> {
-        });
+        GameEntity game1 = new GameEntity("host", 0, "game1", 2, 10);
         game1.addUser("player1");
         allGames.put("game1", game1);
         assertEquals(1, inMemoryGameRepo.getGamesByUser("player1").size());
@@ -62,9 +58,8 @@ public class InMemoryGameRepoTest {
     }
 
     @Test
-    public void testJoinGame() {
-        allGames.put("game1", new GameEntity("host", 0, "game1", 2, 10, () -> {
-        }));
+    public void testJoinGame() throws RemoteException {
+        allGames.put("game1", new GameEntity("host", 0, "game1", 2, 10));
         assertDoesNotThrow(() -> inMemoryGameRepo.joinGame("player1", "game1"));
         assertThrows(IllegalStateException.class, () -> inMemoryGameRepo.joinGame("player1", "game1"));
         assertThrows(IllegalStateException.class, () -> inMemoryGameRepo.joinGame("player1", "game2"));

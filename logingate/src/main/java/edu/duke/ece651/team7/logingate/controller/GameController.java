@@ -40,7 +40,7 @@ public class GameController {
 
     @PostMapping("/api/riscgame/new")
     public ResponseEntity<String> requestCreateNewGame(@RequestParam(value = "capacity") int capacity,
-            @RequestParam(value = "initUnits") int initUnits) throws UnknownHostException {
+            @RequestParam(value = "initUnits") int initUnits) throws UnknownHostException, RemoteException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         gameService.createNewGame(auth.getName(), capacity, initUnits);
         String msg = "User[" + auth.getName() + "] created a new game";
