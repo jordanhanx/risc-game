@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'risc'
-include('client', 'server', 'shared', 'logingate')
+include('client', 'server', 'shared')
