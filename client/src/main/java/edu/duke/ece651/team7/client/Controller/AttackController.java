@@ -20,7 +20,7 @@ public class AttackController implements Initializable{
     @FXML
     TextField terrAttackFrom,terrAttackTo,selectAttackLevel,selectAttackNum;
     @FXML
-    ListView<String> AttackList;
+    ListView<String> attackList;
 
     private final Stage window;
     private ObservableList<String> list;
@@ -29,8 +29,8 @@ public class AttackController implements Initializable{
 
     @FXML
     public void clickAttackButton(){
-        String record = "Choose to Attack with "+ selectAttackNum.getText() + " Level "+selectAttackLevel.getText() + " units from Territory " + terrAttackFrom.getText() + " to Territory "+terrAttackTo.getText();
-        list.add(record);
+        String attackInfo = "Choose to attack with "+ selectAttackNum.getText()+" level: "+ selectAttackLevel.getText() + " units from Territory: " + terrAttackFrom.getText() + " to Territory: "+terrAttackTo.getText();
+        list.add(attackInfo);
         terrAttackFrom.clear();
         terrAttackTo.clear();
         selectAttackNum.clear();
@@ -63,7 +63,7 @@ public class AttackController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         list = FXCollections.observableArrayList();
-        AttackList.setItems(list);
+        attackList.setItems(list);
     }
 
 }

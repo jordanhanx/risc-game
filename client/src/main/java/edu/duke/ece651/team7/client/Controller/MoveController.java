@@ -29,8 +29,8 @@ public class MoveController implements Initializable{
 
     @FXML
     public void clickMoveButton(){
-        String record = "Choose to Move "+ selectMoveNum.getText() + " Level "+selectMoveLevel.getText() + " units from Territory " + terrMoveFrom.getText() + " to Territory "+terrMoveTo.getText();
-        list.add(record);
+        String moveInfo = "Choose to move "+ selectMoveNum.getText() + " level: "+selectMoveLevel.getText() + " units from Territory: " + terrMoveFrom.getText() + " to Territory: "+terrMoveTo.getText();
+        list.add(moveInfo);
         terrMoveFrom.clear();
         terrMoveTo.clear();
         selectMoveNum.clear();

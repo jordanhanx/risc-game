@@ -132,16 +132,31 @@ public class MapController implements Initializable {
 
     }
 
-    /*
+
     @FXML
     public void clickOnUpgrade() throws IOException{
-
+        showUpgrade();
     }
 
     private void showUpgrade() throws IOException{
+        URL xmlResource = getClass().getResource("/ui/Upgrade.fxml");
 
+        FXMLLoader loader = new FXMLLoader(xmlResource);
+
+        HashMap<Class<?>,Object> controllers = new HashMap<>();
+        controllers.put(UpgradeController.class, new UpgradeController(window));
+        loader.setControllerFactory(controllers::get);
+        GridPane gp = loader.load();
+
+//       GridPane gp = FXMLLoader.load(xmlResource);
+        Scene scene = new Scene(gp, 840, 480);
+        URL cssResource = getClass().getResource("/ui/buttons.css");
+        scene.getStylesheets().add(cssResource.toString());
+
+        this.window.setScene(scene);
+        this.window.show();
     }
-    */
+
 
 
 

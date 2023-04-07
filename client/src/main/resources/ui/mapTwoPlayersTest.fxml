@@ -18,7 +18,6 @@
                         <Line endX="-33" endY="44" layoutX="383.0" layoutY="247.0" startX="-34.29290771484375" startY="-43.12232" />
                         <Line endX="107.7" endY="-6.9" layoutX="111.0" layoutY="87.0" startX="29.0" startY="74.77777" />
                         <Line endX="30.5" endY="38.987640380859375" layoutX="309.0" layoutY="263.0" startX="-156.0" startY="38.98765" />
-                        <Line endX="100.0" startX="-100.0" />
                         <Line endX="-44.8880" endY="58.666" layoutX="394.0" layoutY="99.0" startX="-119.0" startY="-15.000007629394531" />
                         <Button fx:id="Roshar" layoutX="320.0" layoutY="144.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="60.0" prefWidth="80.0" text="Roshar">
                             <styleClass>
@@ -64,7 +63,7 @@
                                 <String fx:value="expandable" />
                             </styleClass>
                         </Button>
-                        <Button fx:id="Upgrade" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="70.0" text="Upgrade">
+                        <Button fx:id="Upgrade" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnUpgrade" prefHeight="20.0" prefWidth="70.0" text="Upgrade">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />

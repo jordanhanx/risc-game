@@ -44,22 +44,22 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Text fill="#b04d4d" strokeType="OUTSIDE" strokeWidth="0.0" text="Make Move Choice" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Make Move Choice" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="30.0" />
             </font>
         </Text>
-        <Text fill="#4d86b0" stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="From :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="From :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="18.0" />
+                <Font size="24.0" />
             </font>
         </Text>
-        <Text fill="#2071c3" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="    To :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="To:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="18.0" />
+                <Font size="24.0" />
             </font>
         </Text>
-        <Text fill="#4d8ab0" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="With :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="With :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="18.0" />
             </font>
@@ -73,12 +73,12 @@
          <font>
             <Font size="18.0" />
          </font></Text>
-        <Text fill="#e40707" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="      level:" GridPane.columnIndex="3" GridPane.rowIndex="10">
+        <Text fill="#e40707" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Level :" GridPane.columnIndex="3" GridPane.rowIndex="10">
             <font>
                 <Font size="18.0" />
             </font>
         </Text>
-        <Text fill="#dd0d0d" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="   number:" GridPane.columnIndex="3" GridPane.rowIndex="12">
+        <Text fill="#dd0d0d" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Number :" GridPane.columnIndex="3" GridPane.rowIndex="12">
             <font>
                 <Font size="18.0" />
             </font>
