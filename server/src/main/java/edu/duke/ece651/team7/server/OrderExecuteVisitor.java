@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.duke.ece651.team7.shared.GameMap;
+import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Territory;
 
-public class OrderExecuter {
+public class OrderExecuteVisitor implements OrderVisitor<String>{
     /**
      * @param checker the rule checker of order, checker whether the order is valid
      * @param map the gamemap
@@ -23,31 +24,13 @@ public class OrderExecuter {
      * 
      * @param map the GameMap of the game
      */
-    public OrderExecuter(GameMap map){
+    public OrderExecuteVisitor(GameMap map){
         this.map = map;
         this.combatPool = new ArrayList<Combat>();
         // this.out = out;
         checker = new PathChecker(null);
         checker = new UnitNumberChecker(checker);
     }
-
-    /**
-     * Execute one move order, move the unit from one territory to another
-     * @param o order to execute
-     * @throws IllegalArgumentException if the order is not valid
-     */
-    public void doOneMove(MoveOrder o) throws IllegalArgumentException{
-        String err = checker.checkOrderValidity(map, o);
-        if(err == null){
-            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
-            o.getSrc().decreaseUnits(o.getUnits());
-            o.getDest().increaseUnits(o.getUnits());
-        }else{
-            throw new IllegalArgumentException(err);
-        }
-    }
-
     /**
      * Check if the issued Attack order's destination has already formed a combat
      * @param o Player's order
@@ -72,7 +55,7 @@ public class OrderExecuter {
         //need rule checker
         String err = checker.checkOrderValidity(map, o);
         if(err == null){
-            o.getSrc().decreaseUnits(o.getUnits());
+            o.src.decreaseUnits(o.getUnits());
             Combat targetCombat = isInCombatPool(o.getDest());
             if(targetCombat != null){
                 targetCombat.pushAttack(o.getPlayer(), o.getUnits());
@@ -102,6 +85,43 @@ public class OrderExecuter {
             t.increaseUnits(1);
         }
         combatPool.clear();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public String visit(MoveOrder order) {
+        String err = checker.checkOrderValidity(map, order);
+        if(err == null){
+            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
+            for(Level l: order.units.keySet()){
+                order.dest.addUnits(order.src.removeUnits(l, order.units.get(l)));
+            }
+            return null;
+        }else{
+            throw new IllegalArgumentException(err);
+        }
+    }
+
+
+    @Override
+    public String visit(AttackOrder order) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+    }
+
+    @Override
+    public String visit(ResearchOrder order) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+    }
+
+    @Override
+    public String visit(UpgradeOrder order) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visit'");
     }
 
 }

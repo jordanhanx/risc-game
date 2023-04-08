@@ -124,7 +124,7 @@ public class GameMapTest {
     territoriesAdjacentList.put(t2, a2);
     territoriesAdjacentList.put(t3, a3);
     GameMap map = new GameMap(territoriesAdjacentList);
-    Collection terr = map.getNeighbors("territory2");
+    Collection<Territory> terr = map.getNeighbors("territory2");
     assertEquals(terr.size(), 2);
     assertEquals(true, terr.contains(t1));
     assertEquals(false, terr.contains(t2));
@@ -296,7 +296,7 @@ public class GameMapTest {
 
   @Test
   public void test_findShortestPath(){
-    MapFactory mf = new TextMapFactory();
+    MapFactory mf = new GUIMapFactory();
     GameMap map = mf.createPlayerMap(2);
 
     Map<Territory, Integer> shortestPath = map.findShortestPath("Midkemia");

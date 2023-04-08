@@ -1,13 +1,18 @@
 package edu.duke.ece651.team7.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import edu.duke.ece651.team7.shared.Dice;
+import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
+import edu.duke.ece651.team7.shared.Unit;
 
 
 public class Combat {
@@ -17,14 +22,31 @@ public class Combat {
      * @param participants players that participate in the combat
      */
     private Territory battleField;
-    private Map<Player, Integer> attackPool;
+    // private Map<Player, Integer> attackPool;
+    private Map<Player, TreeSet<Unit> > attackPool;
     private List<Player> participants;
+    private Map<Level, Integer> DiceBonus;
     // private final PrintStream out;
+
+
+     // INFANTRY(1), 
+        // CAVALRY(2), 
+        // TROOPER(3), 
+        // ARTILLERY(4), 
+        // AIRFORCE(5), 
+        // ULTRON(6);
 
     public Combat(Territory t){
         this.battleField = t;
-        this.attackPool = new HashMap<Player, Integer>();
+        this.attackPool = new LinkedHashMap<Player, TreeSet<Unit> >();
         this.participants = new ArrayList<Player>();
+        this.DiceBonus = new HashMap<>();
+        this.DiceBonus.put(Level.valueOfLabel(1), 0);
+        this.DiceBonus.put(Level.valueOfLabel(2), 1);
+        this.DiceBonus.put(Level.valueOfLabel(3), 3);
+        this.DiceBonus.put(Level.valueOfLabel(4), 5);
+        this.DiceBonus.put(Level.valueOfLabel(5), 8);
+        this.DiceBonus.put(Level.valueOfLabel(6), 11);
     }
 
     /**
@@ -43,7 +65,7 @@ public class Combat {
      */
     public int getAttackUnitofPlayer(Player p){
         if(participants.contains(p)){
-            return attackPool.get(p);
+            return attackPool.get(p).size();
         }else{
             return -1;
         }
@@ -66,15 +88,29 @@ public class Combat {
     }
 
 
+    // /**
+    //  * Push an atttack into the order
+    //  * @param p player that issues the attack
+    //  * @param units number of units used to attack
+    //  */
+    // public void pushAttack(Player p, int units){
+    //     attackPool.put(p, attackPool.getOrDefault(p, 0) + units);
+    //     if(!participants.contains(p)){
+    //         participants.add(p);
+    //     }
+    // }
+
     /**
      * Push an atttack into the order
      * @param p player that issues the attack
      * @param units number of units used to attack
      */
-    public void pushAttack(Player p, int units){
-        attackPool.put(p, attackPool.getOrDefault(p, 0) + units);
+    public void pushAttack(Player p, Collection<Unit> units){
         if(!participants.contains(p)){
             participants.add(p);
+            attackPool.put(p, new TreeSet<Unit>(units));
+        }else{
+            attackPool.get(p).addAll(units);
         }
     }
 
@@ -120,10 +156,10 @@ public class Combat {
         // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
         //  +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
         //if the player does not have any units combating, return 
-        if(attackPool.get(defender) == 0){
+        if(attackPool.get(defender).size() == 0){
             return true;
         }
-        if(attackPool.get(attacker) == 0){
+        if(attackPool.get(attacker).size() == 0){
             return false;
         }
         Dice attackD = new Dice(20);

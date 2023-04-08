@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import javax.print.attribute.HashPrintJobAttributeSet;
-
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
     // private Map<Territory, List<Territory> > territoriesAdjacentList;

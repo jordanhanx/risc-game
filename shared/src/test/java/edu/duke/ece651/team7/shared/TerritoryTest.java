@@ -86,11 +86,11 @@ public class TerritoryTest {
     units.add(new Unit());
     t.addUnits(units);
 
-    t.removeUnits(Level.INFANTRY, 3);
+    t.removeUnits(Level.CIVILIAN, 3);
     assertEquals(2, t.getUnitsNumber());
     assertTrue(t.getUnits().contains(u1));
-    assertNull(t.removeUnits(Level.INFANTRY, 3));
-    assertTrue(t.removeUnits(Level.CAVALRY, 1).contains(u1));
+    assertNull(t.removeUnits(Level.CIVILIAN, 3));
+    assertTrue(t.removeUnits(Level.INFANTRY, 1).contains(u1));
   }
 
   // @Test

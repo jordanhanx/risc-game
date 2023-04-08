@@ -10,11 +10,11 @@ public class UnitTest {
         Unit u2 = new Unit();
         Unit u3 = new Unit();
 
-        assertEquals(u1.getLevel(), Level.INFANTRY);
-        assertEquals(u2.getLevel(), Level.INFANTRY);
-        assertEquals(u3.getLevel(), Level.INFANTRY);
+        assertEquals(u1.getLevel(), Level.CIVILIAN);
+        assertEquals(u2.getLevel(), Level.CIVILIAN);
+        assertEquals(u3.getLevel(), Level.CIVILIAN);
 
-        u1.upgrade(3);
+        u1.upgrade(4);
         assertEquals(u1.getLevel(), Level.ARTILLERY);
         assertThrows(IllegalArgumentException.class, ()->u1.upgrade(0));
         assertThrows(IllegalArgumentException.class, ()->u1.upgrade(-1));

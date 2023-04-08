@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.shared;
 
 public enum Level {
+    CIVILIAN(0),
     INFANTRY(1), 
     CAVALRY(2), 
     TROOPER(3), 

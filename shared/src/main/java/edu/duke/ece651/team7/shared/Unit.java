@@ -1,10 +1,10 @@
 package edu.duke.ece651.team7.shared;
 
-public class Unit {
+public class Unit implements Comparable<Unit> {
     private Level level;
 
     public Unit(){
-        this.level = Level.INFANTRY;
+        this.level = Level.CIVILIAN;
     }
 
     public Level getLevel(){
@@ -23,5 +23,10 @@ public class Unit {
         }else{
             throw new IllegalArgumentException("Upgrade not valid");
         }
+    }
+
+    @Override
+    public int compareTo(Unit u) {
+       return u.level.compareTo(level);
     }
 }

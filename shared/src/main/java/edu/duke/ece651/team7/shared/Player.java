@@ -11,6 +11,9 @@ public class Player implements Serializable, Comparable<Player> {
     protected static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
+    private ResourceStorage tech;
+    private ResourceStorage food;
+    private int maxTechLevel;
 
     /**
      * Constructs a Player with the name.
@@ -20,6 +23,9 @@ public class Player implements Serializable, Comparable<Player> {
     public Player(String name) {
         this.name = name;
         territories = new LinkedList<>();
+        this.tech = new ResourceStorage();
+        this.food = new ResourceStorage();
+        this.maxTechLevel = 1;
     }
 
     /**

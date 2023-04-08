@@ -8,22 +8,6 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 public class OrderTest {
     @Test
-    public void test_getMethod(){
-        Territory t1 = new Territory("a");
-        Territory t2 = new Territory("b");
-        Player p1 = new Player("null");
-        MoveOrder o1 = new MoveOrder(p1, t1, t2, 10);
-        AttackOrder a1 = new AttackOrder(p1, t1, t2, 200);
-        assertEquals(p1, o1.getPlayer());
-        assertEquals(t1, o1.getSrc());
-        assertEquals(t2, o1.getDest());
-        assertEquals(10, o1.getUnits());
-        assertEquals(t1, a1.getSrc());
-        assertEquals(200, a1.getUnits());
-
-    }
-
-    @Test
     public void test_equal(){
         Territory t1 = new Territory("a");
         Territory t2 = new Territory("b");
@@ -49,24 +33,4 @@ public class OrderTest {
         assertFalse(a1.equals(a3));
 
     }
-
-    @Test
-    public void test_modifyUnit(){
-        Territory t1 = new Territory("a");
-        Territory t2 = new Territory("b");
-        Player p1 = new Player("null");
-        MoveOrder o1 = new MoveOrder(p1, t1, t2, 10);
-        AttackOrder a1 = new AttackOrder(p1, t1, t2, 200);
-        a1.increaseUnits(4);
-        o1.increaseUnits(3);
-        assertEquals(204, a1.getUnits());
-        assertEquals(13, o1.getUnits());
-        a1.decreaseUnits(4);
-        assertEquals(200, a1.getUnits());
-        assertThrows(ArithmeticException.class, ()->o1.decreaseUnits(20));
-
-    }
-
-
-
 }

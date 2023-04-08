@@ -13,6 +13,9 @@ public class Territory implements Serializable {
   private Player owner;
   // private int units;
   private ArrayList<Unit> units;
+  private final int foodProductionRate;
+  private final int techProductionRate;
+
 
   /**
    * Constucts a Territory with just inputted name
@@ -23,6 +26,9 @@ public class Territory implements Serializable {
     this.name = name;
     this.owner = null;
     this.units = new ArrayList<Unit>();
+    this.foodProductionRate = 1;
+    this.techProductionRate = 1;
+
   }
 
   public Territory(String name, int numUnits){
@@ -35,6 +41,22 @@ public class Territory implements Serializable {
     for(int i = 0; i < numUnits; i++){
       this.units.add(new Unit());
     }
+    this.foodProductionRate = 1;
+    this.techProductionRate = 1;
+  }
+
+  public Territory(String name, int numUnits, int foodProductionRate, int techProductionRate){
+    this.name = name;
+    this.owner = null;
+    if (numUnits < 0) {
+      throw new IllegalArgumentException("units cannot be less than 0");
+    }
+    this.units = new ArrayList<Unit>();
+    for(int i = 0; i < numUnits; i++){
+      this.units.add(new Unit());
+    }
+    this.foodProductionRate = foodProductionRate;
+    this.techProductionRate = techProductionRate;
   }
   /**
    * Constructs a territory with inputted values
@@ -53,6 +75,8 @@ public class Territory implements Serializable {
     for(int i = 0; i < numUnits; i++){
       this.units.add(new Unit());
     }
+    this.foodProductionRate = 1;
+    this.techProductionRate = 1;
   }
 
   public String getName() {
@@ -139,6 +163,14 @@ public class Territory implements Serializable {
     }
   }
 
+  public int produceFood(){
+    return foodProductionRate;
+  }
+
+  public int produceTech(){
+    return techProductionRate;
+  }
+  
   // public void increaseUnits(int num) {
   //   if (num <= 0) {
   //     throw new IllegalArgumentException("Increase Territory Units: input num must be greater than 0");
