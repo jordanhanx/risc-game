@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.HashMap;
 
 import edu.duke.ece651.team7.client.Model.LoginModel;
-import edu.duke.ece651.team7.client.Controller.GameStartController;
+import edu.duke.ece651.team7.client.Controller.LoginSignupController;
 
 public class App extends Application {
   public static void main(String[] args) {
@@ -37,11 +37,11 @@ public class App extends Application {
   @Override
   public void start(Stage window){
     try {
-       URL xmlResource = getClass().getResource("/ui/GameStart.fxml");
+       URL xmlResource = getClass().getResource("/ui/LoginSignup.fxml");
        FXMLLoader loader = new FXMLLoader(xmlResource);
 
        HashMap<Class<?>,Object> controllers = new HashMap<>();
-       controllers.put(GameStartController.class, new GameStartController(new LoginModel(),window));
+       controllers.put(LoginSignupController.class, new LoginSignupController(new LoginModel(),window));
        loader.setControllerFactory((c) -> {
          return controllers.get(c);
        });

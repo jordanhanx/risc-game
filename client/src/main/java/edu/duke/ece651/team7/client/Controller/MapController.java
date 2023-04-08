@@ -157,6 +157,30 @@ public class MapController implements Initializable {
         this.window.show();
     }
 
+    @FXML
+    public void clickOnResearch() throws IOException{
+        showResearch();
+    }
+
+    private void showResearch() throws IOException{
+        URL xmlResource = getClass().getResource("/ui/Research.fxml");
+
+        FXMLLoader loader = new FXMLLoader(xmlResource);
+
+        HashMap<Class<?>,Object> controllers = new HashMap<>();
+        controllers.put(ResearchController.class, new ResearchController(window));
+        loader.setControllerFactory(controllers::get);
+        GridPane gp = loader.load();
+
+//       GridPane gp = FXMLLoader.load(xmlResource);
+        Scene scene = new Scene(gp, 840, 480);
+        URL cssResource = getClass().getResource("/ui/buttons.css");
+        scene.getStylesheets().add(cssResource.toString());
+
+        this.window.setScene(scene);
+        this.window.show();
+    }
+
 
 
 

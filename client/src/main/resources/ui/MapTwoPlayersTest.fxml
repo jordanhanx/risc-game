@@ -128,6 +128,11 @@
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass></Button>
+                        <Button fx:id="Research" layoutX="230.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnResearch" prefHeight="20.0" prefWidth="70.0" text="Research">
+                            <styleClass>
+                                <String fx:value="numbtn" />
+                                <String fx:value="expandable" />
+                            </styleClass></Button>
                         <Text layoutX="173.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                         <Text layoutX="173.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                         <Text layoutX="245.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" />
