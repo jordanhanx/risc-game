@@ -402,8 +402,6 @@ public class TextClientTest {
         RemoteGame mockServer = mock(RemoteGame.class);
 
         TextClient client = createMockedClient(mockServer, "", bytes);
-        // Setup mockServer
-        doNothing().when(mockServer).doCommitOrder("default");
         // Test
         bytes.reset();
         assertDoesNotThrow(() -> client.requestContinueGame());
@@ -491,7 +489,7 @@ public class TextClientTest {
         when(mockServer.getSelfStatus("default")).thenReturn(mockPlayer);
         when(mockServer.tryMoveOrder("default", "Mordor", "Hogwarts",
                 5)).thenReturn(null);
-        doNothing().when(mockServer).doCommitOrder("default");
+
         // Setup mockGameMap
         when(tMordor.getName()).thenReturn("Mordor");
         when(tHogwarts.getName()).thenReturn("Hogwarts");

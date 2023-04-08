@@ -2,13 +2,19 @@ package edu.duke.ece651.team7.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.concurrent.BrokenBarrierException;
 
 /**
  * This interface defines remote methods that can be invoked remotely by the
  * clients of the game.
  */
 public interface RemoteGame extends Remote {
+
+    public enum GamePhase {
+        PICK_GROUP, PLACE_UNITS, PLAY_GAME
+    }
+
+    public GamePhase getGamePhase() throws RemoteException;
+
     /**
      * Returns the initial number of units each player starts with.
      * 
@@ -100,13 +106,11 @@ public interface RemoteGame extends Remote {
      * expires.
      * 
      * @param username the username of the player to commit the orders for
-     * @throws RemoteException        if there is an issue with remote invocation
-     * @throws InterruptedException   if the current thread is interrupted while
-     *                                waiting
-     * @throws BrokenBarrierException if another thread has interrupted the waiting
-     *                                thread
+     * @throws RemoteException      if there is an issue with remote invocation
+     * @throws InterruptedException if the current thread is interrupted while
+     *                              waiting
      */
-    public void doCommitOrder(String username) throws RemoteException, InterruptedException, BrokenBarrierException;
+    public String doCommitOrder(String username) throws RemoteException, InterruptedException;
 
     /**
      * Returns whether or not the game is over.
