@@ -373,7 +373,7 @@ public class TextClientTest {
         // Setup Server
         when(mockServer.getGameMap()).thenReturn(mockMap);
         when(mockServer.getSelfStatus("default")).thenReturn(pRed);
-        when(mockServer.remoteGetInitUnits()).thenReturn(20);
+        when(mockServer.getGameInitUnits()).thenReturn(20);
         when(mockServer.tryPlaceUnitsOn("default", "Gondor", 16)).thenReturn(null);
         when(mockServer.tryPlaceUnitsOn("default", "Mordor", 2)).thenReturn(null,
                 "remaining units is insufficient");
@@ -388,7 +388,7 @@ public class TextClientTest {
         verify(mockServer, times(1)).tryPlaceUnitsOn("default", "Gondor", 16);
         verify(mockServer, times(2)).tryPlaceUnitsOn("default", "Mordor", 2);
         verify(mockServer, times(2)).tryPlaceUnitsOn("default", "Hogwarts", 1);
-        verify(mockServer, times(8)).remoteGetInitUnits();
+        verify(mockServer, times(8)).getGameInitUnits();
         verify(pRed, times(8)).getTotalUnits();
     }
 
@@ -632,7 +632,7 @@ public class TextClientTest {
         when(mockServer.tryRegisterClient("Green", client)).thenReturn(null);
         when(mockServer.getGameMap()).thenReturn(mockMap);
         when(mockServer.getSelfStatus("Green")).thenReturn(pGreen);
-        when(mockServer.remoteGetInitUnits()).thenReturn(20);
+        when(mockServer.getGameInitUnits()).thenReturn(20);
         when(mockServer.isGameOver()).thenReturn(false);
 
         // Test
@@ -644,7 +644,7 @@ public class TextClientTest {
         verify(mockServer, times(1)).tryRegisterClient("Green", client);
         verify(mockServer, atLeastOnce()).getGameMap();
         verify(mockServer, atLeastOnce()).getSelfStatus("Green");
-        verify(mockServer, atLeastOnce()).remoteGetInitUnits();
+        verify(mockServer, atLeastOnce()).getGameInitUnits();
         verify(mockServer, times(3)).isGameOver();
         verify(pGreen, times(3)).isLose();
     }
@@ -748,7 +748,7 @@ public class TextClientTest {
         when(mockServer.tryRegisterClient("Green", client)).thenReturn(null);
         when(mockServer.getGameMap()).thenReturn(mockMap);
         when(mockServer.getSelfStatus("Green")).thenReturn(pGreen);
-        when(mockServer.remoteGetInitUnits()).thenReturn(20);
+        when(mockServer.getGameInitUnits()).thenReturn(20);
         when(mockServer.isGameOver()).thenReturn(false, false, true);
 
         // Test
@@ -760,7 +760,7 @@ public class TextClientTest {
         verify(mockServer, times(1)).tryRegisterClient("Green", client);
         verify(mockServer, atLeastOnce()).getGameMap();
         verify(mockServer, atLeastOnce()).getSelfStatus("Green");
-        verify(mockServer, atLeastOnce()).remoteGetInitUnits();
+        verify(mockServer, atLeastOnce()).getGameInitUnits();
         verify(mockServer, times(3)).isGameOver();
         verify(pGreen, times(2)).isLose();
     }

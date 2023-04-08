@@ -69,7 +69,7 @@ public class GameEntityTest {
         assertEquals("test", testgame.getName());
         assertEquals(2, testgame.getCapacity());
         assertEquals(10, testgame.getInitUnits());
-        assertEquals(10, testgame.remoteGetInitUnits());
+        assertEquals(10, testgame.getGameInitUnits());
         assertEquals(new HashSet<>(), testgame.getUsers());
     }
 

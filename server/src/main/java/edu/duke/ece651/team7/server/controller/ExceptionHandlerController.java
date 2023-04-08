@@ -7,11 +7,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * This class handles exceptions that occur in the application and returns an
+ * HTTP response with a message describing the error that occurred.
+ */
 @ControllerAdvice
 public class ExceptionHandlerController {
 
     private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
+    /**
+     * Handles any Exception that occurs in the application and logs the exception
+     * message before returning an HTTP response with the same message.
+     * 
+     * @param ex The Exception that occurred
+     * @return A ResponseEntity with an HTTP status code of 500 and the exception
+     *         message in the response body
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         logger.error(ex.getMessage()); // only log the exception message

@@ -12,9 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import edu.duke.ece651.team7.server.dto.GameDto;
 import edu.duke.ece651.team7.server.model.GameEntity;
 import edu.duke.ece651.team7.server.repository.InMemoryGameRepo;
+import edu.duke.ece651.team7.shared.GameDto;
 
 @ExtendWith(MockitoExtension.class)
 public class GameServiceTest {

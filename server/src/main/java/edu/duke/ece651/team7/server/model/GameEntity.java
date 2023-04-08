@@ -14,6 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * The GameEntity class represents a game object that implements the RemoteGame
+ * interface.
+ * The class provides methods for managing game state and interaction with
+ * remote clients.
+ */
 public class GameEntity extends UnicastRemoteObject implements RemoteGame {
 
     private static final Logger logger = LoggerFactory.getLogger(GameEntity.class);
@@ -31,6 +37,17 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     protected CountDownLatch commitSignal;
     protected CyclicBarrier returnSignal;
 
+    /**
+     * Constructor for GameEntity class.
+     * 
+     * @param host      the host address of the game
+     * @param port      the port number of the game
+     * @param name      the name of the game
+     * @param capacity  the maximum number of players that can join the game
+     * @param initUnits the initial number of units each player starts with
+     * @throws RemoteException       if there is an issue with remote invocation
+     * @throws IllegalStateException if the capacity or initUnits values are invalid
+     */
     public GameEntity(String host, int port, String name, int capacity, int initUnits) throws RemoteException {
         if (capacity < 2) {
             throw new IllegalStateException("capacity cannot be less than 2");
@@ -52,11 +69,24 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         logger.info(name + " is ready");
     }
 
+    /**
+     * Set up the CountDownLatch objects that will be used to manage synchronization
+     * of game events.
+     *
+     * @param num the number of latches to set up
+     */
     protected void setupCountDownLatches(int num) {
         this.commitSignal = new CountDownLatch(num);
         this.returnSignal = new CyclicBarrier(num + 1);
     }
 
+    /**
+     * Start the game by executing the main game loop.
+     *
+     * @throws RemoteException        if there is an issue with remote invocation
+     * @throws InterruptedException   if the thread is interrupted while waiting
+     * @throws BrokenBarrierException if the barrier is broken while waiting
+     */
     public void start() throws RemoteException, InterruptedException, BrokenBarrierException {
         /* Placement Phase */
         commitSignal.await(); // waits for all players picking groups of territories
@@ -105,7 +135,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public int remoteGetInitUnits() throws RemoteException {
+    public int getGameInitUnits() throws RemoteException {
         return this.initUnits;
     }
 
@@ -113,6 +143,13 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         return this.playerMap.keySet();
     }
 
+    /**
+     * Add a player with the given username to the game.
+     *
+     * @param username the username of the player to add
+     * @throws IllegalStateException if the player is already in the game or if the
+     *                               game is full
+     */
     public void addUser(String username) {
         if (playerMap.containsKey(username)) {
             throw new IllegalStateException("The Player" + username + " already joined");
@@ -221,6 +258,9 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         this.lostCounter = counter;
     }
 
+    /**
+     * Notifies clients who have lost the game to switch to watcher mode using RMI.
+     */
     void notifyGameMapToLostClients() {
         for (String username : playerMap.keySet()) {
             try {
@@ -236,6 +276,11 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         }
     }
 
+    /**
+     * Notifies all clients that the game is over and displays the winner using RMI.
+     * 
+     * @throws RemoteException if there is an issue with remote invocation
+     */
     void notifyWinnerToAllClients() throws RemoteException {
         /*
          * Precondition: isGameOver() == true
@@ -258,6 +303,9 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         }
     }
 
+    /**
+     * Closes all clients using RMI.
+     */
     void closeAllClients() {
         for (RemoteClient client : clientMap.values()) {
             try {

@@ -133,8 +133,8 @@ public class TextClient extends UnicastRemoteObject implements RemoteClient {
    * @throws IOException     if there is an error reading user input
    */
   public void placeUnits() throws RemoteException, IOException {
-    for (int remaining = server.remoteGetInitUnits()
-        - server.getSelfStatus(username).getTotalUnits(); remaining > 0; remaining = server.remoteGetInitUnits()
+    for (int remaining = server.getGameInitUnits()
+        - server.getSelfStatus(username).getTotalUnits(); remaining > 0; remaining = server.getGameInitUnits()
             - server.getSelfStatus(username).getTotalUnits()) {
       view.display(server.getGameMap(), server.getSelfStatus(username));
       String placement = readUserInput(remaining + " units remaining, please input: <Territory> <units>");

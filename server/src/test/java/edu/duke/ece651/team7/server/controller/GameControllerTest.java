@@ -16,8 +16,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import edu.duke.ece651.team7.server.dto.GameDto;
 import edu.duke.ece651.team7.server.service.GameService;
+import edu.duke.ece651.team7.shared.GameDto;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
