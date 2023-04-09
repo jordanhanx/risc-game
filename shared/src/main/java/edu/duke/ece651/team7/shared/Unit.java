@@ -7,6 +7,10 @@ public class Unit implements Comparable<Unit> {
         this.level = Level.CIVILIAN;
     }
 
+    public Unit(Level l){
+        this.level = l;
+    }
+
     public Level getLevel(){
         return level;
     }
@@ -26,7 +30,19 @@ public class Unit implements Comparable<Unit> {
     }
 
     @Override
-    public int compareTo(Unit u) {
-       return u.level.compareTo(level);
+    public boolean equals(Object other) {
+        if (other != null && other.getClass().equals(getClass())) {
+            Unit otherUnit = (Unit) other;
+            return this.level == otherUnit.level;
+        }
+        return false;
     }
+
+
+    @Override
+    public int compareTo(Unit u) {
+       return level.compareTo(u.level);
+    }
+
+
 }

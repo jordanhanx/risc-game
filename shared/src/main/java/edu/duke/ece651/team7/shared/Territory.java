@@ -163,6 +163,12 @@ public class Territory implements Serializable {
     }
   }
 
+  public Collection<Unit> removeAllUnits(){
+    ArrayList<Unit> tomove = this.units;
+    this.units = new ArrayList<>();
+    return tomove;
+  }
+
   public int produceFood(){
     return foodProductionRate;
   }

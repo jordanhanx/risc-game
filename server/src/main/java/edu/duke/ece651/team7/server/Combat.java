@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import edu.duke.ece651.team7.shared.Dice;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 import edu.duke.ece651.team7.shared.Unit;
+import java.util.Collections;
 
 
 public class Combat {
@@ -23,30 +23,16 @@ public class Combat {
      */
     private Territory battleField;
     // private Map<Player, Integer> attackPool;
-    private Map<Player, TreeSet<Unit> > attackPool;
+    private Map<Player, ArrayList<Unit> > attackPool;
     private List<Player> participants;
-    private Map<Level, Integer> DiceBonus;
+    
     // private final PrintStream out;
 
 
-     // INFANTRY(1), 
-        // CAVALRY(2), 
-        // TROOPER(3), 
-        // ARTILLERY(4), 
-        // AIRFORCE(5), 
-        // ULTRON(6);
-
     public Combat(Territory t){
         this.battleField = t;
-        this.attackPool = new LinkedHashMap<Player, TreeSet<Unit> >();
+        this.attackPool = new LinkedHashMap<Player, ArrayList<Unit> >();
         this.participants = new ArrayList<Player>();
-        this.DiceBonus = new HashMap<>();
-        this.DiceBonus.put(Level.valueOfLabel(1), 0);
-        this.DiceBonus.put(Level.valueOfLabel(2), 1);
-        this.DiceBonus.put(Level.valueOfLabel(3), 3);
-        this.DiceBonus.put(Level.valueOfLabel(4), 5);
-        this.DiceBonus.put(Level.valueOfLabel(5), 8);
-        this.DiceBonus.put(Level.valueOfLabel(6), 11);
     }
 
     /**
@@ -87,6 +73,10 @@ public class Combat {
         return attackPool.size();
     }
 
+    public ArrayList<Unit> getAttackUnitsbyPlayer(Player p ){
+        return attackPool.get(p);
+    }
+
 
     // /**
     //  * Push an atttack into the order
@@ -108,10 +98,11 @@ public class Combat {
     public void pushAttack(Player p, Collection<Unit> units){
         if(!participants.contains(p)){
             participants.add(p);
-            attackPool.put(p, new TreeSet<Unit>(units));
+            attackPool.put(p, new ArrayList<Unit>(units));
         }else{
             attackPool.get(p).addAll(units);
         }
+        Collections.sort(attackPool.get(p));
     }
 
     /**
@@ -147,31 +138,75 @@ public class Combat {
      * @return true if attacker succeeds, 
      * @return false if defender succeeds
      */
-    public boolean doOneUnitCombat(Player defender, Player attacker){
-        //the original owner of the territory should always be defender
-        if(attacker == battleField.getOwner()){
+    protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
+        //if the player does not have any units combating, return 
+        if(attackPool.get(attacker).size() == 0 ){
+            return false;
+        }
+        if(attackPool.get(defender).size() == 0 ){
+            return true;
+        }
+
+        Dice attackD = new Dice(20);
+        Dice defenseD = new Dice(20);
+        if(attackD.throwDicewithBonus(attU.getLevel()) > defenseD.throwDicewithBonus(defU.getLevel())){
+            attackPool.get(defender).remove(defU);
+            return true;
+        }else{
+            attackPool.get(attacker).remove(attU);
+            return false;
+        }
+    }
+    /**
+     * the highest-bonus attacker unit paired with the lowest-bonus defender unit
+     * the lowest-bonus attacker unit paired with the highest-bonus defender unit.
+     * 
+     * @param attacker player that act as attacker
+     * @param defender Player as defender
+     * @return 0 if attacker wins both units contest;
+     *         1 if attacker wins first and lose the second
+     *         2 if attacker loses first and wins the second
+     *         3 if attacker loses first and loses the second
+     */
+    protected int doOneTurnCombat(Player attacker, Player defender){
+         //the original owner of the territory should always be defender
+         if(attacker == battleField.getOwner()){
             attacker = defender;
             defender = battleField.getOwner();
         }
         // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
         //  +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
-        //if the player does not have any units combating, return 
-        if(attackPool.get(defender).size() == 0){
-            return true;
+        //the return type is for test purpose
+        if(attackPool.get(attacker).size() <= 0 ){
+            return 4;
         }
-        if(attackPool.get(attacker).size() == 0){
-            return false;
+        if(attackPool.get(defender).size() <= 0 ){
+            return 5;
         }
-        Dice attackD = new Dice(20);
-        Dice defenseD = new Dice(20);
-        if(attackD.throwDice()> defenseD.throwDice()){
-            attackPool.put(defender, attackPool.get(defender) - 1);
-            return true;
+        int attackUnitSize = attackPool.get(attacker).size();
+        boolean r1 = doOneUnitCombat(attacker, attackPool.get(attacker).get(attackUnitSize-1), defender, attackPool.get(defender).get(0));
+
+        int defendUnitSize = attackPool.get(defender).size();
+        boolean r2;
+        if(defendUnitSize > 0 && attackPool.get(attacker).size() > 0){
+            r2 = doOneUnitCombat(attacker, attackPool.get(attacker).get(0), defender, attackPool.get(defender).get(defendUnitSize-1));
         }else{
-            attackPool.put(attacker, attackPool.get(attacker) - 1);
-            return false;
+            if (attackPool.get(attacker).size() > 0){
+                r2 = true;
+            }else{
+                r2 = false;
+            }
         }
-    }   
+        if(r1 && r2){
+            return 0;
+        }else if(r1 && !r2){
+            return 1;
+        }else if(!r1 && r2){
+            return 2;
+        }else{
+            return 3;
+        }
+    }
 
     /**
      * resolve the combat result, return the next defender's index
@@ -183,7 +218,7 @@ public class Combat {
         //if the CombatOrder lose, remove it from the combat list
         Player defendPlayer = participants.get(defender);
         Player attackPlayer = participants.get(attacker);
-        if(attackPool.get(defendPlayer) == 0){
+        if(attackPool.get(defendPlayer).size() == 0){
             participants.remove(defendPlayer);
             attackPool.remove(defendPlayer);
             if(defender >= participants.size()){
@@ -191,7 +226,7 @@ public class Combat {
             }else{
                 return defender;
             }
-        }else if(attackPool.get(attackPlayer) == 0){
+        }else if(attackPool.get(attackPlayer).size() == 0){
             participants.remove(attacker);
             attackPool.remove(attackPlayer);
             if(attacker >= participants.size()){
@@ -221,8 +256,8 @@ public class Combat {
             return null;
         }
          //owner of the territory participate in the combat
-        pushAttack(battleField.getOwner(), battleField.getUnits());
-        battleField.setUnits(0);;
+
+        pushAttack(battleField.getOwner(), battleField.removeAllUnits());
         // printCombat();
         Player originOwner = battleField.getOwner();
         int defender = 0;
@@ -232,19 +267,19 @@ public class Combat {
             if(defender == participants.size()-1){
                 attacker = 0;
             }
-            doOneUnitCombat(participants.get(defender), participants.get(attacker));
+            doOneTurnCombat(participants.get(defender), participants.get(attacker));
             defender = updateParticipantList(defender, attacker);
+
             if(combatEnd()){ //combats end
                 // System.out.println("Winner is " + participants.get(0) + " with " + attackPool.get(participants.get(0)) + " units");
     
                 originOwner.removeTerritory(battleField);
                 battleField.setOwner(participants.get(0));
                 participants.get(0).addTerritory(battleField);
-                battleField.setUnits(attackPool.get(participants.get(0)));
+                battleField.addUnits(attackPool.get(participants.get(0)));
                 System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnits()+") is: " + participants.get(0).getName());
 
                 //for testing
-    
                 return participants.get(0);
             }
         }

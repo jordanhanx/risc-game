@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
@@ -92,6 +93,32 @@ public class TerritoryTest {
     assertNull(t.removeUnits(Level.CIVILIAN, 3));
     assertTrue(t.removeUnits(Level.INFANTRY, 1).contains(u1));
   }
+
+  @Test
+  public void test_removeAllunit(){
+    Territory t = new Territory("test");
+    t.addUnits(new Unit());
+    t.addUnits(new Unit());
+    t.addUnits(new Unit());
+    t.addUnits(new Unit());
+    t.addUnits(new Unit());
+    t.addUnits(new Unit());
+    Unit u1 = new Unit();
+    u1.upgrade(1);
+    t.addUnits(u1);
+
+    Unit u2 = new Unit();
+    u2.upgrade(3);
+    t.addUnits(u2);
+
+    assertEquals(8, t.getUnitsNumber());
+    Collection<Unit> tomove = t.removeAllUnits();
+    assertEquals(0, t.getUnitsNumber());
+    assertEquals(8, tomove.size());
+    assertTrue(tomove.contains(u1));
+    assertTrue(tomove.contains(u2));
+  }
+
 
   // @Test
   // public void test_increaseUnits() {
