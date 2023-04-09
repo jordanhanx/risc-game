@@ -46,6 +46,7 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
     @Override
     public Resource visit(MoveOrder order) {
         int distance = map.findShortestPath(order.src, order.dest);
+        // System.out.println(distance);
         int C = 2;
         int totalUnits = 0;
         for(Level l: order.units.keySet()){
@@ -62,7 +63,7 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
     @Override
     public Resource visit(AttackOrder order) {
         //NEED REFACTOR ON THE FUNCTION
-        int distance = map.findShortestPath(order.src, order.dest);
+        int distance = map.getCostBetween(order.src, order.dest);
         int C = 3;
         int totalUnits = 0;
         for(Level l: order.units.keySet()){
@@ -83,7 +84,7 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
 
     @Override
     public Resource visit(UpgradeOrder order) {
-        int percost = unitUpgradeCost.get(order.from) - unitUpgradeCost.get(order.to);
+        int percost = unitUpgradeCost.get(order.to) - unitUpgradeCost.get(order.from);
         return new TechResource(percost * order.units);
     }
     

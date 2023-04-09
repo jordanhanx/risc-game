@@ -1,12 +1,64 @@
 package edu.duke.ece651.team7.server;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
+import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 public class OrderTest {
+    @Test
+    public void test_constructor(){
+        Player groupA = mock(Player.class);
+        Player groupB = mock(Player.class);
+        Player groupC = mock(Player.class);
+        // GameMap mockMap = mock(GameMap.class);
+
+        Territory tNarnia = mock(Territory.class);
+        Territory tElantris = mock(Territory.class);
+        Territory tMidkemia = mock(Territory.class);
+        Territory tScadrial = mock(Territory.class);
+        Territory tRoshar = mock(Territory.class);
+        Territory tOz = mock(Territory.class);
+        Territory tMordor = mock(Territory.class);
+        Territory tHogwarts = mock(Territory.class);
+        Territory tGondor = mock(Territory.class);
+
+        HashMap<Level, Integer> units = new HashMap<>();
+        units.put(Level.CIVILIAN, 10);
+        units.put(Level.INFANTRY, 8);
+        units.put(Level.CAVALRY, 5);
+        units.put(Level.AIRFORCE, 9);
+        MoveOrder m1 = new MoveOrder(groupA, tNarnia, tElantris, Level.CIVILIAN, 10, Level.INFANTRY, 20);
+        assertEquals(10, m1.units.get(Level.CIVILIAN));
+        assertEquals(20, m1.units.get(Level.INFANTRY));
+        assertNull(m1.units.get(Level.AIRFORCE));
+
+        MoveOrder m2 = new MoveOrder(groupB, tOz, tRoshar, units);
+        assertEquals(10, m2.units.get(Level.CIVILIAN));
+        assertEquals(8, m2.units.get(Level.INFANTRY));
+        assertEquals(9, m2.units.get(Level.AIRFORCE));
+
+        AttackOrder m3 = new AttackOrder(groupA, tMidkemia, tGondor, Level.CIVILIAN, 10,  Level.INFANTRY, 20);
+        assertEquals(10, m3.units.get(Level.CIVILIAN));
+        assertEquals(20, m3.units.get(Level.INFANTRY));
+        assertNull(m3.units.get(Level.AIRFORCE));
+
+        AttackOrder m4 = new AttackOrder(groupA, tScadrial, tGondor, units);
+        assertEquals(10, m4.units.get(Level.CIVILIAN));
+        assertEquals(8, m4.units.get(Level.INFANTRY));
+        assertEquals(9, m4.units.get(Level.AIRFORCE));
+
+        ResearchOrder m5 = new ResearchOrder(groupA);
+        assertEquals(groupA, m5.issuer);
+
+        UpgradeOrder m6 = new UpgradeOrder(groupB, tGondor, Level.CIVILIAN, Level.AIRFORCE, 10);
+
+    }
     @Test
     public void test_equal(){
         Territory t1 = new Territory("a");
@@ -14,7 +66,7 @@ public class OrderTest {
         Player p1 = new Player("a");
         Player p2 = new Player("b");
         Player p3 = new Player("c");
-        Order m1 = new MoveOrder(p1, t1, t2, 10);
+        Order m1 = new MoveOrder(p1, t1, t2,  10);
         Order m2 = new MoveOrder(p2, t2, t1, 10);
         Order m3 = new MoveOrder(p1, t1, t2, 10);
         assertFalse(m3.equals(null));
@@ -32,5 +84,14 @@ public class OrderTest {
         assertFalse(a2.equals(m2));
         assertFalse(a1.equals(a3));
 
+
+        Order u1 = new UpgradeOrder(p1, t1, Level.CIVILIAN, Level.INFANTRY, 10);
+        Order u2 = new UpgradeOrder(p1, t1, Level.CIVILIAN, Level.INFANTRY, 12);
+        Order u3 = new UpgradeOrder(p1, t1, Level.CIVILIAN, Level.INFANTRY, 12);
+        assertEquals(UpgradeOrder.class, u1.getClass());
+        assertFalse(u3.equals(null));
+        assertFalse(u1.equals(u2));
+        assertTrue(u2.equals(u3));
+        assertFalse(a1.equals(u3));
     }
 }

@@ -43,7 +43,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   /**
    * The order executor used for executing player orders.
    */
-  protected OrderExecuter ox;
+  protected OrderExecuteVisitor ox;
   /**
    * The countdownlatch used to block the server's main thread until all clients
    * commit.
@@ -97,7 +97,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
   protected void initGameMap() {
     this.map = new TextMapFactory().createPlayerMap(numPlayers);
     // this.map = new TextMapFactory().createTestMap();
-    this.ox = new OrderExecuter(map);
+    this.ox = new OrderExecuteVisitor(map);
     out.println("GameMap initialized");
   }
 
@@ -230,7 +230,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     try {
       MoveOrder mo = new MoveOrder(inGameClients.get(client), map.getTerritoryByName(src),
           map.getTerritoryByName(dest), units);
-      ox.doOneMove(mo);
+      mo.accept(ox);
+      // ox.doOneMove(mo);
     } catch (RuntimeException e) {
       response = e.getMessage();
     }
@@ -244,7 +245,8 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
     try {
       AttackOrder ao = new AttackOrder(inGameClients.get(client), map.getTerritoryByName(src),
           map.getTerritoryByName(dest), units);
-      ox.pushCombat(ao);
+      // ox.pushCombat(ao);
+      ao.accept(ox);
     } catch (RuntimeException e) {
       response = e.getMessage();
     }

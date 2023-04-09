@@ -23,4 +23,14 @@ public class UpgradeOrder implements Order {
         return visitor.visit(this);
     }
     
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o.getClass().equals(getClass())){
+            UpgradeOrder other = (UpgradeOrder) o;
+            return issuer.equals(other.issuer) && target.equals(other.target)
+            && from.equals(other.from) && units==other.units && to.equals(other.to);
+        }else{
+            return false;
+        }
+    }
 }

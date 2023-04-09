@@ -28,6 +28,14 @@ public class Player implements Serializable, Comparable<Player> {
         this.maxTechLevel = Level.INFANTRY;
     }
 
+    public Player(String name, Level l) {
+        this.name = name;
+        territories = new LinkedList<>();
+        this.tech = new TechResource(0);
+        this.food = new FoodResource(0);
+        this.maxTechLevel = l;
+    }
+
     /**
      * Get the Player's name.
      * 

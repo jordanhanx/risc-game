@@ -21,7 +21,7 @@ public abstract class BasicOrder implements Order{
         units = new LinkedHashMap<Level, Integer>();
         for (int i = 0; i < u.length; i+=2) {
             Level l = (Level)u[i];
-            units.put(l,(Integer) u[i+1]);
+            units.put(l,(Integer)u[i+1]);
         }
     }
 
@@ -39,7 +39,7 @@ public abstract class BasicOrder implements Order{
     //     return dest;
     // }
 
-    // public int getUnits(){
+    // public  Map<Level, Integer> getUnits(){
     //     return units;
     // }
     // public Territory getSrc(){

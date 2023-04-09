@@ -64,6 +64,16 @@ public class UnitNumberCheckerTest {
 
         AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), -10);
         assertEquals("Number of Units must be > 0", checker.checkOrderValidity(map, a1));
+
+        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
+        assertNull(checker.checkOrderValidity(map, u1));
+
+        UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 15);
+        assertEquals("No enough units in the source Territory", checker.checkOrderValidity(map, u2));
+
+        ResearchOrder r1 = new ResearchOrder(p3);
+        assertNull(checker.checkOrderValidity(map, r1));
+
     }
     
 }

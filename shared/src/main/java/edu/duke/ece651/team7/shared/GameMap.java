@@ -32,10 +32,10 @@ public class GameMap implements Serializable {
      * @param territoriesAdjacentList a mapping between a Territory object and a
      *                                list of adjacent territories
      */
-    public GameMap(Map<Territory, List<Territory>> AdjacentList) {
+    public GameMap(Map<Territory, List<Territory> > AdjacentList) {
 
         // this.territoriesAdjacentList = territoriesAdjacentList;
-        this.territoriesAdjacentList = new HashMap<>();
+        this.territoriesAdjacentList = new HashMap<Territory, Map<Territory, Integer> >();
         for(Territory t : AdjacentList.keySet()){
             this.territoriesAdjacentList.put(t, new HashMap<>());
             for(Territory neighbor: AdjacentList.get(t)){
@@ -104,6 +104,11 @@ public class GameMap implements Serializable {
         Territory fromTerritory = getTerritoryByName(from);
         Territory toTerritory = getTerritoryByName(to);
         return territoriesAdjacentList.get(fromTerritory).get(toTerritory);
+
+    }
+
+    public int getCostBetween(Territory src, Territory dest){
+        return territoriesAdjacentList.get(src).get(dest);
 
     }
  
@@ -274,15 +279,18 @@ public class GameMap implements Serializable {
         while(pq.size() > 0){
             Territory currentTerri= pq.poll().keySet().iterator().next();
             for (Territory next : territoriesAdjacentList.get(currentTerri).keySet()) {
+                // System.out.println("reach Territory: " + currentTerri.getName() + " Neighbor is: " + next.getName());
                 if(next.getOwner() != p){
                     continue;
                 }
+                // System.out.println("Current territory: " + next.getName());
                 if(distances.get(currentTerri) + territoriesAdjacentList.get(currentTerri).get(next) < distances.get(next)){
                     distances.put(next, distances.get(currentTerri) + territoriesAdjacentList.get(currentTerri).get(next));
                     pq.add(Map.of(next, distances.get(next)));
                 }
             }
         }
+
         return distances.get(dest);
     }
 

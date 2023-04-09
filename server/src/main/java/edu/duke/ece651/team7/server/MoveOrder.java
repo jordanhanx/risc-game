@@ -18,12 +18,16 @@ public class MoveOrder extends BasicOrder {
         super(p,s,d,u);
     }
 
+    public MoveOrder(Player p, Territory s, Territory d, int units) {
+        super(p,s,d,Level.CIVILIAN, units);
+    }
+
     @Override
     public boolean equals(Object o){
         if(o != null && o.getClass().equals(getClass())){
             MoveOrder other = (MoveOrder) o;
-            return issuer.equals(other.issuer) &&  src.equals(other.src)
-            && dest.equals(other.dest) && units == other.units;
+            return issuer.equals(other.issuer) && src.equals(other.src)
+            && dest.equals(other.dest) && units.equals(other.units);
         }else{
             return false;
         }

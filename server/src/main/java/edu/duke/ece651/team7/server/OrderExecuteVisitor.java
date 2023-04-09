@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
+import edu.duke.ece651.team7.shared.Resource;
 import edu.duke.ece651.team7.shared.Territory;
 import edu.duke.ece651.team7.shared.Unit;
 
@@ -57,28 +58,23 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
      * @throws IllegalArgumentException if the order is not valid
      */
     protected void pushCombat(AttackOrder o) throws IllegalArgumentException{
-        //need rule checker
-        String err = checker.checkOrderValidity(map, o);
-        if(err == null){
-            ArrayList<Unit> departUnits = new ArrayList<>();
-            for(Level l: o.units.keySet()){
-                departUnits.addAll(o.src.removeUnits(l, o.units.get(l)));
-            }
-            Combat targetCombat = isInCombatPool(o.dest);
-            if(targetCombat != null){
-                targetCombat.pushAttack(o.issuer, departUnits);
-                // System.out.print("Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-                // System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " from " + o.getSrc().getName() +" with " + o.getUnits() + " units");
-                
-            }else{
-                targetCombat = new Combat(o.dest);
-                targetCombat.pushAttack(o.issuer, departUnits);
-                combatPool.add(targetCombat);
-                // System.out.print( "Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-                // System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
-            }
+        
+        ArrayList<Unit> departUnits = new ArrayList<>();
+        for(Level l: o.units.keySet()){
+            departUnits.addAll(o.src.removeUnits(l, o.units.get(l)));
+        }
+        Combat targetCombat = isInCombatPool(o.dest);
+        if(targetCombat != null){
+            targetCombat.pushAttack(o.issuer, departUnits);
+            // System.out.print("Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " from " + o.getSrc().getName() +" with " + o.getUnits() + " units");
+            
         }else{
-            throw new IllegalArgumentException(err);
+            targetCombat = new Combat(o.dest);
+            targetCombat.pushAttack(o.issuer, departUnits);
+            combatPool.add(targetCombat);
+            // System.out.print( "Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
         }
     }
 
@@ -102,6 +98,8 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     public String visit(MoveOrder order) {
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
+            Resource food = order.accept(costVisitor);
+            order.issuer.getFood().comsumeResoure(food.getAmount());
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             for(Level l: order.units.keySet()){
@@ -116,20 +114,51 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
 
     @Override
     public String visit(AttackOrder order) {
-        pushCombat(order);
-        return null;
+        String err = checker.checkOrderValidity(map, order);
+        if(err == null){
+            Resource food = order.accept(costVisitor);
+            order.issuer.getFood().comsumeResoure(food.getAmount());
+            pushCombat(order);
+            return null;
+        }else{
+            throw new IllegalArgumentException(err);
+        }
     }
 
     @Override
     public String visit(ResearchOrder order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        String err = checker.checkOrderValidity(map, order);
+        if(err == null){
+            if(order.issuer.getCurrentMaxLevel().label == 6){
+                throw new IllegalArgumentException("LevelChecker error: Already the highest level.");
+            }
+            Resource tech = order.accept(costVisitor);
+            order.issuer.getTech().comsumeResoure(tech.getAmount());
+            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
+            order.issuer.upgradeMaxLevel();
+            return null;
+        }else{
+            throw new IllegalArgumentException(err);
+        }
+
+        
     }
 
     @Override
     public String visit(UpgradeOrder order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        String err = checker.checkOrderValidity(map, order);
+        if(err == null){
+            Resource tech = order.accept(costVisitor);
+            order.issuer.getTech().comsumeResoure(tech.getAmount());
+            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
+            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
+            order.target.upgradeUnits(order.from, order.to, order.units);
+            return null;
+        }else{
+            throw new IllegalArgumentException(err);
+        }
+        
     }
 
 }

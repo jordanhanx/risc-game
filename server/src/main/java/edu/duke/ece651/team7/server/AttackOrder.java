@@ -15,6 +15,11 @@ public class AttackOrder extends BasicOrder{
     public AttackOrder(Player p, Territory s, Territory d, Object... u) {
         super(p,s,d,u);
     }
+
+    public AttackOrder(Player p, Territory s, Territory d, int units) {
+        super(p,s,d,Level.CIVILIAN, units);
+    }
+    
     @Override
     public boolean equals(Object o){
         if(o != null && o.getClass().equals(getClass())){

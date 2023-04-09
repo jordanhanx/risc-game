@@ -46,15 +46,6 @@ public class PathCheckerTest {
                 new ArrayList<Territory>(Arrays.asList(territory4, territory7, territory5, territory9)));
         territoriesAdjacentList.put(territory9,
                 new ArrayList<Territory>(Arrays.asList(territory6, territory5, territory8)));
-        territory1.increaseUnits(10);
-        territory2.increaseUnits(10);
-        territory3.increaseUnits(10);
-        territory4.increaseUnits(10);
-        territory5.increaseUnits(10);
-        territory6.increaseUnits(10);
-        territory7.increaseUnits(10);
-        territory8.increaseUnits(10);
-        territory9.increaseUnits(10);
         GameMap map = new GameMap(territoriesAdjacentList);
         return map;
     }
@@ -89,6 +80,9 @@ public class PathCheckerTest {
 
         AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 10);
         assertNull(checker.checkOrderValidity(map, a3));
+
+        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
+        assertNull(checker.checkMyRule(map, u1));
 
     }
 }

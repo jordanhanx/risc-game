@@ -13,7 +13,7 @@ public abstract class OrderRuleChecker {
         this.next = n;
     }
 
-    protected abstract String checkMyRule(GameMap map, Order O);
+    protected abstract String checkMyRule(GameMap map, Order o);
 
     /**
      * recursively cheack all rules

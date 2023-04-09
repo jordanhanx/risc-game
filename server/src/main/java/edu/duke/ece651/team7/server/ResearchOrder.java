@@ -13,4 +13,15 @@ public class ResearchOrder implements Order{
     public <T> T accept(OrderVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o.getClass().equals(getClass())){
+            ResearchOrder other = (ResearchOrder) o;
+            return issuer.equals(other.issuer);
+        }else{
+            return false;
+        }
+    }
+
 }
