@@ -28,7 +28,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     private final int capacity;
     private final int initUnits;
     private GameMap gameMap;
-    private OrderExecuter ox;
+    private OrderExecuteVisitor ox;
     private Map<String, Player> playerMap;
     private Map<String, RemoteClient> clientMap;
     private Map<String, Boolean> commitMap;
@@ -59,7 +59,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         this.capacity = capacity;
         this.initUnits = initUnits;
         this.gameMap = new TextMapFactory().createPlayerMap(capacity);
-        this.ox = new OrderExecuter(gameMap);
+        this.ox = new OrderExecuteVisitor(gameMap);
         this.playerMap = new HashMap<>();
         this.clientMap = new HashMap<>();
         this.commitMap = new HashMap<>();
@@ -229,7 +229,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 } else if (units > remainingUnits) {
                     response = "Too many units";
                 } else {
-                    t.increaseUnits(units);
+                    for(int i = 0; i <units; i++){
+                        t.addUnits(new Unit());
+                      }
+                    // t.increaseUnits(units);
                 }
             }
         } catch (RuntimeException e) {
@@ -248,7 +251,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             } else {
                 MoveOrder mo = new MoveOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), units);
-                ox.doOneMove(mo);
+                mo.accept(ox);
+                // ox.doOneMove(mo);
             }
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -266,7 +270,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             } else {
                 AttackOrder ao = new AttackOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), units);
-                ox.pushCombat(ao);
+                ao.accept(ox);
             }
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -354,3 +358,5 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         }
     }
 }
+
+/* EOF */
