@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.Controller.MapController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.Controller.MapController">
     <children>
         <SplitPane dividerPositions="0.2581227436823105, 0.743658243080626" layoutX="-5.0" layoutY="-4.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="833.0">
             <items>
@@ -22,7 +22,7 @@
                                 <Font size="18.0" />
                             </font>
                         </Text>
-                        <Text fx:id="playerID_t" layoutX="120.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="12" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS">
+                        <Text fx:id="playerID" layoutX="120.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="12" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS">
                             <font>
                                 <Font size="18.0" />
                             </font>
@@ -32,7 +32,7 @@
                                 <Font size="18.0" />
                             </font>
                         </Text>
-                        <Text fx:id="territories_t" layoutX="70.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="13" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.vgrow="ALWAYS">
+                        <Text fx:id="territoriesList" layoutX="70.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="13" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.vgrow="ALWAYS">
                             <font>
                                 <Font size="18.0" />
                             </font>
@@ -47,7 +47,7 @@
                                 <Font size="18.0" />
                             </font>
                         </Text>
-                        <Text fx:id="food_t" layoutX="90.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="11" GridPane.hgrow="ALWAYS" GridPane.rowIndex="16" GridPane.vgrow="ALWAYS">
+                        <Text fx:id="food" layoutX="90.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" GridPane.columnIndex="11" GridPane.hgrow="ALWAYS" GridPane.rowIndex="16" GridPane.vgrow="ALWAYS">
                             <font>
                                 <Font size="18.0" />
                             </font>
@@ -123,6 +123,12 @@
                                 <String fx:value="btn-custom" />
                             </styleClass>
                         </Button>
+                        <Button fx:id="Switch" layoutX="80.0" layoutY="40.0" mnemonicParsing="false" onAction="#clickOnSwitch" prefHeight="20.0" prefWidth="60.0" text="Switch">
+                            <styleClass>
+                                <String fx:value="expandable" />
+                                <String fx:value="btn-custom" />
+                            </styleClass>
+                        </Button>
                         <Button fx:id="Upgrade" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnUpgrade" prefHeight="20.0" prefWidth="70.0" text="Upgrade">
                             <styleClass>
                                 <String fx:value="numbtn" />
@@ -139,7 +145,7 @@
                         <Text fx:id="a1" layoutX="92.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                     </children>
                 </Pane>
-                <Pane prefHeight="500.0" prefWidth="400.0">
+                <Pane prefHeight="496.0" prefWidth="221.0">
                     <children>
                         <Text layoutX="40.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units:" />
                         <Text layoutX="52.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Level 0:" />

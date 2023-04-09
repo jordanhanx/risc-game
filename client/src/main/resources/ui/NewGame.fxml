@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="669.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.Controller.GameStartController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.Controller.NewGameController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -42,49 +42,41 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Text fx:id="MainPageTittle" fill="#ad4e4e" stroke="#070707" strokeType="OUTSIDE" text="Welcome to RISK GAME " wrappingWidth="287.24029541015625" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Number of Players for Your Game: " GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="48.0" />
+                <Font size="30.0" />
             </font>
         </Text>
-        <Button id="NewGameID" fx:id="NewGameButton" mnemonicParsing="false" onAction="#clickOnNewGame" prefHeight="59.0" prefWidth="158.0" text="New Game" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="(2 -- 4)" wrappingWidth="97.07275390625" GridPane.columnIndex="11" GridPane.rowIndex="4">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Initial Units :" GridPane.columnIndex="6" GridPane.rowIndex="7">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+        <TextField fx:id="playerNum" prefHeight="32.0" prefWidth="161.0" style="-fx-border-color: #000000;" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+      <TextField fx:id="InitialUnits" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
+        <Button fx:id="Start2" mnemonicParsing="false" onAction="#clickOnStart" prefHeight="35.0" prefWidth="109.0" text="Start" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="19.0" />
+                <Font size="14.0" />
             </font>
             <styleClass>
-                <String fx:value="expandable" />
                 <String fx:value="numbtn" />
+                <String fx:value="expandable" />
             </styleClass>
         </Button>
-        <Button id="ContinueID" fx:id="ContinueButton" mnemonicParsing="false" onAction="#clickOnContinue" prefHeight="59.0" prefWidth="158.0" text="Continue" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Button fx:id="Exit3" mnemonicParsing="false" onAction="#clickOnExit" prefHeight="35.0" prefWidth="109.0" text="Exit" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="19.0" />
+                <Font size="14.0" />
             </font>
             <styleClass>
-                <String fx:value="expandable" />
                 <String fx:value="numbtn" />
-            </styleClass>
-        </Button>
-        <Button id="JoinID" fx:id="JoinButton" mnemonicParsing="false" onAction="#clickOnJoin" prefHeight="59.0" prefWidth="158.0" text="Join" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="19.0" />
-            </font>
-            <styleClass>
                 <String fx:value="expandable" />
-                <String fx:value="numbtn" />
-            </styleClass>
-        </Button>
-        <Button id="ExitID" fx:id="ExitButton" mnemonicParsing="false" onAction="#clickOnExit" prefHeight="59.0" prefWidth="158.0" text="Exit" GridPane.columnIndex="13" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="19.0" />
-            </font>
-            <styleClass>
-                <String fx:value="expandable" />
-                <String fx:value="numbtn" />
             </styleClass>
         </Button>
     </children>

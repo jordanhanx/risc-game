@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-public class ChooseGameContinueController implements Initializable{
+public class ContinueGameController implements Initializable{
     @FXML
     private TableView<PlayerInfoTest> gameInfoTable;
     @FXML
@@ -24,7 +24,7 @@ public class ChooseGameContinueController implements Initializable{
     private TableColumn<PlayerInfoTest, String> buttonTable;
     private final Stage window;
 
-    public ChooseGameContinueController(Stage window){
+    public ContinueGameController(Stage window){
         this.window = window;
     }
 
@@ -38,7 +38,10 @@ public class ChooseGameContinueController implements Initializable{
     }
     */
 
+    //show the game lists that belong to this player
     private void showGameTable(ObservableList<PlayerInfoTest> gameList){
+
+        //get the real data from GameModel
         gameIDTable.setCellValueFactory(new PropertyValueFactory<>("gameID"));
         playersNumTable.setCellValueFactory(new PropertyValueFactory<>("playerNum"));
         buttonTable.setCellFactory((col) -> {
@@ -54,9 +57,9 @@ public class ChooseGameContinueController implements Initializable{
                         enterBtn.setOnMouseClicked((me) -> {
 
                             //go to the map
-                            GameStartController mp = new GameStartController(window);
+                            NewGameController mp = new NewGameController(window);
                             try {
-                                mp.showMap();
+                                mp.showMap(2);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }

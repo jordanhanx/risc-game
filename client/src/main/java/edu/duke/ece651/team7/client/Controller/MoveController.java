@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
 public class MoveController implements Initializable{
     @FXML
     TextField terrMoveFrom,terrMoveTo,selectMoveLevel,selectMoveNum;
@@ -39,25 +42,8 @@ public class MoveController implements Initializable{
 
     @FXML
     public void clickFinishButton() throws IOException {
-
         window.close();
 
-        //go back to the map page
-        URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
-
-        FXMLLoader loader = new FXMLLoader(xmlResource);
-
-        HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(MapController.class, new MapController(window));
-        loader.setControllerFactory(controllers::get);
-        GridPane gp = loader.load();
-
-        Scene scene = new Scene(gp, 840, 480);
-        URL cssResource = getClass().getResource("/ui/buttons.css");
-        scene.getStylesheets().add(cssResource.toString());
-
-        this.window.setScene(scene);
-        this.window.show();
     }
 
     @Override

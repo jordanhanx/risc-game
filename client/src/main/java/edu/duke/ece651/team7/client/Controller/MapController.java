@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,6 +20,8 @@ import java.util.HashMap;
 public class MapController implements Initializable {
     @FXML
     Label terrName,level0,level1,level2,level3,level4,level5,level6;
+    @FXML
+    Text playerID, territoriesList, food, techResource;
 
     private Stage window;
 
@@ -79,6 +82,7 @@ public class MapController implements Initializable {
         level4.setText("");
         level5.setText("");
         level6.setText("");
+
     }
 
 
@@ -92,8 +96,10 @@ public class MapController implements Initializable {
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
+        Stage newWindow = new Stage();
+
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(AttackController.class, new AttackController(window));
+        controllers.put(AttackController.class, new AttackController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
 
@@ -102,33 +108,37 @@ public class MapController implements Initializable {
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 
-        this.window.setScene(scene);
-        this.window.show();
+        newWindow.setScene(scene);
+        newWindow.show();
     }
 
 
     @FXML
     public void clickOnMove() throws IOException {
         showMove();
+
     }
+
 
     private void showMove() throws IOException {
         URL xmlResource = getClass().getResource("/ui/Move.fxml");
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
+        //create a new window, when finish move, stage.close() go back to this parent window
+        Stage newWindow = new Stage();
+
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(MoveController.class, new MoveController(window));
+        controllers.put(MoveController.class, new MoveController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
-
-//       GridPane gp = FXMLLoader.load(xmlResource);
         Scene scene = new Scene(gp, 840, 480);
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 
-        this.window.setScene(scene);
-        this.window.show();
+        //set and display the new window
+        newWindow.setScene(scene);
+        newWindow.show();
 
     }
 
@@ -136,6 +146,15 @@ public class MapController implements Initializable {
     @FXML
     public void clickOnUpgrade() throws IOException{
         showUpgrade();
+
+        //method used for testing
+        updatePlayerInfoTest();
+
+    }
+
+    //get the data from GameModel
+    public void updatePlayerInfoTest(){
+        food.setText("updateOnce");
     }
 
     private void showUpgrade() throws IOException{
@@ -143,8 +162,10 @@ public class MapController implements Initializable {
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
+        Stage newWindow = new Stage();
+
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(UpgradeController.class, new UpgradeController(window));
+        controllers.put(UpgradeController.class, new UpgradeController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
 
@@ -153,8 +174,8 @@ public class MapController implements Initializable {
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 
-        this.window.setScene(scene);
-        this.window.show();
+        newWindow.setScene(scene);
+        newWindow.show();
     }
 
     @FXML
@@ -167,8 +188,10 @@ public class MapController implements Initializable {
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
+        Stage newWindow = new Stage();
+
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(ResearchController.class, new ResearchController(window));
+        controllers.put(ResearchController.class, new ResearchController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
 
@@ -177,9 +200,22 @@ public class MapController implements Initializable {
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 
-        this.window.setScene(scene);
-        this.window.show();
+        newWindow.setScene(scene);
+        newWindow.show();
     }
+
+    @FXML
+    public void clickOnSwitch() throws IOException{
+        //go back to choose games page
+        GameStartController gs = new GameStartController(window);
+        window.close();
+        try{
+            gs.showContinueView();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 

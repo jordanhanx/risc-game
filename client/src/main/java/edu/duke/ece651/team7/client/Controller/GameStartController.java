@@ -23,10 +23,10 @@ public class GameStartController {
 
     public void showContinueView() throws IOException{
 
-        URL xmlResource = getClass().getResource("/ui/ChooseGameContinue.fxml");
+        URL xmlResource = getClass().getResource("/ui/ContinueGame.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(ChooseGameContinueController.class, new ChooseGameContinueController(window));
+        controllers.put(ContinueGameController.class, new ContinueGameController(window));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
         Scene scene = new Scene(gp, 640, 480);
@@ -39,17 +39,17 @@ public class GameStartController {
 
     @FXML
     public void clickOnNewGame() throws IOException{
-        showMap();
+        showNewGame();
     }
 
-    public void showMap() throws IOException{
+    public void showNewGame() throws IOException{
 
         //temporary show the test map
 
-        URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
+        URL xmlResource = getClass().getResource("/ui/NewGame.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         HashMap<Class<?>,Object> controllers = new HashMap<>();
-        controllers.put(MapController.class, new MapController(window));
+        controllers.put(NewGameController.class, new NewGameController(window));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
         Scene scene = new Scene(gp, 830, 480);
@@ -67,6 +67,26 @@ public class GameStartController {
 
         HashMap<Class<?>,Object> controllers = new HashMap<>();
         controllers.put(LoginSignupController.class, new LoginSignupController(new LoginModel(),window));
+        loader.setControllerFactory((c) -> {
+            return controllers.get(c);
+        });
+        GridPane gp = loader.load();
+
+        Scene scene = new Scene(gp, 640, 480);
+        URL cssResource = getClass().getResource("/ui/buttons.css");
+        scene.getStylesheets().add(cssResource.toString());
+
+        window.setScene(scene);
+        window.show();
+    }
+
+    @FXML
+    public void clickOnJoin() throws IOException{
+        URL xmlResource = getClass().getResource("/ui/JoinGame.fxml");
+        FXMLLoader loader = new FXMLLoader(xmlResource);
+
+        HashMap<Class<?>,Object> controllers = new HashMap<>();
+        controllers.put(JoinGameController.class, new JoinGameController(window));
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
         });

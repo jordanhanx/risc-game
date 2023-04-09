@@ -36,15 +36,9 @@ public class AttackController implements Initializable{
     @FXML
     public void clickFinishButton() throws IOException {
 
+        //go back to the parent window
         window.close();
 
-        //go back to the map page
-        GameStartController mp = new GameStartController(window);
-        try {
-            mp.showMap();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
