@@ -64,6 +64,12 @@
                 <Font size="36.0" />
             </font>
         </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Units Left:" GridPane.columnIndex="10" GridPane.rowIndex="4">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="unitsLeft" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="14" GridPane.rowIndex="4" />
       <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="10" GridPane.rowIndex="15" />
         <Button fx:id="Finish" mnemonicParsing="false" onAction="#clickFinishButton" prefHeight="52.0" prefWidth="135.0" text="Finish" GridPane.columnIndex="15" GridPane.columnSpan="5" GridPane.rowIndex="17" GridPane.rowSpan="2">
             <styleClass>

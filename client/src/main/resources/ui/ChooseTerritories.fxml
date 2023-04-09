@@ -91,6 +91,7 @@
             <Font size="18.0" />
          </font>
       </Text>
+        <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="12" GridPane.rowIndex="16" />
         <Button id="GroupB" fx:id="TerritoryGroupB" mnemonicParsing="false" onAction="#clickChooseTerritoryGroupB" prefHeight="59.0" prefWidth="158.0" text="Roshar, Mordor, Dorne" GridPane.columnIndex="9" GridPane.columnSpan="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />

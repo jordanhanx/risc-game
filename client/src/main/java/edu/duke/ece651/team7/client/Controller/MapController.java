@@ -1,6 +1,6 @@
 package edu.duke.ece651.team7.client.Controller;
 
-
+import edu.duke.ece651.team7.client.Model.LoginModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -211,6 +211,16 @@ public class MapController implements Initializable {
         window.close();
         try{
             gs.showContinueView();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    public void clickOnBack() throws IOException{
+        LoginSignupController ls = new LoginSignupController(new LoginModel(),window);
+        try{
+            ls.showMainPage();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

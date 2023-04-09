@@ -24,6 +24,8 @@ public class PlaceUnitsController implements Initializable{
     ChoiceBox<Integer>numberSelect;
     @FXML
     Text errorMsg;
+    @FXML
+    Text unitsLeft;
 
 
     private final Stage window;
@@ -40,6 +42,8 @@ public class PlaceUnitsController implements Initializable{
         this.window = window;
         terrList = FXCollections.observableArrayList();
         numberList = FXCollections.observableArrayList();
+
+
     }
 
     @FXML
@@ -59,15 +63,29 @@ public class PlaceUnitsController implements Initializable{
 
         //pass data to the model
 
+        //update the number of units left for the player
+        int units = Integer.parseInt(unitsLeft.getText()) - selectNumber;
+        unitsLeft.setText(String.valueOf(units));
 
     }
 
     @FXML
     public void clickFinishButton() throws IOException {
 
+        String selectTerr = territorySelect.getValue();
+        Integer selectNumber = numberSelect.getValue();
+
+        if(selectNumber==null || selectTerr==null){
+            errorMsg.setText("You choose wrong value.");
+            return;
+        }
+
         window.close();
 
-        //show the test map
+        showTwoPlayersMap();
+    }
+
+    public void showTwoPlayersMap() throws IOException{
         URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         HashMap<Class<?>, Object> controllers = new HashMap<>();
@@ -80,7 +98,6 @@ public class PlaceUnitsController implements Initializable{
 
         this.window.setScene(scene);
         this.window.show();
-
     }
 
     private void setTerritoryList(ObservableList<String>l){
@@ -119,6 +136,10 @@ public class PlaceUnitsController implements Initializable{
 
         list = FXCollections.observableArrayList();
         UnitPlacementList.setItems(list);
+
+        //get the units from the model
+        int totalUnit =20;
+        unitsLeft.setText(String.valueOf(totalUnit));
     }
 
 

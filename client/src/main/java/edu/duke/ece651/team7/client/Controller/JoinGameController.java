@@ -43,6 +43,7 @@ public class JoinGameController implements Initializable{
     private void showGameTable(ObservableList<PlayerInfoTest> gameList){
 
         //get the real data from GameModel
+
         joinGameIDTable.setCellValueFactory(new PropertyValueFactory<>("gameID"));
         joinPlayersNumTable.setCellValueFactory(new PropertyValueFactory<>("playerNum"));
         buttonJoinTable.setCellFactory((col) -> {

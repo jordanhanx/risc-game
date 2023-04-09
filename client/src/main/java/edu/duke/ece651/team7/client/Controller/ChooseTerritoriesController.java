@@ -23,9 +23,13 @@ public class ChooseTerritoriesController implements Initializable {
     Text TerritoriesGroupNum;
     @FXML
     ListView<String> territoriesList;
+    @FXML
+    Text errorMsg;
 
     private final Stage window;
     private ObservableList<String> list;
+
+
 
     public ChooseTerritoriesController(Stage window){this.window = window;}
 
@@ -50,7 +54,13 @@ public class ChooseTerritoriesController implements Initializable {
     @FXML
     public void clickFinishButton() throws IOException {
 
+        if( territoriesList.getItems().isEmpty()){
+            errorMsg.setText("Please Choose One Territory Group");
+            return;
+        }
+
         window.close();
+
         if(TerritoriesGroupNum.getText().equals("2")){
 
             //go to place units page.
