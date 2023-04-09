@@ -213,7 +213,7 @@ public class CombatTest {
         combat.pushAttack(groupB, unitstoAdd2);
 
 
-        for(int i = 0; i< 5; i++){
+        for(int i = 0; i< 4; i++){
             int r = combat.doOneTurnCombat(groupA, groupB);
             System.out.println(combat.getAttackUnitsbyPlayer(groupA).size());
             System.out.println(combat.getAttackUnitsbyPlayer(groupB).size());
