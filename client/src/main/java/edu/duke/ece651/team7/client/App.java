@@ -3,6 +3,7 @@
  */
 package edu.duke.ece651.team7.client;
 
+import edu.duke.ece651.team7.client.Controller.PlaceUnitsController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -53,6 +54,7 @@ public class App extends Application {
 
        window.setScene(scene);
        window.show();
+
 
     } catch (IOException e) {
         e.printStackTrace();

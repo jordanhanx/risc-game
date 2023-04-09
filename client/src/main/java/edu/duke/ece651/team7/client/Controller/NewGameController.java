@@ -29,6 +29,7 @@ public class NewGameController {
     public void showMap(int num) throws IOException {
         if(num==2){
 
+            //show the choose territories group for the test map
             URL xmlResource = getClass().getResource("/ui/ChooseTerritories.fxml");
             FXMLLoader loader = new FXMLLoader(xmlResource);
             HashMap<Class<?>,Object> controllers = new HashMap<>();

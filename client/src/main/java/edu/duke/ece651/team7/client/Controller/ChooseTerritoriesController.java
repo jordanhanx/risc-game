@@ -10,7 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
@@ -53,18 +52,26 @@ public class ChooseTerritoriesController implements Initializable {
 
         window.close();
         if(TerritoriesGroupNum.getText().equals("2")){
-            URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
+
+            //go to place units page.
+            URL xmlResource = getClass().getResource("/ui/PlaceUnits.fxml");
             FXMLLoader loader = new FXMLLoader(xmlResource);
+
             HashMap<Class<?>,Object> controllers = new HashMap<>();
-            controllers.put(MapController.class, new MapController(window));
-            loader.setControllerFactory(controllers::get);
+            controllers.put(PlaceUnitsController.class, new PlaceUnitsController(window));
+            loader.setControllerFactory((c) -> {
+                return controllers.get(c);
+            });
             GridPane gp = loader.load();
-            Scene scene = new Scene(gp, 850, 480);
+
+            Scene scene = new Scene(gp, 640, 480);
             URL cssResource = getClass().getResource("/ui/buttons.css");
             scene.getStylesheets().add(cssResource.toString());
 
-            this.window.setScene(scene);
-            this.window.show();
+            window.setScene(scene);
+            window.show();
+
+
         }else if(TerritoriesGroupNum.getText().equals("3")){
 
             //have not built choose territories group for three players yet
