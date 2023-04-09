@@ -21,7 +21,7 @@ public class AppTest {
     } finally {
       System.setErr(oldErr);
     }
-    assertEquals("Usage: client <host> <port>\n", bytes.toString());
+    assertEquals("Usage: client <host> <port> <gamename>\n", bytes.toString());
   }
   */
 }

@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
+
 public class OrderTest {
     @Test
-    public void test_getMethod(){
+    public void test_getMethod() {
         Territory t1 = new Territory("a");
         Territory t2 = new Territory("b");
         Player p1 = new Player("null");
@@ -24,7 +25,7 @@ public class OrderTest {
     }
 
     @Test
-    public void test_equal(){
+    public void test_equal() {
         Territory t1 = new Territory("a");
         Territory t2 = new Territory("b");
         Player p1 = new Player("a");
@@ -51,7 +52,7 @@ public class OrderTest {
     }
 
     @Test
-    public void test_modifyUnit(){
+    public void test_modifyUnit() {
         Territory t1 = new Territory("a");
         Territory t2 = new Territory("b");
         Player p1 = new Player("null");
@@ -63,10 +64,8 @@ public class OrderTest {
         assertEquals(13, o1.getUnits());
         a1.decreaseUnits(4);
         assertEquals(200, a1.getUnits());
-        assertThrows(ArithmeticException.class, ()->o1.decreaseUnits(20));
+        assertThrows(ArithmeticException.class, () -> o1.decreaseUnits(20));
 
     }
-
-
 
 }
