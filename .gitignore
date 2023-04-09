@@ -2,31 +2,50 @@
 .gradle
 
 # Ignore Gradle build output directory
-build
-bin
+build/
+bin/
 build-cache
 target
 out
 classes
 .gradletasknamecache
 *.log
+.clover/
 
-# Ignore macOS default files
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 .DS_Store
 
-# Ignore Vscode files
+### VS Code ###
 .vscode/
 
-# Ignore Eclipse setting files
+### Eclipse ###
 .classpath
 .project
 .settings/
 bin/
 
-# Ignore Intellij files
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
 *.ipr
-*.iws
-.idea
-*.eml
-.shelf
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/

@@ -1,4 +1,5 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
+
 import org.junit.jupiter.api.Test;
 
 import edu.duke.ece651.team7.shared.GameMap;
@@ -10,11 +11,10 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class CombatTest {
     @Test
-    public void test_constructor(){
+    public void test_constructor() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -50,7 +50,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_pushAttack(){
+    public void test_pushAttack() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -65,7 +65,7 @@ public class CombatTest {
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         Territory tGondor = mock(Territory.class);
-        
+
         // Setup mockGameMap
         // when(tNarnia.getName()).thenReturn("Narnia");
         // when(tElantris.getName()).thenReturn("Elantris");
@@ -82,12 +82,11 @@ public class CombatTest {
         when(tElantris.getOwner()).thenReturn(groupB);
         when(tMidkemia.getOwner()).thenReturn(groupA);
         when(tScadrial.getOwner()).thenReturn(groupB);
-        when(tRoshar .getOwner()).thenReturn(groupB);
+        when(tRoshar.getOwner()).thenReturn(groupB);
         when(tOz.getOwner()).thenReturn(groupA);
         when(tMordor.getOwner()).thenReturn(groupC);
         when(tHogwarts.getOwner()).thenReturn(groupC);
         when(tGondor.getOwner()).thenReturn(groupC);
-
 
         when(tNarnia.getUnits()).thenReturn(5);
         when(tElantris.getUnits()).thenReturn(5);
@@ -98,7 +97,7 @@ public class CombatTest {
         when(tMordor.getUnits()).thenReturn(5);
         when(tHogwarts.getUnits()).thenReturn(5);
         when(tGondor.getUnits()).thenReturn(5);
-        
+
         Combat combat1 = new Combat(tScadrial);
         // assertEquals(tScadrial.getUnits(),combat1.getAttackUnitofPlayer(groupB));
         // assertEquals(1, combat1.getParticipantsSize());
@@ -115,7 +114,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_hasCombat_combatend(){
+    public void test_hasCombat_combatend() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -130,7 +129,7 @@ public class CombatTest {
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         Territory tGondor = mock(Territory.class);
-        
+
         // Setup mockGameMap
         // when(tNarnia.getName()).thenReturn("Narnia");
         // when(tElantris.getName()).thenReturn("Elantris");
@@ -147,12 +146,11 @@ public class CombatTest {
         when(tElantris.getOwner()).thenReturn(groupB);
         when(tMidkemia.getOwner()).thenReturn(groupA);
         when(tScadrial.getOwner()).thenReturn(groupB);
-        when(tRoshar .getOwner()).thenReturn(groupB);
+        when(tRoshar.getOwner()).thenReturn(groupB);
         when(tOz.getOwner()).thenReturn(groupA);
         when(tMordor.getOwner()).thenReturn(groupC);
         when(tHogwarts.getOwner()).thenReturn(groupC);
         when(tGondor.getOwner()).thenReturn(groupC);
-
 
         when(tNarnia.getUnits()).thenReturn(5);
         when(tElantris.getUnits()).thenReturn(5);
@@ -163,7 +161,7 @@ public class CombatTest {
         when(tMordor.getUnits()).thenReturn(5);
         when(tHogwarts.getUnits()).thenReturn(5);
         when(tGondor.getUnits()).thenReturn(5);
-        
+
         Combat combat1 = new Combat(tScadrial);
         assertFalse(combat1.hasCombat());
         // assertTrue(combat1.combatEnd());
@@ -175,7 +173,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_doOneUnitCombat(){
+    public void test_doOneUnitCombat() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -189,15 +187,15 @@ public class CombatTest {
         combat.pushAttack(groupB, u2);
         combat.pushAttack(groupA, u1);
 
-        for(int i = 0; i< 5; i++){
-            if(combat.doOneUnitCombat(groupA, groupB)){
+        for (int i = 0; i < 5; i++) {
+            if (combat.doOneUnitCombat(groupA, groupB)) {
                 u1--;
-                assertEquals(u1,combat.getAttackUnitofPlayer(groupA));
-                assertEquals(u2,combat.getAttackUnitofPlayer(groupB));
-            }else{
+                assertEquals(u1, combat.getAttackUnitofPlayer(groupA));
+                assertEquals(u2, combat.getAttackUnitofPlayer(groupB));
+            } else {
                 u2--;
-                assertEquals(u1,combat.getAttackUnitofPlayer(groupA));
-                assertEquals(u2,combat.getAttackUnitofPlayer(groupB));
+                assertEquals(u1, combat.getAttackUnitofPlayer(groupA));
+                assertEquals(u2, combat.getAttackUnitofPlayer(groupB));
             }
         }
 
@@ -222,11 +220,10 @@ public class CombatTest {
 
         assertFalse(combat3.doOneUnitCombat(groupB, groupC));
 
-
     }
 
     @Test
-    public void test_updateParticipantList(){
+    public void test_updateParticipantList() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -263,13 +260,13 @@ public class CombatTest {
         assertEquals(4, combat.getParticipantsSize());
         combat.pushAttack(groupF, 5);
         assertEquals(5, combat.getParticipantsSize());
-        
-        //[B,C,D,E,F]
+
+        // [B,C,D,E,F]
         combat.pushAttack(groupD, -5);
         assertEquals(2, combat.updateParticipantList(2, 3));
         assertEquals(4, combat.getParticipantsSize());
 
-        //[B,C,E,F] -> [B,E,F]
+        // [B,C,E,F] -> [B,E,F]
         combat.pushAttack(groupC, -5);
         assertEquals(1, combat.updateParticipantList(0, 1));
         assertEquals(3, combat.getParticipantsSize());
@@ -283,7 +280,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_resolveCombat(){
+    public void test_resolveCombat() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -298,10 +295,10 @@ public class CombatTest {
         when(groupE.getName()).thenReturn("E");
         when(groupF.getName()).thenReturn("F");
 
-        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC, groupD, groupE, groupF));
+        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA, groupB, groupC, groupD, groupE, groupF));
 
         Territory tScadrial = mock(Territory.class);
-        
+
         when(tScadrial.getName()).thenReturn("Scadrial");
 
         when(tScadrial.getUnits()).thenReturn(5);
@@ -317,18 +314,16 @@ public class CombatTest {
 
         Player winner = combat.resolveCombat();
         assertEquals(combat.getAttackPoolSize(), combat.getParticipantsSize());
-        assertEquals(1,combat.getAttackPoolSize());
-        
+        assertEquals(1, combat.getAttackPoolSize());
+
         assertTrue(combat.getAttackUnitofPlayer(winner) > 0);
         parray.remove(winner);
 
-        for(Player p : parray){
+        for (Player p : parray) {
             assertEquals(-1, combat.getAttackUnitofPlayer(p));
         }
         verify(tScadrial).setOwner(winner);
         verify(winner).addTerritory(tScadrial);
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
@@ -11,20 +11,18 @@ public class MoveOrder extends Order {
     }
 
     // public Territory getSrc(){
-    //     return src;
+    // return src;
     // }
 
     @Override
-    public boolean equals(Object o){
-        if(o != null && o.getClass().equals(getClass())){
+    public boolean equals(Object o) {
+        if (o != null && o.getClass().equals(getClass())) {
             MoveOrder other = (MoveOrder) o;
-            return issuer.equals(other.getPlayer()) &&  src.equals(other.getSrc())
-            && dest.equals(other.getDest()) && units == other.getUnits();
-        }else{
+            return issuer.equals(other.getPlayer()) && src.equals(other.getSrc())
+                    && dest.equals(other.getDest()) && units == other.getUnits();
+        } else {
             return false;
         }
     }
-
-
 
 }
