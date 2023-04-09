@@ -35,14 +35,14 @@ public class Unit implements Comparable<Unit> {
 
 
 
-    @Override
-    public boolean equals(Object other) {
-        if (other != null && other.getClass().equals(getClass())) {
-            Unit otherUnit = (Unit) other;
-            return this.level == otherUnit.level;
-        }
-        return false;
-    }
+    // @Override
+    // public boolean equals(Object other) {
+    //     if (other != null && other.getClass().equals(getClass())) {
+    //         Unit otherUnit = (Unit) other;
+    //         return this == otherUnit;
+    //     }
+    //     return false;
+    // }
 
 
     @Override

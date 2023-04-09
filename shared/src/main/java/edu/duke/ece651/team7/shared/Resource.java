@@ -1,8 +1,9 @@
 package edu.duke.ece651.team7.shared;
 
-import org.checkerframework.checker.interning.qual.CompareToMethod;
+import java.io.Serializable;
 
-public abstract class Resource implements Comparable<Resource>{
+
+public abstract class Resource implements Serializable, Comparable<Resource>{
     private int amount;
 
     public Resource(int a){
