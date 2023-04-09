@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.Controller.AttackController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Make Attack Choice" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Text>
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="From :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Text>
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="To :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Text>
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="With :" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Text>
+        <Text fill="#c92424" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Territory :" GridPane.columnIndex="3" GridPane.rowIndex="7">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+        <Text fill="#b50f0f" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Territory :" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <font>
+                <Font size="18.0" />
+            </font></Text>
+        <Text fill="#e40707" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Level :" GridPane.columnIndex="3" GridPane.rowIndex="10">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+        <Text fill="#dd0d0d" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeWidth="0.0" text="Number :" GridPane.columnIndex="3" GridPane.rowIndex="12">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+        <TextField fx:id="terrAttackFrom" prefHeight="32.0" prefWidth="161.0" style="-fx-border-color: #000000;" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="terrAttackTo" prefHeight="32.0" prefWidth="161.0" style="-fx-border-color: #000000;" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="selectAttackLevel" prefHeight="32.0" prefWidth="161.0" style="-fx-border-color: #000000;" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="selectAttackNum" prefHeight="6.0" prefWidth="100.0" style="-fx-border-color: #000000;" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS" />
+        <Button fx:id="Attack2" mnemonicParsing="false" onAction="#clickAttackButton" prefHeight="35.0" prefWidth="109.0" text="Attack" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0" />
+            </font>
+            <styleClass>
+                <String fx:value="numbtn" />
+                <String fx:value="expandable" />
+            </styleClass>
+        </Button>
+        <Button fx:id="Finish2" mnemonicParsing="false" onAction="#clickFinishButton" prefHeight="35.0" prefWidth="109.0" text="Finish" GridPane.columnIndex="11" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0" />
+            </font>
+            <styleClass>
+                <String fx:value="numbtn" />
+                <String fx:value="expandable" />
+            </styleClass>
+        </Button>
+        <ListView fx:id="attackList" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.columnSpan="8" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS" />
+    </children>
+</GridPane>
