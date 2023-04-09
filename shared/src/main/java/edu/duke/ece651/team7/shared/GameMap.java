@@ -254,8 +254,8 @@ public class GameMap implements Serializable {
      * @param from the name of the source territory
      * @return the map of destination territory and the shortest distance to get there
      */
-    public Map<Territory, Integer> findShortestPath(String from){
-        Territory source = getTerritoryByName(from);
+    public int findShortestPath(Territory source, Territory dest){
+        // Territory source = getTerritoryByName(from);
 
         Player p = source.getOwner();
         ArrayList<Territory> territories = new ArrayList<>(p.getTerritories());
@@ -283,7 +283,7 @@ public class GameMap implements Serializable {
                 }
             }
         }
-        return distances;
+        return distances.get(dest);
     }
 
     @Override

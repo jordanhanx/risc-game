@@ -86,10 +86,21 @@ public class Territory implements Serializable {
   public int getUnitsNumber() {
     return units.size();
   }
+
+  public int getUnitsNumberByLevel(Level l) {
+    int num = 0;
+    for(int i = 0; i < units.size(); i++){
+      if(units.get(i).getLevel() == l){
+        num ++;
+      }
+    }
+    return num;
+  }
   
   public Collection<Unit> getUnits(){
     return units;
   }
+
 
   public Player getOwner() {
     return owner;
@@ -175,6 +186,19 @@ public class Territory implements Serializable {
 
   public int produceTech(){
     return techProductionRate;
+  }
+
+  public void upgradeUnits(Level from, Level to, int num){
+    for(int i = 0; i < units.size(); i++){
+      if(units.get(i).getLevel() == from){
+        units.get(i).upgrade(to);
+        // units.remove(units.get(i));
+        num--;
+        if(num == 0){
+          break;
+        }
+      }
+    }
   }
   
   // public void increaseUnits(int num) {

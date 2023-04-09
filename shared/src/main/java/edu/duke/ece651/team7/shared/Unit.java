@@ -29,6 +29,12 @@ public class Unit implements Comparable<Unit> {
         }
     }
 
+    public void upgrade(Level newlevel){
+        this.level = newlevel;
+    }
+
+
+
     @Override
     public boolean equals(Object other) {
         if (other != null && other.getClass().equals(getClass())) {

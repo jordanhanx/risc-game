@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.server;
 
 import edu.duke.ece651.team7.shared.GameMap;
+import edu.duke.ece651.team7.shared.Level;
 
 public class UnitNumberChecker extends OrderRuleChecker{
   /**
@@ -15,11 +16,26 @@ public class UnitNumberChecker extends OrderRuleChecker{
 
     @Override
     protected String checkMyRule(GameMap map, Order o) {
-        if(o.getUnits() <= 0){
-            return "Number of Units must be > 0";
+        if(o.getClass() == AttackOrder.class || o.getClass() == MoveOrder.class){
+            BasicOrder order = (BasicOrder) o;
+            for(Level l: order.units.keySet()){
+                if(order.units.get(l) <= 0){
+                    return "Number of Units must be > 0";
+                }
+                if(order.units.get(l) > order.src.getUnitsNumberByLevel(l)){
+                    return "No enough units in the source Territory";
+                }
+            }
+            return null;
         }
-        if(o.getUnits() > o.getSrc().getUnits().size()){
-            return "No enough units in the source Territory";
+
+        if(o.getClass() == UpgradeOrder.class){
+            UpgradeOrder order = (UpgradeOrder) o;
+            if(order.units > order.target.getUnitsNumberByLevel(order.from)){
+                return "No enough units in the source Territory";
+            }else{
+                return null;
+            }
         }
         return null;
     }

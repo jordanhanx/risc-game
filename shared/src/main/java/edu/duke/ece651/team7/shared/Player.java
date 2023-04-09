@@ -11,9 +11,9 @@ public class Player implements Serializable, Comparable<Player> {
     protected static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
-    private ResourceStorage tech;
-    private ResourceStorage food;
-    private int maxTechLevel;
+    protected Resource tech;
+    protected Resource food;
+    private Level maxTechLevel;
 
     /**
      * Constructs a Player with the name.
@@ -23,9 +23,9 @@ public class Player implements Serializable, Comparable<Player> {
     public Player(String name) {
         this.name = name;
         territories = new LinkedList<>();
-        this.tech = new ResourceStorage();
-        this.food = new ResourceStorage();
-        this.maxTechLevel = 1;
+        this.tech = new TechResource(0);
+        this.food = new FoodResource(0);
+        this.maxTechLevel = Level.INFANTRY;
     }
 
     /**
@@ -97,6 +97,25 @@ public class Player implements Serializable, Comparable<Player> {
         } else {
             return false;
         }
+    }
+
+    public Level getCurrentMaxLevel(){
+        return this.maxTechLevel;
+    }
+    
+    public void upgradeMaxLevel(){
+        if(this.maxTechLevel.label+1 > 6){
+            throw new IllegalArgumentException("Upgrade MaxLevel Error: Already the highest level");
+        }
+        this.maxTechLevel = Level.valueOfLabel(this.maxTechLevel.label+1);
+    }
+
+    public Resource getFood(){
+        return food;
+    }
+
+    public Resource getTech(){
+        return tech;
     }
 
     @Override

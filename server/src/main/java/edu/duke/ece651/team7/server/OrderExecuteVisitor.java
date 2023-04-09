@@ -2,11 +2,13 @@ package edu.duke.ece651.team7.server;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Territory;
+import edu.duke.ece651.team7.shared.Unit;
 
 public class OrderExecuteVisitor implements OrderVisitor<String>{
     /**
@@ -18,6 +20,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     private OrderRuleChecker checker;
     private GameMap map;
     private List<Combat> combatPool;
+    private OrderCostVisitor costVisitor;
     // private final PrintStream out;
 
     /**
@@ -30,13 +33,15 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         // this.out = out;
         checker = new PathChecker(null);
         checker = new UnitNumberChecker(checker);
+        checker = new CostChecker(checker, map);
+        this.costVisitor = new OrderCostVisitor(map);
     }
     /**
      * Check if the issued Attack order's destination has already formed a combat
      * @param o Player's order
      * @return if the combat exists, return the combat. if not return null.
      */
-    public Combat isInCombatPool(Territory t){
+    protected Combat isInCombatPool(Territory t){
         for (Combat c : combatPool){
             if(c.getBattlefield().equals(t)){
                 return c;
@@ -51,20 +56,23 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
      * @param o AttackOrder issued by a player
      * @throws IllegalArgumentException if the order is not valid
      */
-    public void pushCombat(AttackOrder o) throws IllegalArgumentException{
+    protected void pushCombat(AttackOrder o) throws IllegalArgumentException{
         //need rule checker
         String err = checker.checkOrderValidity(map, o);
         if(err == null){
-            o.src.decreaseUnits(o.getUnits());
-            Combat targetCombat = isInCombatPool(o.getDest());
+            ArrayList<Unit> departUnits = new ArrayList<>();
+            for(Level l: o.units.keySet()){
+                departUnits.addAll(o.src.removeUnits(l, o.units.get(l)));
+            }
+            Combat targetCombat = isInCombatPool(o.dest);
             if(targetCombat != null){
-                targetCombat.pushAttack(o.getPlayer(), o.getUnits());
+                targetCombat.pushAttack(o.issuer, departUnits);
                 // System.out.print("Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
                 // System.out.println("Player " + o.getPlayer().getName()+ " joins Combat at " + o.getDest().getName() + " from " + o.getSrc().getName() +" with " + o.getUnits() + " units");
                 
             }else{
-                targetCombat = new Combat(o.getDest());
-                targetCombat.pushAttack(o.getPlayer(), o.getUnits());
+                targetCombat = new Combat(o.dest);
+                targetCombat.pushAttack(o.issuer, departUnits);
                 combatPool.add(targetCombat);
                 // System.out.print( "Player " + o.getPlayer().getName() +  ": [A " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
                 // System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
@@ -77,12 +85,12 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     /**
      * resolve all combats saved in combatPool and add one unit to each territory
      */
-    public void doAllCombats(){
+    protected void doAllCombats(){
         for(Combat c : combatPool){
             c.resolveCombat();
         }
         for(Territory t: map.getTerritories()){
-            t.increaseUnits(1);
+            t.addUnits(new Unit());
         }
         combatPool.clear();
     }
@@ -108,8 +116,8 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
 
     @Override
     public String visit(AttackOrder order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        pushCombat(order);
+        return null;
     }
 
     @Override

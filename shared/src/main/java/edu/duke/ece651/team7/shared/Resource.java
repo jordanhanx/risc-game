@@ -1,10 +1,17 @@
 package edu.duke.ece651.team7.shared;
 
-public class ResourceStorage {
+import org.checkerframework.checker.interning.qual.CompareToMethod;
+
+public abstract class Resource implements Comparable<Resource>{
     private int amount;
 
-    public ResourceStorage(){
-        amount = 0;
+    public Resource(int a){
+        amount = a;
+    }
+
+
+    public int getAmount(){
+        return amount;
     }
 
     /**
@@ -20,13 +27,24 @@ public class ResourceStorage {
      * @param v the amount of resource to consume
      * @return null if success, else error message
      */
-    public String comsumeResoure(int  value){
+    public String comsumeResoure(int value){
         if(amount - value< 0){
             return "Resource Error: no enough resource";
         }
         else{
             amount -= value;
             return null;
+        }
+    }
+
+    @Override
+    public int compareTo(Resource re) {
+        if(amount > re.amount){
+            return 1;
+        }else if(amount == re.amount){
+            return 0;
+        }else{
+            return -1;
         }
     }
 

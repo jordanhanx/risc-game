@@ -299,27 +299,27 @@ public class GameMapTest {
     MapFactory mf = new GUIMapFactory();
     GameMap map = mf.createPlayerMap(2);
 
-    Map<Territory, Integer> shortestPath = map.findShortestPath("Midkemia");
+    // Map<Territory, Integer> shortestPath = map.findShortestPath(map.getTerritoryByName("Midkemia");
 
-    assertEquals(7,shortestPath.get(map.getTerritoryByName("Gondor")));
-    assertEquals(10,shortestPath.get(map.getTerritoryByName("Roshar")));
+    assertEquals(7,map.findShortestPath(map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Gondor")));
+    assertEquals(10,map.findShortestPath(map.getTerritoryByName("Midkemia"),map.getTerritoryByName("Roshar")));
 
 
-    Map<Territory, Integer> shortestPath2 = map.findShortestPath("Essos");
-    assertEquals(12 , shortestPath2.get(map.getTerritoryByName("Hogwarts")));
+    // Map<Territory, Integer> shortestPath2 = map.findShortestPath(map.getTerritoryByName("Essos");
+    assertEquals(12 , map.findShortestPath(map.getTerritoryByName("Essos"), map.getTerritoryByName("Hogwarts")));
     //Essos -> Mordor -> Elantris -> Gondor -> Westeros
-    assertEquals(18 , shortestPath2.get(map.getTerritoryByName( "Westeros")));
+    assertEquals(18 , map.findShortestPath(map.getTerritoryByName("Essos"),map.getTerritoryByName( "Westeros")));
 
-    Map<Territory, Integer> shortestPath3 = map.findShortestPath("Hogwarts");
+    // Map<Territory, Integer> shortestPath3 = map.findShortestPath(map.getTerritoryByName("Hogwarts"));
     //Hogwarts -> Elantris -> Gondor - >Westeros
-    assertEquals(6 ,shortestPath3.get(map.getTerritoryByName( "Westeros")));
+    assertEquals(6 ,map.findShortestPath(map.getTerritoryByName("Hogwarts"), map.getTerritoryByName( "Westeros")));
 
-    Map<Territory, Integer> shortestPath4 = map.findShortestPath("Dorne");
+    // Map<Territory, Integer> shortestPath4 = map.findShortestPath(map.getTerritoryByName("Dorne");
     //Dorne -> Hogwarts -> Elantris -> Gondor - >Westeros
-    assertEquals(11 ,shortestPath4.get(map.getTerritoryByName( "Westeros")));
-    assertEquals(7 ,shortestPath4.get(map.getTerritoryByName( "Mordor")));
-    assertEquals(11 ,shortestPath4.get(map.getTerritoryByName( "Roshar")));
-    assertEquals(14 ,shortestPath4.get(map.getTerritoryByName( "Scadrial")));
+    assertEquals(11 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Westeros")));
+    assertEquals(7 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Mordor")));
+    assertEquals(11 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Roshar")));
+    assertEquals(14 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Scadrial")));
   }
 
 
