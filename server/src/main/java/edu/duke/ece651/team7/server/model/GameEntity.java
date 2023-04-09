@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 import java.io.PrintStream;
 import java.rmi.RemoteException;
@@ -15,7 +15,7 @@ import edu.duke.ece651.team7.shared.*;
 /**
  * The `Server` class implements a game server for a Risk-like game.
  */
-public class Server extends UnicastRemoteObject implements RemoteServer {
+public class GameEntity extends UnicastRemoteObject implements RemoteServer {
   /**
    * The output stream used for logging.
    */
@@ -67,7 +67,7 @@ public class Server extends UnicastRemoteObject implements RemoteServer {
    * @param initUnits  the initial number of units each player has
    * @throws RemoteException if a remote error occurs
    */
-  public Server(PrintStream out, int port, int numPlayers, int initUnits) throws RemoteException {
+  public GameEntity(PrintStream out, int port, int numPlayers, int initUnits) throws RemoteException {
     this.out = out;
     if (numPlayers < 2) {
       throw new IllegalArgumentException("numPlayers cannot be less than 2");

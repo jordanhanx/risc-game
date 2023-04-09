@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -7,6 +7,11 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
+import edu.duke.ece651.team7.server.model.AttackOrder;
+import edu.duke.ece651.team7.server.model.MoveOrder;
+import edu.duke.ece651.team7.server.model.Order;
+import edu.duke.ece651.team7.server.model.ResearchOrder;
+import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;

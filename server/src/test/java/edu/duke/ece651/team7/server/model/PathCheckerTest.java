@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -10,9 +10,15 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import edu.duke.ece651.team7.server.model.AttackOrder;
+import edu.duke.ece651.team7.server.model.MoveOrder;
+import edu.duke.ece651.team7.server.model.OrderRuleChecker;
+import edu.duke.ece651.team7.server.model.PathChecker;
+import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.*;
 
-public class UnitNumberCheckerTest {
+
+public class PathCheckerTest {
 
     private GameMap makeGameMap(){
         Player playerA = new Player("GroupA");
@@ -50,30 +56,38 @@ public class UnitNumberCheckerTest {
     }
     @Test
     public void test_checkMyrule(){
-        UnitNumberChecker checker = new UnitNumberChecker(null);
+        OrderRuleChecker checker = new PathChecker(null);
         GameMap map = makeGameMap();
         Player p1 = map.getTerritoryByName("Narnia").getOwner();
         Player p2 = map.getTerritoryByName("Elantris").getOwner();
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
 
-        MoveOrder m1 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 30);
-        assertEquals("No enough units in the source Territory", checker.checkOrderValidity(map, m1));
+        MoveOrder m1 = new MoveOrder(p2, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
+        assertEquals("Access Denied: source Territory does not belong to you", checker.checkOrderValidity(map, m1));
 
-        MoveOrder m2 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 5);
+        MoveOrder m2 = new MoveOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Narnia"), 3);
         assertNull(checker.checkOrderValidity(map, m2));
 
-        AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), -10);
-        assertEquals("Number of Units must be > 0", checker.checkOrderValidity(map, a1));
+        MoveOrder m3 = new MoveOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
+        assertEquals("Access Denied: destination Territory does not belong to you", checker.checkOrderValidity(map, m3));
+
+        map.getTerritoryByName("Roshar").setOwner(p1);
+        MoveOrder m4 = new MoveOrder(p1, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Narnia"), 3);
+        assertEquals("Path does not exists between these two Territories", checker.checkOrderValidity(map, m4));
+
+        map.getTerritoryByName("Roshar").setOwner(p2);
+
+        AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Scadrial"), 10);
+        assertEquals("Can only attack adjacent territory", checker.checkOrderValidity(map, a1));
+
+        AttackOrder a2 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Midkemia"), 10);
+        assertEquals("Cannot attack your own territory", checker.checkOrderValidity(map, a2));
+
+        AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 10);
+        assertNull(checker.checkOrderValidity(map, a3));
 
         UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
-        assertNull(checker.checkOrderValidity(map, u1));
-
-        UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 15);
-        assertEquals("No enough units in the source Territory", checker.checkOrderValidity(map, u2));
-
-        ResearchOrder r1 = new ResearchOrder(p3);
-        assertNull(checker.checkOrderValidity(map, r1));
+        assertNull(checker.checkMyRule(map, u1));
 
     }
-    
 }

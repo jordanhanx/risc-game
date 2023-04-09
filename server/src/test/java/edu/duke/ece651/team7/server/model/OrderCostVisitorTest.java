@@ -1,6 +1,11 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 import org.junit.jupiter.api.Test;
 
+import edu.duke.ece651.team7.server.model.AttackOrder;
+import edu.duke.ece651.team7.server.model.MoveOrder;
+import edu.duke.ece651.team7.server.model.OrderCostVisitor;
+import edu.duke.ece651.team7.server.model.ResearchOrder;
+import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;

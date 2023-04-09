@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 public interface OrderVisitor<T> {
     public T visit(MoveOrder order);

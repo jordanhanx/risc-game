@@ -3,6 +3,8 @@
  */
 package edu.duke.ece651.team7.server;
 
+import edu.duke.ece651.team7.server.model.Server;
+
 public class App {
   public static void main(String[] args) {
     if (args.length == 3) {

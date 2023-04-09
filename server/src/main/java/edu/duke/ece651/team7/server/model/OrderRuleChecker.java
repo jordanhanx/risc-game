@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.server;
+package edu.duke.ece651.team7.server.model;
 
 import edu.duke.ece651.team7.shared.GameMap;
 

@@ -1,3 +1,4 @@
+package edu.duke.ece651.team7.server.model;
 // package edu.duke.ece651.team7.server;
 
 // import static org.junit.jupiter.api.Assertions.*;
