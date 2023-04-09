@@ -3,13 +3,13 @@
  */
 package edu.duke.ece651.team7.server;
 
-import edu.duke.ece651.team7.server.model.Server;
+import edu.duke.ece651.team7.server.model.GameEntity;
 
 public class App {
   public static void main(String[] args) {
     if (args.length == 3) {
       try {
-        Server server = new Server(System.out, Integer.parseInt(args[0]), Integer.parseInt(args[1]),
+        GameEntity server = new GameEntity(System.out, Integer.parseInt(args[0]), Integer.parseInt(args[1]),
             Integer.parseInt(args[2]));
         server.start();
       } catch (Exception e) {
