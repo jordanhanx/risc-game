@@ -17,8 +17,8 @@ import java.util.Collections;
 
 public class Combat {
     /**
-     * @param battleField the Territory this combat is located at
-     * @param attackPool the map of participants and their units;
+     * @param battleField  the Territory this combat is located at
+     * @param attackPool   the map of participants and their units;
      * @param participants players that participate in the combat
      */
     private Territory battleField;
@@ -39,7 +39,7 @@ public class Combat {
      * get the territory where the combat is happening
      * @return
      */
-    public Territory getBattlefield(){
+    public Territory getBattlefield() {
         return battleField;
     }
 
@@ -61,7 +61,7 @@ public class Combat {
      * 
      * @return number of participants in the combat
      */
-    public int getParticipantsSize(){
+    public int getParticipantsSize() {
         return participants.size();
     }
 
@@ -69,7 +69,7 @@ public class Combat {
      * 
      * @return number of attack in the attackpool
      */
-    public int getAttackPoolSize(){
+    public int getAttackPoolSize() {
         return attackPool.size();
     }
 
@@ -92,7 +92,7 @@ public class Combat {
 
     /**
      * Push an atttack into the order
-     * @param p player that issues the attack
+     * @param p     player that issues the attack
      * @param units number of units used to attack
      */
     public void pushAttack(Player p, Collection<Unit> units){
@@ -107,35 +107,37 @@ public class Combat {
 
     /**
      * whether there is a combat at this battleField
+     * 
      * @return true is yes
      * @return false if not
      */
-    public boolean hasCombat(){
-        if (participants.size() >= 1 && attackPool.size() >= 1){
+    public boolean hasCombat() {
+        if (participants.size() >= 1 && attackPool.size() >= 1) {
             return true;
         }
         return false;
     }
 
     /**
-     * whether the combat is end, it is end if there remains only one player in 
-     * the participant list 
+     * whether the combat is end, it is end if there remains only one player in
+     * the participant list
+     * 
      * @return true yes
      * @return false no
      */
-    public boolean combatEnd(){
-        if (participants.size() == 1 && attackPool.size() ==1){
+    public boolean combatEnd() {
+        if (participants.size() == 1 && attackPool.size() == 1) {
             return true;
         }
         return false;
     }
 
-
     /**
      * Execute one unit combat between two Player
+     * 
      * @param defender Player as defender
      * @param attacker Player as attacker
-     * @return true if attacker succeeds, 
+     * @return true if attacker succeeds,
      * @return false if defender succeeds
      */
     protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
@@ -210,49 +212,50 @@ public class Combat {
 
     /**
      * resolve the combat result, return the next defender's index
-     * @param defender index of the current defense Player in the participant list 
-     * @param attacker index of the current attack Player in the participant list 
-     * @return next defender's index in the participant list 
+     * 
+     * @param defender index of the current defense Player in the participant list
+     * @param attacker index of the current attack Player in the participant list
+     * @return next defender's index in the participant list
      */
-    public int updateParticipantList(int defender, int attacker){
-        //if the CombatOrder lose, remove it from the combat list
+    public int updateParticipantList(int defender, int attacker) {
+        // if the CombatOrder lose, remove it from the combat list
         Player defendPlayer = participants.get(defender);
         Player attackPlayer = participants.get(attacker);
         if(attackPool.get(defendPlayer).size() == 0){
             participants.remove(defendPlayer);
             attackPool.remove(defendPlayer);
-            if(defender >= participants.size()){
-                return 0; 
-            }else{
+            if (defender >= participants.size()) {
+                return 0;
+            } else {
                 return defender;
             }
         }else if(attackPool.get(attackPlayer).size() == 0){
             participants.remove(attacker);
             attackPool.remove(attackPlayer);
-            if(attacker >= participants.size()){
-                return 0; 
+            if (attacker >= participants.size()) {
+                return 0;
             }
         }
         return attacker;
     }
 
-
     // public void printCombat(){
-    //     System.out.print(battleField.getName() + ": ");
-    //     for(Player p: participants){
-    //         System.out.print( "(" + p.getName() + ": " + attackPool.get(p) + "), ");
-    //     }
-    //     System.out.println();
+    // System.out.print(battleField.getName() + ": ");
+    // for(Player p: participants){
+    // System.out.print( "(" + p.getName() + ": " + attackPool.get(p) + "), ");
+    // }
+    // System.out.println();
     // }
     /**
      * resolve combats, do one unit attack recurcively, 0/1, 1/2, 2/3....5/0
      * until only one player left
+     * 
      * @return null if does not have combat
      * @return player that wins in the combat
      */
-    public Player resolveCombat(){
+    public Player resolveCombat() {
         // System.out.println("\nResolving Combat...");
-        if (!hasCombat()){
+        if (!hasCombat()) {
             return null;
         }
          //owner of the territory participate in the combat
@@ -261,10 +264,10 @@ public class Combat {
         // printCombat();
         Player originOwner = battleField.getOwner();
         int defender = 0;
-        while (true){
-            //wrap around
+        while (true) {
+            // wrap around
             int attacker = defender + 1;
-            if(defender == participants.size()-1){
+            if (defender == participants.size() - 1) {
                 attacker = 0;
             }
             doOneTurnCombat(participants.get(defender), participants.get(attacker));

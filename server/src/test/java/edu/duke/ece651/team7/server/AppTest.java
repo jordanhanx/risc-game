@@ -1,25 +1,14 @@
 package edu.duke.ece651.team7.server;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+// @SpringBootTest
+class AppTest {
 
-public class AppTest {
-  @Test
-  public void test_serverApp_main() {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bytes, true);
+	@Test
+	void contextLoads() {
+		App.main(new String[] {});
+	}
 
-    PrintStream oldErr = System.err;
-    try {
-      System.setErr(out);
-      App.main(new String[0]);
-    } finally {
-      System.setErr(oldErr);
-    }
-    assertEquals("Usage: server <port> <players number> <player's init units>\n", bytes.toString());
-  }
 }

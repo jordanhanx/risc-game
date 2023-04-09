@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 public class CombatTest {
     @Test
-    public void test_constructor(){
+    public void test_constructor() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -55,7 +55,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_pushAttack(){
+    public void test_pushAttack() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -70,7 +70,7 @@ public class CombatTest {
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         Territory tGondor = mock(Territory.class);
-        
+
         // Setup mockGameMap
         // when(tNarnia.getName()).thenReturn("Narnia");
         // when(tElantris.getName()).thenReturn("Elantris");
@@ -87,7 +87,7 @@ public class CombatTest {
         when(tElantris.getOwner()).thenReturn(groupB);
         when(tMidkemia.getOwner()).thenReturn(groupA);
         when(tScadrial.getOwner()).thenReturn(groupB);
-        when(tRoshar .getOwner()).thenReturn(groupB);
+        when(tRoshar.getOwner()).thenReturn(groupB);
         when(tOz.getOwner()).thenReturn(groupA);
         when(tMordor.getOwner()).thenReturn(groupC);
         when(tHogwarts.getOwner()).thenReturn(groupC);
@@ -130,7 +130,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_hasCombat_combatend(){
+    public void test_hasCombat_combatend() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -145,7 +145,7 @@ public class CombatTest {
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         Territory tGondor = mock(Territory.class);
-        
+
         // Setup mockGameMap
         // when(tNarnia.getName()).thenReturn("Narnia");
         // when(tElantris.getName()).thenReturn("Elantris");
@@ -162,7 +162,7 @@ public class CombatTest {
         when(tElantris.getOwner()).thenReturn(groupB);
         when(tMidkemia.getOwner()).thenReturn(groupA);
         when(tScadrial.getOwner()).thenReturn(groupB);
-        when(tRoshar .getOwner()).thenReturn(groupB);
+        when(tRoshar.getOwner()).thenReturn(groupB);
         when(tOz.getOwner()).thenReturn(groupA);
         when(tMordor.getOwner()).thenReturn(groupC);
         when(tHogwarts.getOwner()).thenReturn(groupC);
@@ -257,7 +257,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_updateParticipantList(){
+    public void test_updateParticipantList() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -327,7 +327,7 @@ public class CombatTest {
     }
 
     @Test
-    public void test_resolveCombat(){
+    public void test_resolveCombat() {
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
         Player groupC = mock(Player.class);
@@ -347,7 +347,7 @@ public class CombatTest {
         ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
 
         Territory tScadrial = mock(Territory.class);
-        
+
         when(tScadrial.getName()).thenReturn("Scadrial");
 
         when(tScadrial.removeAllUnits()).thenReturn(unitstoAdd);
@@ -363,18 +363,16 @@ public class CombatTest {
 
         Player winner = combat.resolveCombat();
         assertEquals(combat.getAttackPoolSize(), combat.getParticipantsSize());
-        assertEquals(1,combat.getAttackPoolSize());
-        
+        assertEquals(1, combat.getAttackPoolSize());
+
         assertTrue(combat.getAttackUnitofPlayer(winner) > 0);
         parray.remove(winner);
 
-        for(Player p : parray){
+        for (Player p : parray) {
             assertEquals(-1, combat.getAttackUnitofPlayer(p));
         }
         verify(tScadrial).setOwner(winner);
         verify(winner).addTerritory(tScadrial);
     }
-
-
 
 }
