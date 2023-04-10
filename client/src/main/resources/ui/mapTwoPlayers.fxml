@@ -93,7 +93,7 @@
                         <Label fx:id="level3" layoutX="109.0" layoutY="221.0" prefHeight="17.0" prefWidth="75.0" text="/" />
                         <Label fx:id="level4" layoutX="109.0" layoutY="246.0" prefHeight="17.0" prefWidth="75.0" text="/" />
                         <Label fx:id="level5" layoutX="109.0" layoutY="271.0" prefHeight="17.0" prefWidth="75.0" text="/" />
-                        <Label fx:id="level7" layoutX="109.0" layoutY="297.0" prefHeight="17.0" prefWidth="75.0" text="/" />
+                        <Label fx:id="level6" layoutX="109.0" layoutY="297.0" prefHeight="17.0" prefWidth="75.0" text="/" />
                     </children>
                 </Pane>
             </items>

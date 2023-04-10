@@ -41,7 +41,7 @@ public class ContinueGameController implements Initializable{
     //show the game lists that belong to this player
     private void showGameTable(ObservableList<PlayerInfoTest> gameList){
 
-        //get the real data from GameModel
+        //get the real data from GameModel, update the table
         gameIDTable.setCellValueFactory(new PropertyValueFactory<>("gameID"));
         playersNumTable.setCellValueFactory(new PropertyValueFactory<>("playerNum"));
         buttonTable.setCellFactory((col) -> {
@@ -56,10 +56,10 @@ public class ContinueGameController implements Initializable{
                         this.setGraphic(enterBtn);
                         enterBtn.setOnMouseClicked((me) -> {
 
-                            //go to the map
-                            NewGameController mp = new NewGameController(window);
+                            //go to the map page
+                            PlaceUnitsController pu = new PlaceUnitsController(window);
                             try {
-                                mp.showMap(2);
+                                pu.showTwoPlayersMap();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -76,8 +76,8 @@ public class ContinueGameController implements Initializable{
 
 
     @FXML
-    public void clickOnExit() throws IOException {
-        //go back to the map
+    public void clickOnBack() throws IOException {
+        //go back to the main page
         LoginSignupController gm = new LoginSignupController(new LoginModel(),window);
         try {
             gm.showMainPage();

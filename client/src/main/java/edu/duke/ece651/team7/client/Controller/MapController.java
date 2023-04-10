@@ -1,6 +1,6 @@
 package edu.duke.ece651.team7.client.Controller;
 
-
+import edu.duke.ece651.team7.client.Model.LoginModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -93,17 +93,12 @@ public class MapController implements Initializable {
 
     private void showAttack() throws IOException{
         URL xmlResource = getClass().getResource("/ui/Attack.fxml");
-
         FXMLLoader loader = new FXMLLoader(xmlResource);
-
         Stage newWindow = new Stage();
-
         HashMap<Class<?>,Object> controllers = new HashMap<>();
         controllers.put(AttackController.class, new AttackController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
-
-//       GridPane gp = FXMLLoader.load(xmlResource);
         Scene scene = new Scene(gp, 840, 480);
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
@@ -158,22 +153,18 @@ public class MapController implements Initializable {
     }
 
     private void showUpgrade() throws IOException{
+
+        //show the upgrade page
         URL xmlResource = getClass().getResource("/ui/Upgrade.fxml");
-
         FXMLLoader loader = new FXMLLoader(xmlResource);
-
         Stage newWindow = new Stage();
-
         HashMap<Class<?>,Object> controllers = new HashMap<>();
         controllers.put(UpgradeController.class, new UpgradeController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
-
-//       GridPane gp = FXMLLoader.load(xmlResource);
         Scene scene = new Scene(gp, 840, 480);
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
-
         newWindow.setScene(scene);
         newWindow.show();
     }
@@ -188,18 +179,17 @@ public class MapController implements Initializable {
 
         FXMLLoader loader = new FXMLLoader(xmlResource);
 
+        //create a new window
         Stage newWindow = new Stage();
-
         HashMap<Class<?>,Object> controllers = new HashMap<>();
         controllers.put(ResearchController.class, new ResearchController(newWindow));
         loader.setControllerFactory(controllers::get);
         GridPane gp = loader.load();
-
-//       GridPane gp = FXMLLoader.load(xmlResource);
         Scene scene = new Scene(gp, 840, 480);
         URL cssResource = getClass().getResource("/ui/buttons.css");
         scene.getStylesheets().add(cssResource.toString());
 
+        //set the new window
         newWindow.setScene(scene);
         newWindow.show();
     }
@@ -211,6 +201,17 @@ public class MapController implements Initializable {
         window.close();
         try{
             gs.showContinueView();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    public void clickOnBack() throws IOException{
+        //go back to the main page
+        LoginSignupController ls = new LoginSignupController(new LoginModel(),window);
+        try{
+            ls.showMainPage();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

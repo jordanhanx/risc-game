@@ -62,36 +62,16 @@
                 <Font size="36.0" />
             </font>
         </Text>
-      <Button mnemonicParsing="false" onAction="#clickFinishButton" prefHeight="26.0" prefWidth="139.0" text="Finish" GridPane.columnIndex="10" GridPane.columnSpan="5" GridPane.rowIndex="17" GridPane.rowSpan="2">
-         <styleClass>
-            <String fx:value="expandable" />
-            <String fx:value="numbtn" />
-         </styleClass>
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Text fx:id="TerritoryGroupBT" fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="Territory Group B :" GridPane.columnIndex="2" GridPane.rowIndex="10">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-      <Text fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Territories Group :" GridPane.columnIndex="7" GridPane.rowIndex="4">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-      <Text fx:id="TerritoriesGroupNum" fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="2" GridPane.columnIndex="16" GridPane.rowIndex="4">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-      <Text fx:id="TerritoryGroupAT" fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="Territory Group A :" GridPane.columnIndex="2" GridPane.rowIndex="6">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-        <Button id="GroupB" fx:id="TerritoryGroupB" mnemonicParsing="false" onAction="#clickChooseTerritoryGroupB" prefHeight="59.0" prefWidth="158.0" text="Roshar, Mordor, Dorne" GridPane.columnIndex="9" GridPane.columnSpan="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Button mnemonicParsing="false" onAction="#clickFinishButton" prefHeight="50.0" prefWidth="135.0" text="Finish" GridPane.columnIndex="15" GridPane.columnSpan="5" GridPane.rowIndex="17" GridPane.rowSpan="2">
+            <styleClass>
+                <String fx:value="expandable" />
+                <String fx:value="numbtn" />
+            </styleClass>
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Button id="GroupA" fx:id="Place" mnemonicParsing="false" onAction="#clickOnChoose" prefHeight="59.0" prefWidth="158.0" text="Choose" GridPane.columnIndex="5" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="17" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>
@@ -100,15 +80,23 @@
                 <String fx:value="numbtn" />
             </styleClass>
         </Button>
-        <Button id="GroupA" fx:id="TerritoryGroupA" mnemonicParsing="false" onAction="#clickChooseTerritoryGroupA" prefHeight="59.0" prefWidth="158.0" text="Oz, Gondor, Hogwarts" GridPane.columnIndex="9" GridPane.columnSpan="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Territories Group :" GridPane.columnIndex="7" GridPane.rowIndex="4">
             <font>
-                <Font size="14.0" />
+                <Font size="18.0" />
             </font>
-            <styleClass>
-                <String fx:value="expandable" />
-                <String fx:value="numbtn" />
-            </styleClass>
-        </Button>
-        <ListView fx:id="territoriesList" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.columnSpan="8" GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS" />
+        </Text>
+        <Text fx:id="TerritoriesGroupNum" fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="16" GridPane.rowIndex="4">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+        <Text fx:id="TerritoryGroupAT" fill="#ad4e4e" strokeType="OUTSIDE" strokeWidth="0.0" text="Territory Group :" GridPane.columnIndex="6" GridPane.rowIndex="8">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+        <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="12" GridPane.rowIndex="16" />
+        <ChoiceBox fx:id="territoryGroupSelect" prefHeight="46.0" prefWidth="191.0" GridPane.columnIndex="12" GridPane.columnSpan="7" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+        <ListView fx:id="territoriesList" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="8" GridPane.columnSpan="8" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS" />
     </children>
 </GridPane>

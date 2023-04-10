@@ -24,6 +24,8 @@ public class PlaceUnitsController implements Initializable{
     ChoiceBox<Integer>numberSelect;
     @FXML
     Text errorMsg;
+    @FXML
+    Text unitsLeft;
 
 
     private final Stage window;
@@ -40,34 +42,51 @@ public class PlaceUnitsController implements Initializable{
         this.window = window;
         terrList = FXCollections.observableArrayList();
         numberList = FXCollections.observableArrayList();
+
+
     }
 
     @FXML
     public void clickOnPlace(){
+
+        errorMsg.setText("");
         // Get user input
         String selectTerr = territorySelect.getValue();
         Integer selectNumber = numberSelect.getValue();
-
         if(selectNumber==null || selectTerr==null){
-            errorMsg.setText("You choose wrong value.");
+            errorMsg.setText("Please select the territory and units");
             return;
         }
+        int units = Integer.parseInt(unitsLeft.getText()) - selectNumber;
+        if(units<0){
+            errorMsg.setText("Do not have enough units to place!");
+            return;
+        }
+        //update the number of units left for the player
+        unitsLeft.setText(String.valueOf(units));
 
         String record = "Choose to place "+ selectNumber+ " units on "+selectTerr;
-
         list.add(record);
 
         //pass data to the model
-
 
     }
 
     @FXML
     public void clickFinishButton() throws IOException {
 
-        window.close();
+        String selectTerr = territorySelect.getValue();
+        Integer selectNumber = numberSelect.getValue();
 
-        //show the test map
+        if(selectNumber==null || selectTerr==null){
+            errorMsg.setText("Please select the territory and units");
+            return;
+        }
+        window.close();
+        showTwoPlayersMap();
+    }
+
+    public void showTwoPlayersMap() throws IOException{
         URL xmlResource = getClass().getResource("/ui/MapTwoPlayersTest.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         HashMap<Class<?>, Object> controllers = new HashMap<>();
@@ -80,45 +99,41 @@ public class PlaceUnitsController implements Initializable{
 
         this.window.setScene(scene);
         this.window.show();
-
     }
 
     private void setTerritoryList(ObservableList<String>l){
         // Get available territories from server and then add them into observableArrayList
 
-        l.add("a");
-        l.add("b");
+        l.add("Dorne");
+        l.add("Mordor");
     }
 
 
-    private void createAvailalbeNumList(ObservableList<Integer> l, int deployNum){
+    private void createAvailalbeNumList(ObservableList<Integer> l, int totalUnits){
         l.clear();
-        for(int i=1; i<=deployNum; i++){
+        for(int i=1; i<=totalUnits; i++){
             l.add(i);
         }
     }
 
 
-    private int getInitialUnitsDeployNumber(){
-        // Get total deployment number from model
+    private int getInitialUnits(){
+        //get the total units number
         return 20;
     }
 
 
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int initNum = getInitialUnitsDeployNumber();
+        int initNum = getInitialUnits();
         createAvailalbeNumList(numberList, initNum);
         setTerritoryList(terrList);
         territorySelect.setItems(terrList);
         numberSelect.setItems(numberList);
-
-
         list = FXCollections.observableArrayList();
         UnitPlacementList.setItems(list);
+        unitsLeft.setText(String.valueOf(initNum));
     }
 
 
