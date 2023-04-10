@@ -1,4 +1,4 @@
-package edu.duke.ece651.team7.client.Model;
+package edu.duke.ece651.team7.client.model;
 
 public class UserSession {
 
