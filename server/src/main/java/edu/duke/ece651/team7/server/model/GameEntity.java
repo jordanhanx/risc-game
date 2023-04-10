@@ -228,7 +228,9 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                     response = "Permission denied";
                 } else if (units > remainingUnits) {
                     response = "Too many units";
-                } else {
+                } else if(units < 0){
+                    response = "units cannot be less than 0";
+                }else {
                     for(int i = 0; i <units; i++){
                         t.addUnits(new Unit());
                       }

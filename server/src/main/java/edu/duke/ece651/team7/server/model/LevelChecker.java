@@ -23,7 +23,7 @@ public class LevelChecker extends OrderRuleChecker{
             return null;
         }else if(o.getClass() == ResearchOrder.class){
             ResearchOrder order = (ResearchOrder) o;
-            if(order.issuer.getCurrentMaxLevel() == Level.ULTRON){
+            if(order.issuer.getCurrentMaxLevel().equals(Level.ULTRON)){
                 return "LevelChecker error: Already the highest level.";
             }
             return null;

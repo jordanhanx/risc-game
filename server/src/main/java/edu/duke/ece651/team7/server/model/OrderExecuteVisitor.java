@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import edu.duke.ece651.team7.shared.FoodResource;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Resource;
@@ -33,10 +34,10 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         this.combatPool = new ArrayList<Combat>();
         this.costVisitor = new OrderCostVisitor(map);
         // this.out = out;
-        checker = new PathChecker(null);
-        checker = new UnitNumberChecker(checker);
         checker = new CostChecker(checker, costVisitor);
-        
+        checker = new LevelChecker(checker);
+        checker = new UnitNumberChecker(checker);
+        checker = new PathChecker(checker);
     }
     /**
      * Check if the issued Attack order's destination has already formed a combat
@@ -59,7 +60,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
      * @throws IllegalArgumentException if the order is not valid
      */
     protected void pushCombat(AttackOrder o) throws IllegalArgumentException{
-        
         ArrayList<Unit> departUnits = new ArrayList<>();
         for(Level l: o.units.keySet()){
             departUnits.addAll(o.src.removeUnits(l, o.units.get(l)));
@@ -82,7 +82,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     /**
      * resolve all combats saved in combatPool and add one unit to each territory
      */
-    protected void doAllCombats(){
+    public void doAllCombats(){
         for(Combat c : combatPool){
             c.resolveCombat();
         }
@@ -100,7 +100,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
             Resource food = order.accept(costVisitor);
-            order.issuer.getFood().consumeResource(food.getAmount());
+            order.issuer.getFood().consumeResource((FoodResource) food);
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             for(Level l: order.units.keySet()){
@@ -118,7 +118,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
             Resource food = order.accept(costVisitor);
-            order.issuer.getFood().consumeResource(food.getAmount());
+            order.issuer.getFood().consumeResource((FoodResource) food);
             pushCombat(order);
             return null;
         }else{
@@ -130,9 +130,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     public String visit(ResearchOrder order) {
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
-            if(order.issuer.getCurrentMaxLevel().label == 6){
-                throw new IllegalArgumentException("LevelChecker error: Already the highest level.");
-            }
             Resource tech = order.accept(costVisitor);
             order.issuer.getTech().consumeResource(tech.getAmount());
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");

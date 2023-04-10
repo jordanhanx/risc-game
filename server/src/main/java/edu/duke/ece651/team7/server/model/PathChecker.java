@@ -25,6 +25,12 @@ public class PathChecker extends OrderRuleChecker {
                 //dest is not issuer's
                 return checkMoveRule(map, (MoveOrder)order);
             }
+        }else if(o.getClass() == UpgradeOrder.class){
+            UpgradeOrder order = (UpgradeOrder) o;
+            if(!order.target.getOwner().equals(order.issuer)){
+                return "Access Denied: target Territory does not belong to you";
+            }
+            return null;
         }else{
             return null;
         }

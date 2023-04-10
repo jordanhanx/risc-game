@@ -89,5 +89,12 @@ public class PathCheckerTest {
         UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
         assertNull(checker.checkMyRule(map, u1));
 
+        UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.CAVALRY, 5);
+        assertNotNull(checker.checkMyRule(map, u2));
+
+        ResearchOrder r1 = new ResearchOrder(p3);
+        assertNull(checker.checkMyRule(map, r1));
+
+
     }
 }
