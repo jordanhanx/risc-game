@@ -64,8 +64,8 @@ public class PlayerTest {
         assertEquals(0, p.getTotalUnits());
         Territory tA = mock(Territory.class);
         Territory tB = mock(Territory.class);
-        when(tA.getUnits()).thenReturn(1);
-        when(tB.getUnits()).thenReturn(3);
+        when(tA.getUnitsNumber()).thenReturn(1);
+        when(tB.getUnitsNumber()).thenReturn(3);
         p.addTerritory(tA);
         assertEquals(1, p.getTotalUnits());
         p.addTerritory(tB);
