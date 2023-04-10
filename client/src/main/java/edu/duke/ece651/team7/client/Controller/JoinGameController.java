@@ -59,13 +59,12 @@ public class JoinGameController implements Initializable{
                         enterBtn.setOnMouseClicked((me) -> {
 
                             //go to the map
-                            NewGameController mp = new NewGameController(window);
+                            PlaceUnitsController pu = new PlaceUnitsController(window);
                             try {
-                                mp.showMap(2);
+                                pu.showTwoPlayersMap();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-
                         });
                     }
                 }
@@ -78,7 +77,7 @@ public class JoinGameController implements Initializable{
 
 
     @FXML
-    public void clickOnExit() throws IOException {
+    public void clickOnBack() throws IOException {
         //go back to the map
         LoginSignupController gm = new LoginSignupController(new LoginModel(),window);
         try {

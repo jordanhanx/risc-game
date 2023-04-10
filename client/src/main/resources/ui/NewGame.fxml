@@ -54,6 +54,7 @@
             <Font size="18.0" />
          </font>
       </Text>
+      <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="8" GridPane.rowIndex="11" />
       <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Initial Units :" GridPane.columnIndex="6" GridPane.rowIndex="7">
          <font>
             <Font size="30.0" />
@@ -70,7 +71,7 @@
                 <String fx:value="expandable" />
             </styleClass>
         </Button>
-        <Button fx:id="Exit3" mnemonicParsing="false" onAction="#clickOnExit" prefHeight="35.0" prefWidth="109.0" text="Back" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+        <Button fx:id="BackButton" mnemonicParsing="false" onAction="#clickOnBack" prefHeight="35.0" prefWidth="109.0" text="Back" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>

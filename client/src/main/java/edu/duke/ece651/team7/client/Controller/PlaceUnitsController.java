@@ -48,24 +48,27 @@ public class PlaceUnitsController implements Initializable{
 
     @FXML
     public void clickOnPlace(){
+
+        errorMsg.setText("");
         // Get user input
         String selectTerr = territorySelect.getValue();
         Integer selectNumber = numberSelect.getValue();
-
         if(selectNumber==null || selectTerr==null){
-            errorMsg.setText("You choose wrong value.");
+            errorMsg.setText("Please select the territory and units");
             return;
         }
+        int units = Integer.parseInt(unitsLeft.getText()) - selectNumber;
+        if(units<0){
+            errorMsg.setText("Do not have enough units to place!");
+            return;
+        }
+        //update the number of units left for the player
+        unitsLeft.setText(String.valueOf(units));
 
         String record = "Choose to place "+ selectNumber+ " units on "+selectTerr;
-
         list.add(record);
 
         //pass data to the model
-
-        //update the number of units left for the player
-        int units = Integer.parseInt(unitsLeft.getText()) - selectNumber;
-        unitsLeft.setText(String.valueOf(units));
 
     }
 
@@ -79,9 +82,7 @@ public class PlaceUnitsController implements Initializable{
             errorMsg.setText("You choose wrong value.");
             return;
         }
-
         window.close();
-
         showTwoPlayersMap();
     }
 
@@ -103,43 +104,36 @@ public class PlaceUnitsController implements Initializable{
     private void setTerritoryList(ObservableList<String>l){
         // Get available territories from server and then add them into observableArrayList
 
-        l.add("a");
-        l.add("b");
+        l.add("Dorne");
+        l.add("Mordor");
     }
 
 
-    private void createAvailalbeNumList(ObservableList<Integer> l, int deployNum){
+    private void createAvailalbeNumList(ObservableList<Integer> l, int totalUnits){
         l.clear();
-        for(int i=1; i<=deployNum; i++){
+        for(int i=1; i<=totalUnits; i++){
             l.add(i);
         }
     }
 
 
-    private int getInitialUnitsDeployNumber(){
-        // Get total deployment number from model
+    private int getInitialUnits(){
+        //get the total units number
         return 20;
     }
 
 
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int initNum = getInitialUnitsDeployNumber();
+        int initNum = getInitialUnits();
         createAvailalbeNumList(numberList, initNum);
         setTerritoryList(terrList);
         territorySelect.setItems(terrList);
         numberSelect.setItems(numberList);
-
-
         list = FXCollections.observableArrayList();
         UnitPlacementList.setItems(list);
-
-        //get the units from the model
-        int totalUnit =20;
-        unitsLeft.setText(String.valueOf(totalUnit));
+        unitsLeft.setText(String.valueOf(initNum));
     }
 
 
