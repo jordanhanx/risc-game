@@ -53,7 +53,7 @@ public class CostCheckerTest {
         OrderCostVisitor costvisitor = mock(OrderCostVisitor.class);
 
         when(costvisitor.visit(m1)).thenReturn(new TechResource(300));
-        when(p3.getTech()).thenReturn(new FoodResource(200));
+        when(p3.getTech()).thenReturn(new TechResource(200));
 
         CostChecker checker = new CostChecker(null, costvisitor);
         assertEquals("CostCheker error: No enough Tech.",checker.checkOrderValidity(gameMap, m1));
@@ -73,7 +73,7 @@ public class CostCheckerTest {
         OrderCostVisitor costvisitor = mock(OrderCostVisitor.class);
 
         when(costvisitor.visit(m1)).thenReturn(new TechResource(300));
-        when(p3.getTech()).thenReturn(new FoodResource(200));
+        when(p3.getTech()).thenReturn(new TechResource(200));
 
         CostChecker checker = new CostChecker(null, costvisitor);
         assertEquals("CostCheker error: No enough Tech.",checker.checkOrderValidity(gameMap, m1));

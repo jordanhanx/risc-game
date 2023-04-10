@@ -100,7 +100,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
             Resource food = order.accept(costVisitor);
-            order.issuer.getFood().comsumeResoure(food.getAmount());
+            order.issuer.getFood().consumeResource(food.getAmount());
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             for(Level l: order.units.keySet()){
@@ -118,7 +118,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
             Resource food = order.accept(costVisitor);
-            order.issuer.getFood().comsumeResoure(food.getAmount());
+            order.issuer.getFood().consumeResource(food.getAmount());
             pushCombat(order);
             return null;
         }else{
@@ -134,7 +134,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
                 throw new IllegalArgumentException("LevelChecker error: Already the highest level.");
             }
             Resource tech = order.accept(costVisitor);
-            order.issuer.getTech().comsumeResoure(tech.getAmount());
+            order.issuer.getTech().consumeResource(tech.getAmount());
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             order.issuer.upgradeMaxLevel();
@@ -151,7 +151,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
             Resource tech = order.accept(costVisitor);
-            order.issuer.getTech().comsumeResoure(tech.getAmount());
+            order.issuer.getTech().consumeResource(tech.getAmount());
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             order.target.upgradeUnits(order.from, order.to, order.units);

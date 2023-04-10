@@ -11,8 +11,8 @@ public class Player implements Serializable, Comparable<Player> {
     protected static final long serialVersionUID = 2L; // Java recommends to declare this explicitly.
     private final String name;
     private LinkedList<Territory> territories;
-    protected Resource tech;
-    protected Resource food;
+    private TechResource tech;
+    private FoodResource food;
     private Level maxTechLevel;
 
     /**
@@ -21,13 +21,14 @@ public class Player implements Serializable, Comparable<Player> {
      * @param name is the Player's name.
      */
     public Player(String name) {
-        this.name = name;
-        territories = new LinkedList<>();
-        this.tech = new TechResource(0);
-        this.food = new FoodResource(0);
-        this.maxTechLevel = Level.INFANTRY;
+        this(name, Level.INFANTRY);
     }
 
+    /**
+     * 
+     * @param name is the Player's name.
+     * @param l Player's maximum unit level
+     */
     public Player(String name, Level l) {
         this.name = name;
         territories = new LinkedList<>();
@@ -107,23 +108,41 @@ public class Player implements Serializable, Comparable<Player> {
         }
     }
 
+    /**
+     * 
+     * @return player's current maximum unit level
+     */
     public Level getCurrentMaxLevel(){
         return this.maxTechLevel;
     }
     
+    /**
+     * upgrade the players's current maximun unit level
+     */
     public void upgradeMaxLevel(){
-        if(this.maxTechLevel.label+1 > 6){
+        if(this.maxTechLevel == Level.ULTRON){
             throw new IllegalArgumentException("Upgrade MaxLevel Error: Already the highest level");
         }
         this.maxTechLevel = Level.valueOfLabel(this.maxTechLevel.label+1);
     }
 
-    public Resource getFood(){
+
+    public FoodResource getFood(){
         return food;
     }
 
-    public Resource getTech(){
+    public TechResource getTech(){
         return tech;
+    }
+
+    /**
+     * collect food and tech resource from each territory the player owns
+     */
+    public void collectResource(){
+        for(Territory t: this.territories){
+            food.addResource(t.produceFood());
+            tech.addResource(t.produceTech());
+        }
     }
 
     @Override

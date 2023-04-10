@@ -3,6 +3,7 @@ package edu.duke.ece651.team7.server.model;
 import edu.duke.ece651.team7.shared.FoodResource;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Resource;
+import edu.duke.ece651.team7.shared.TechResource;
 
 public class CostChecker extends OrderRuleChecker {
     private OrderCostVisitor costVisitor;
@@ -24,7 +25,7 @@ public class CostChecker extends OrderRuleChecker {
     }
 
     private String checkBasicOrder(GameMap map, BasicOrder o){
-        Resource food = o.accept(costVisitor);
+        FoodResource food = (FoodResource)o.accept(costVisitor);
         if(o.issuer.getFood().compareTo(food) < 0){
             return "CostCheker error: No enough food.";
         }else{
@@ -35,7 +36,7 @@ public class CostChecker extends OrderRuleChecker {
 
     private String checkUpgradeOrder(GameMap map, UpgradeOrder o){
         Resource tech = o.accept(costVisitor);
-        if(o.issuer.getTech().compareTo(tech) < 0){
+        if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
             return "CostCheker error: No enough Tech.";
         
         }else{
@@ -45,7 +46,7 @@ public class CostChecker extends OrderRuleChecker {
 
     private String checkResearchOrder(GameMap map, ResearchOrder o){
         Resource tech = o.accept(costVisitor);
-        if(o.issuer.getTech().compareTo(tech) < 0){
+        if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
             return "CostCheker error: No enough Tech.";
         }else{
             return null;
