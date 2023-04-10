@@ -79,7 +79,7 @@ public class PlaceUnitsController implements Initializable{
         Integer selectNumber = numberSelect.getValue();
 
         if(selectNumber==null || selectTerr==null){
-            errorMsg.setText("You choose wrong value.");
+            errorMsg.setText("Please select the territory and units");
             return;
         }
         window.close();

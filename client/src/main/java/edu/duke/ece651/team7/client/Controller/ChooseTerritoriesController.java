@@ -50,7 +50,7 @@ public class ChooseTerritoriesController implements Initializable {
         errorMsg.setText("");
         // Get user input
         List<String> selectTerr = territoryGroupSelect.getValue();
-        if(selectTerr.isEmpty()){
+        if(selectTerr==null){
             errorMsg.setText("Please Choose one territory group.");
             return;
         }
