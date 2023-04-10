@@ -4,28 +4,21 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ResourceBundle;
 
 import edu.duke.ece651.team7.shared.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class RemoteClientController extends UnicastRemoteObject implements RemoteClient {
+public class RemoteClientController extends UnicastRemoteObject implements RemoteClient, Initializable {
 
     public static Scene getScene(int capacity) throws IOException {
-        String url = "";
-        if (capacity == 2) {
-            url = "/fxml/GameMapTwoPlayers.fxml";
-        } else if (capacity == 3) {
-            // url = "/fxml/GameMapTwoPlayers.fxml";
-        } else if (capacity == 4) {
-            // url = "/fxml/GameMapTwoPlayers.fxml";
-        } else {
-            throw new IllegalStateException("No Game Map supports capacity = " + capacity);
-        }
-        URL xmlResource = LoginSignupController.class.getResource(url);
+        URL xmlResource = LoginSignupController.class
+                .getResource(String.format("/fxml/%d-players-game-map.fxml", capacity));
         FXMLLoader loader = new FXMLLoader(xmlResource);
         return new Scene(loader.load(), 1325, 607);
     }
@@ -43,6 +36,12 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
 
     protected RemoteClientController() throws RemoteException {
         super();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'initialize'");
     }
 
     @Override
