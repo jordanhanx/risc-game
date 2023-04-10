@@ -280,7 +280,7 @@ public class Combat {
                 battleField.setOwner(participants.get(0));
                 participants.get(0).addTerritory(battleField);
                 battleField.addUnits(attackPool.get(participants.get(0)));
-                System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnits()+") is: " + participants.get(0).getName());
+                System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnitsNumber()+") is: " + participants.get(0).getName());
 
                 //for testing
                 return participants.get(0);

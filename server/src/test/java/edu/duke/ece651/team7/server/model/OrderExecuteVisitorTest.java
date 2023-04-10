@@ -179,28 +179,6 @@ public class OrderExecuteVisitorTest {
     };
 
 
-    // @Test
-    // public void test_isInCombatPool(){
-    //     GameMap map = makeGameMap();
-    //     OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
-    //     Player p1 = new Player("a");
-    //     Player p2 = new Player("b");
-    //     map.getTerritoryByName("Narnia").setOwner(p1);
-    //     map.getTerritoryByName("Midkemia").setOwner(p1);
-
-    //     AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), 5);
-    //     AttackOrder m2 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Elantris"), 5);
-
-    //     AttackOrder m3 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Elantris"), 4);
-    //     AttackOrder m4 = new AttackOrder(p2, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Hogwarts"), 2);
-    //     ox.pushCombat(m1);
-    //     ox.pushCombat(m2);
-    //     ox.pushCombat(m3);
-    //     ox.pushCombat(m4);
-    // }
-
-
-
 
     // @Test
     // public void test_PushCombat(){
@@ -266,53 +244,64 @@ public class OrderExecuteVisitorTest {
 
     }
 
-//     @Test
-//     public void test_doAllCombat(){
-//         GameMap map = buildTestMap();
-//         OrderExecuter ox = new OrderExecuter(map);
-//         Player p1 = map.getTerritoryByName("Narnia").getOwner();
-//         Player p2 = map.getTerritoryByName("Elantris").getOwner();
-//         p2.addTerritory(map.getTerritoryByName("Scadrial"));
-//         Player p3 = map.getTerritoryByName("Gondor").getOwner();
-//         p3.addTerritory(map.getTerritoryByName("Mordor"));
-//         Player p4 = new Player("green");
-//         Player p5 = new Player("blue");
-//         map.getTerritoryByName("Elantris").setOwner(p4);
-//         p4.addTerritory(map.getTerritoryByName("Elantris"));
+    @Test
+    public void test_doAllCombat(){
 
-//         map.getTerritoryByName("Roshar").setOwner(p5);
-//         p5.addTerritory(map.getTerritoryByName("Roshar"));
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        // p2.addTerritory(map.getTerritoryByName("Scadrial"));
+        // p3.addTerritory(map.getTerritoryByName("Mordor"));
+        Player p4 = new Player("green");
+        Player p5 = new Player("blue");
 
-//         AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Scadrial"), 10);
-//         AttackOrder m2 = new AttackOrder(p4, map.getTerritoryByName("Elantris"), map.getTerritoryByName("Scadrial"), 3);
-//         AttackOrder m3 = new AttackOrder(p5, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Scadrial"), 2);
+        map.getTerritoryByName("Elantris").setOwner(p4);
+        p4.addTerritory(map.getTerritoryByName("Elantris"));
 
-//         AttackOrder m4 = new AttackOrder(p3, map.getTerritoryByName("Mordor"), map.getTerritoryByName("Scadrial"), 3);
+        map.getTerritoryByName("Roshar").setOwner(p5);
+        p5.addTerritory(map.getTerritoryByName("Roshar"));
+
+        int food1 = 1000;
+        int food2 = 1000;
+        int food3 = 1000;
+        int food4 = 1000;
+        int food5 = 1000;
+        p1.getFood().addResource(food1);
+        p2.getFood().addResource(food2);
+        p3.getFood().addResource(food3);
+        p4.getFood().addResource(food4);
+        p5.getFood().addResource(food5);
+
+        AttackOrder m1 = new AttackOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Scadrial"), 10);
+        AttackOrder m2 = new AttackOrder(p4, map.getTerritoryByName("Elantris"), map.getTerritoryByName("Scadrial"), 3);
+        AttackOrder m3 = new AttackOrder(p5, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Scadrial"), 2);
+
+        AttackOrder m4 = new AttackOrder(p3, map.getTerritoryByName("Mordor"), map.getTerritoryByName("Scadrial"), 3);
 
 
-//         AttackOrder m5 = new AttackOrder(p1, map.getTerritoryByName("Oz"), map.getTerritoryByName("Mordor"), 5);
-//         AttackOrder m6 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Mordor"), 1);
-//         ox.pushCombat(m1);
-//         ox.pushCombat(m2);
-//         ox.pushCombat(m3);
-//         ox.pushCombat(m4);
-
-//         ox.pushCombat(m5);
-//         ox.pushCombat(m6);
-
-//         // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
-//         // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
-//         ox.doAllCombats();
+        AttackOrder m5 = new AttackOrder(p1, map.getTerritoryByName("Oz"), map.getTerritoryByName("Mordor"), 5);
+        AttackOrder m6 = new AttackOrder(p2, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Mordor"), 1);
+        m1.accept(ox);
+        m2.accept(ox);
+        m3.accept(ox);
+        m4.accept(ox);
+        m5.accept(ox);
+        m6.accept(ox);
+        // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
+        // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
+        ox.doAllCombats();
         
-//         // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
-//         // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
-//         assertNull(ox.isInCombatPool(m4.getDest()));
-//         // assertNull(ox.isInCombatPool(m6.getDest()));
-//         assertEquals(11, map.getTerritoryByName("Hogwarts").getUnits());
-//         assertEquals(1, map.getTerritoryByName("Midkemia").getUnits());
-//         assertEquals(8, map.getTerritoryByName("Elantris").getUnits());
-
-//     }
+        // System.out.println(map.getTerritoryByName("Scadrial").getOwner().getName());
+        // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
+        assertNull(ox.isInCombatPool(m4.dest));
+        // assertNull(ox.isInCombatPool(m6.getDest()));
+        assertEquals(11, map.getTerritoryByName("Hogwarts").getUnitsNumber());
+        assertEquals(1, map.getTerritoryByName("Midkemia").getUnitsNumber());
+        assertEquals(8, map.getTerritoryByName("Elantris").getUnitsNumber());
+    }
     
     
 }
