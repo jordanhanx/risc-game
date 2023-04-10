@@ -7,9 +7,9 @@ import edu.duke.ece651.team7.shared.Resource;
 public class CostChecker extends OrderRuleChecker {
     private OrderCostVisitor costVisitor;
 
-    public CostChecker(OrderRuleChecker n, GameMap map) {
+    public CostChecker(OrderRuleChecker n, OrderCostVisitor costVisitor) {
         super(n);
-        costVisitor = new OrderCostVisitor(map);
+        this.costVisitor = costVisitor;
     }
 
     @Override

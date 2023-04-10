@@ -31,11 +31,12 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     public OrderExecuteVisitor(GameMap map){
         this.map = map;
         this.combatPool = new ArrayList<Combat>();
+        this.costVisitor = new OrderCostVisitor(map);
         // this.out = out;
         checker = new PathChecker(null);
         checker = new UnitNumberChecker(checker);
-        checker = new CostChecker(checker, map);
-        this.costVisitor = new OrderCostVisitor(map);
+        checker = new CostChecker(checker, costVisitor);
+        
     }
     /**
      * Check if the issued Attack order's destination has already formed a combat

@@ -22,6 +22,9 @@ public class UnitTest {
 
         u1.upgrade(2);
         assertEquals(u1.getLevel(), Level.ULTRON);
+
+        u3.upgrade(Level.CAVALRY);
+        assertEquals(u3.getLevel(), Level.CAVALRY);
     }
 
     @Test

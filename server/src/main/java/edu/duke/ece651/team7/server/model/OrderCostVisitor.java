@@ -46,7 +46,6 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
     @Override
     public Resource visit(MoveOrder order) {
         int distance = map.findShortestPath(order.src, order.dest);
-        // System.out.println(distance);
         int C = 2;
         int totalUnits = 0;
         for(Level l: order.units.keySet()){
