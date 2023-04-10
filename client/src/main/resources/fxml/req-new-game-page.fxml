@@ -6,9 +6,9 @@
 <?import javafx.scene.text.*?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-    prefHeight="457.0" prefWidth="669.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+    prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="edu.duke.ece651.team7.client.controller.LoginSignupController">
+    fx:controller="edu.duke.ece651.team7.client.controller.ReqNewGameController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -45,68 +45,56 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Text fx:id="title" fill="#ad4e4e" stroke="BLACK" strokeType="OUTSIDE" text="  RISK GAME  "
-            wrappingWidth="332.24029541015625" GridPane.columnIndex="8" GridPane.halignment="CENTER"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER"
-            GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="48.0" />
-            </font>
-        </Text>
-        <Button id="login_button" mnemonicParsing="false" onAction="#onClickLogin" prefHeight="70.0"
-            prefWidth="121.0" text="Login" textFill="#171716" GridPane.columnIndex="4"
-            GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
-            GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER"
-            GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="17.0" />
-            </font>
-            <styleClass>
-                <String fx:value="expandable" />
-                <String fx:value="numbtn" />
-            </styleClass>
-        </Button>
-        <Button id="signup_button" mnemonicParsing="false" onAction="#onClickSignup"
-            prefHeight="70.0" prefWidth="115.0" text="Sign up" textFill="#40c425"
-            GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.halignment="CENTER"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" GridPane.rowSpan="2"
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE"
+            text="Choose Number of Players for Your Game: " GridPane.columnIndex="8"
+            GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"
             GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
-                <Font size="17.0" />
-            </font>
-            <styleClass>
-                <String fx:value="expandable" />
-                <String fx:value="numbtn" />
-            </styleClass>
-        </Button>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username :" GridPane.columnIndex="4"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="20.0" />
+                <Font size="30.0" />
             </font>
         </Text>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" GridPane.columnIndex="4"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Text>
-        <TextField fx:id="username" prefHeight="32.0" prefWidth="161.0"
-            style="-fx-border-color: #000000;" GridPane.columnIndex="8" GridPane.columnSpan="4"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS" />
-        <PasswordField fx:id="password" prefHeight="32.0" prefWidth="161.0"
-            style="-fx-border-color: #000000;" GridPane.columnIndex="8" GridPane.columnSpan="4"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
-        <Text fx:id="error_msg" fill="#f50909" strokeType="OUTSIDE" strokeWidth="0.0"
-            GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10"
-            GridPane.vgrow="ALWAYS">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="(2 -- 4)" wrappingWidth="97.07275390625"
+            GridPane.columnIndex="11" GridPane.rowIndex="4">
             <font>
                 <Font size="18.0" />
             </font>
         </Text>
+        <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="8"
+            GridPane.rowIndex="11" />
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Initial Units :"
+            GridPane.columnIndex="6" GridPane.rowIndex="7">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Text>
+        <TextField fx:id="capacity" prefHeight="32.0" prefWidth="161.0"
+            style="-fx-border-color: #000000;" GridPane.columnIndex="7" GridPane.columnSpan="3"
+            GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="initUnits" GridPane.columnIndex="7" GridPane.columnSpan="3"
+            GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
+        <Button fx:id="Create" mnemonicParsing="false" onAction="#clickOnCreate" prefHeight="35.0"
+            prefWidth="109.0" text="Create" GridPane.columnIndex="4" GridPane.columnSpan="3"
+            GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0" />
+            </font>
+            <styleClass>
+                <String fx:value="numbtn" />
+                <String fx:value="expandable" />
+            </styleClass>
+        </Button>
+        <Button fx:id="Cancel" mnemonicParsing="false" onAction="#clickOnCancel" prefHeight="35.0"
+            prefWidth="109.0" text="Cancel" GridPane.columnIndex="10" GridPane.columnSpan="3"
+            GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0" />
+            </font>
+            <styleClass>
+                <String fx:value="numbtn" />
+                <String fx:value="expandable" />
+            </styleClass>
+        </Button>
     </children>
 </GridPane>

@@ -3,10 +3,12 @@ package edu.duke.ece651.team7.client.controller;
 import java.io.IOException;
 import java.net.URL;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,31 +23,33 @@ import org.springframework.web.client.RestTemplate;
 import edu.duke.ece651.team7.client.model.UserSession;
 
 public class LoginSignupController {
-    @FXML
-    private TextField username;
-    @FXML
-    private TextField password;
 
     public static Scene getScene() throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/LoginSignup.fxml");
+        URL xmlResource = LoginSignupController.class.getResource("/fxml/login-signup-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         return new Scene(loader.load(), 640, 480);
     }
 
     @FXML
-    public void onClickLogin() {
-        doLogin();
+    private TextField username;
+    @FXML
+    private TextField password;
+
+    @FXML
+    public void clickOnLogin(ActionEvent event) throws IOException {
+        doLogin("http://localhost:8080/api/login");
+        gotoHomePage();
     }
 
     @FXML
-    public void onClickSignup() {
-        doSignup();
-        doLogin();
+    public void clickOnSignup(ActionEvent event) throws IOException {
+        doSignup("http://localhost:8080/api/signup");
+        doLogin("http://localhost:8080/api/login");
+        gotoHomePage();
     }
 
-    public void doLogin() {
-        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(),
-                "http://localhost:8080/api/login");
+    public void doLogin(String url) {
+        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(), url);
         if (response.getStatusCode() != HttpStatus.FOUND) {
             throw new IllegalArgumentException(response.getBody());
         }
@@ -53,9 +57,8 @@ public class LoginSignupController {
         UserSession.getInstance().setSession(response.getHeaders().getFirst("Set-Cookie"));
     }
 
-    public void doSignup() {
-        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(),
-                "http://localhost:8080/api/signup");
+    public void doSignup(String url) {
+        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(), url);
         if (response.getStatusCode() != HttpStatus.CREATED) {
             throw new IllegalArgumentException(response.getBody());
         }
@@ -71,14 +74,20 @@ public class LoginSignupController {
         requestBody.add("password", password);
 
         // set the Content-Type header to application/x-www-form-urlencoded
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         // create the request entity with the headers and request body
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, header);
 
         // send the login request and get the response, do not need
         return restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
     }
 
+    public void gotoHomePage() throws IOException {
+        Scene newScene = HomePageController.getScene();
+        Stage primaryStage = (Stage) username.getScene().getWindow();
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+    }
 }
