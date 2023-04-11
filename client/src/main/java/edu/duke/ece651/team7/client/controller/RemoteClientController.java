@@ -37,7 +37,7 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
 
     public static Scene getScene(String host, int port, String gamename)
             throws IOException, NotBoundException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/2-players-game-map.fxml");
+        URL xmlResource = LoginSignupController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new RemoteClientController(host, port, gamename));
         return new Scene(loader.load(), 1325, 607);
