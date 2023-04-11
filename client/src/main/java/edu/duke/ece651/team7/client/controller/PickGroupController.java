@@ -33,7 +33,7 @@ public class PickGroupController implements Initializable {
     @FXML
     private Button confirmButton;
 
-    private RemoteGame server;
+    private final RemoteGame server;
     private ObservableList<String> groupList;
 
     public PickGroupController(RemoteGame server) throws RemoteException {
@@ -48,7 +48,7 @@ public class PickGroupController implements Initializable {
     }
 
     @FXML
-    public void clickOnConfirm(ActionEvent action) throws RemoteException, InterruptedException {
+    public void clickOnConfirm(ActionEvent action) throws InterruptedException, IOException {
         String groupName = selector.getSelectionModel().getSelectedItem();
         String response = server.tryPickTerritoryGroupByName(UserSession.getInstance().getUsername(), groupName);
         if (response != null) {
@@ -58,8 +58,10 @@ public class PickGroupController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+        Scene newScene = PlaceUnitsController.getScene(server);
         Stage currStage = (Stage) confirmButton.getScene().getWindow();
-        currStage.close();
+        currStage.setScene(newScene);
+        currStage.show();
     }
 
 }

@@ -21,10 +21,10 @@ import edu.duke.ece651.team7.shared.*;
 
 public class OrderAttackController implements Initializable {
 
-    public static Scene getScene(RemoteGame server, GameMap gameMap, Player self) throws IOException {
+    public static Scene getScene(RemoteGame server, GameMap gameMap) throws IOException {
         URL xmlResource = LoginSignupController.class.getResource("/fxml/pick-group-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderAttackController(server, gameMap, self));
+        loader.setController(new OrderAttackController(server, gameMap));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -39,8 +39,9 @@ public class OrderAttackController implements Initializable {
     private ObservableList<String> destList;
     private ObservableList<String> levList;
 
-    public OrderAttackController(RemoteGame server, GameMap gameMap, Player self) {
+    public OrderAttackController(RemoteGame server, GameMap gameMap) throws RemoteException {
         this.server = server;
+        Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.srcList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
         this.destList = FXCollections.observableList(
                 gameMap.getTerritories().stream().map(t -> t.getName()).filter((t) -> !srcList.contains(t)).toList());

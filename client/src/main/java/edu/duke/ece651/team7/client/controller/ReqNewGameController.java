@@ -13,13 +13,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import edu.duke.ece651.team7.client.model.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import edu.duke.ece651.team7.client.model.UserSession;
 
 public class ReqNewGameController {
 

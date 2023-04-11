@@ -13,19 +13,19 @@ public interface RemoteGame extends Remote {
                 PICK_GROUP, PLACE_UNITS, PLAY_GAME
         }
 
-        public GameMap getGameMap() throws RemoteException;
-
         public GamePhase getGamePhase() throws RemoteException;
 
         public int getGameInitUnits() throws RemoteException;
 
-        public String tryRegisterClient(String username, RemoteClient client) throws RemoteException;
+        public GameMap getGameMap() throws RemoteException;
 
         public Player getSelfStatus(String username) throws RemoteException;
 
         public String tryPickTerritoryGroupByName(String username, String groupName) throws RemoteException;
 
         public String tryPlaceUnitsOn(String username, String territory, int units) throws RemoteException;
+
+        public String tryRegisterClient(String username, RemoteClient client) throws RemoteException;
 
         public String tryMoveOrder(String username, String src, String dest, String level, int units)
                         throws RemoteException;

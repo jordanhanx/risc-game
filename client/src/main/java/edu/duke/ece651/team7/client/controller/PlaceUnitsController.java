@@ -18,9 +18,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import edu.duke.ece651.team7.client.model.UserSession;
-import edu.duke.ece651.team7.shared.Player;
-import edu.duke.ece651.team7.shared.RemoteGame;
+import edu.duke.ece651.team7.shared.*;
 
 public class PlaceUnitsController implements Initializable {
 
@@ -44,7 +44,7 @@ public class PlaceUnitsController implements Initializable {
     @FXML
     private ListView<String> UnitPlacementList;
 
-    private RemoteGame server;
+    private final RemoteGame server;
     private Player self;
     private ObservableList<String> territoryList;
     private int initUnits;
@@ -70,27 +70,24 @@ public class PlaceUnitsController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
-        int remaining = initUnits - server.getSelfStatus(UserSession.getInstance().getUsername()).getTotalUnits();
-        if (remaining > 0) {
-            remainUnits.setText(String.valueOf(remaining));
-        } else {
-            doFinish();
-        }
-
+        self = server.getSelfStatus(UserSession.getInstance().getUsername());
+        remainUnits.setText(String.valueOf(initUnits - self.getTotalUnits()));
     }
 
     @FXML
-    public void clickOnFinish(ActionEvent action) throws RemoteException, InterruptedException {
+    public void clickOnFinish(ActionEvent action) throws InterruptedException, IOException {
         doFinish();
     }
 
-    public void doFinish() throws RemoteException, InterruptedException {
+    public void doFinish() throws InterruptedException, IOException {
         String response = server.doCommitOrder(UserSession.getInstance().getUsername());
         if (response != null) {
             throw new IllegalArgumentException(response);
         } else {
+            Scene newScene = PlayGameController.getScene(server);
             Stage currStage = (Stage) placeButton.getScene().getWindow();
-            currStage.close();
+            currStage.setScene(newScene);
+            currStage.show();
         }
     }
 

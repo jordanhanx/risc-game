@@ -2,16 +2,11 @@ package edu.duke.ece651.team7.client.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -28,18 +23,16 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
-public class RemoteClientController extends UnicastRemoteObject implements RemoteClient, Initializable {
+public class PlayGameController extends UnicastRemoteObject implements RemoteClient, Initializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(RemoteClientController.class);
-
-    public static Scene getScene(String host, int port, String gamename)
-            throws IOException, NotBoundException {
+    public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = LoginSignupController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new RemoteClientController(host, port, gamename));
+        loader.setController(new PlayGameController(server));
         return new Scene(loader.load(), 1325, 607);
     }
 
@@ -61,33 +54,48 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
     @FXML
     private Button Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
 
-    private RemoteGame server;
+    private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
     private Map<String, Color> colorMap;
 
-    public RemoteClientController(String host, int port, String gamename) throws RemoteException, NotBoundException {
+    public PlayGameController(RemoteGame server) throws RemoteException {
         super();
-        connectRemoteServer(host, port, gamename);
+        this.server = server;
         this.gameMap = new SimpleObjectProperty<>(server.getGameMap());
         this.self = new SimpleObjectProperty<>(server.getSelfStatus(UserSession.getInstance().getUsername()));
-    }
-
-    protected void connectRemoteServer(String host, int port, String gamename)
-            throws RemoteException, NotBoundException {
-        this.server = (RemoteGame) LocateRegistry.getRegistry(host, port).lookup(gamename);
-        logger.info("Connected to " + gamename + "@" + host + ":" + port + " successfully.");
+        String response = server.tryRegisterClient(UserSession.getInstance().getUsername(), this);
+        if (response != null) {
+            throw new IllegalStateException(response);
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initColorMap();
+
+        gameMap.addListener((observable, oldValue, newValue) -> {
+            setTerritoryColor();
+        });
+
         self.addListener((observable, oldValue, newValue) -> {
             food.setText(String.valueOf(newValue.getFood()));
             techResource.setText(String.valueOf(newValue.getTech()));
             techLevel.setText(String.valueOf(newValue.getCurrentMaxLevel()));
         });
+    }
 
-        gameMap.addListener((observable, oldValue, newValue) -> setTerritoryColor());
+    public void initColorMap() {
+        Color[] colorArr = { Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.BLUE };
+        TreeSet<String> playerSet = new TreeSet<>();
+        for (Territory t : gameMap.getValue().getTerritories()) {
+            playerSet.add(t.getOwner().getName());
+        }
+        int idx = 0;
+        for (String name : playerSet) {
+            colorMap.put(name, colorArr[idx]);
+            ++idx;
+        }
     }
 
     @Override
@@ -98,50 +106,6 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
     @Override
     public void updatePlayer(Player player) throws RemoteException {
         Platform.runLater(() -> this.self.setValue(player));
-    }
-
-    @Override
-    public void doPickGroup() throws RemoteException {
-        Platform.runLater(() -> {
-            try {
-                Scene newScene = PickGroupController.getScene(server);
-                Stage secondaryStage = new Stage();
-                secondaryStage.setScene(newScene);
-                secondaryStage.showAndWait();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
-    }
-
-    @Override
-    public void doPlaceUnits() throws RemoteException {
-        Platform.runLater(() -> {
-            try {
-                Scene newScene = PlaceUnitsController.getScene(server);
-                Stage secondaryStage = new Stage();
-                secondaryStage.setScene(newScene);
-                secondaryStage.showAndWait();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
-    }
-
-    @Override
-    public void initColorMap() throws RemoteException {
-        Platform.runLater(() -> {
-            Color[] colorArr = { Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.BLUE };
-            TreeSet<String> playerSet = new TreeSet<>();
-            for (Territory t : gameMap.getValue().getTerritories()) {
-                playerSet.add(t.getOwner().getName());
-            }
-            int idx = 0;
-            for (String name : playerSet) {
-                colorMap.put(name, colorArr[idx]);
-                ++idx;
-            }
-        });
     }
 
     @Override
@@ -160,7 +124,7 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
         Object source = event.getSource();
         if (source instanceof Button) {
             Button btn = (Button) source;
-            Territory selectedTerr = gameMap.getValue().getTerritoryByName(btn.getText());
+            Territory selectedTerr = findTerritory(btn.getText());
             terrName.setText(selectedTerr.getName());
             ownerName.setText(selectedTerr.getOwner().getName());
             levelValue0.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0))));
@@ -175,9 +139,18 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
         }
     }
 
+    public Territory findTerritory(String terrName) {
+        for (Territory t : self.getValue().getTerritories()) {
+            if (t.getName().equals(terrName)) {
+                return t;
+            }
+        }
+        return gameMap.getValue().getTerritoryByName(terrName);
+    }
+
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
-        Scene newScene = OrderMoveController.getScene(server, self.getValue());
+        Scene newScene = OrderMoveController.getScene(server);
         Stage secondaryStage = new Stage();
         secondaryStage.setScene(newScene);
         secondaryStage.showAndWait();
@@ -185,7 +158,7 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
 
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        Scene newScene = OrderAttackController.getScene(server, gameMap.getValue(), self.getValue());
+        Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
         Stage secondaryStage = new Stage();
         secondaryStage.setScene(newScene);
         secondaryStage.showAndWait();
@@ -193,7 +166,7 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
 
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
-        Scene newScene = OrderUpgradeController.getScene(server, self.getValue());
+        Scene newScene = OrderUpgradeController.getScene(server);
         Stage secondaryStage = new Stage();
         secondaryStage.setScene(newScene);
         secondaryStage.showAndWait();
@@ -244,5 +217,4 @@ public class RemoteClientController extends UnicastRemoteObject implements Remot
         Braavos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Braavos").getName()));
         Oldtown.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oldtown").getName()));
     }
-
 }

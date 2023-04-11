@@ -9,8 +9,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 import edu.duke.ece651.team7.client.controller.ErrorReporter;
 import edu.duke.ece651.team7.client.controller.LoginSignupController;
 
@@ -18,7 +16,6 @@ public class App extends Application {
   private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   public static void main(String[] args) {
-    // System.out.println("GUI begin running.");
     logger.info("GUI client running");
     launch(args);
   }
@@ -30,9 +27,8 @@ public class App extends Application {
       Scene scene = LoginSignupController.getScene();
       primaryStage.setScene(scene);
       primaryStage.show();
-    } catch (IOException e) {
-      e.printStackTrace();
-      System.err.println("Failed to load UI: " + e.getMessage());
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
     }
   }
 

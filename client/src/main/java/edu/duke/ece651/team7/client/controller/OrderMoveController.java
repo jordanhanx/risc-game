@@ -15,16 +15,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import edu.duke.ece651.team7.client.model.UserSession;
-import edu.duke.ece651.team7.shared.Player;
-import edu.duke.ece651.team7.shared.RemoteGame;
+import edu.duke.ece651.team7.shared.*;
 
 public class OrderMoveController implements Initializable {
 
-    public static Scene getScene(RemoteGame server, Player self) throws IOException {
+    public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = LoginSignupController.class.getResource("/fxml/pick-group-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderMoveController(server, self));
+        loader.setController(new OrderMoveController(server));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -38,8 +38,9 @@ public class OrderMoveController implements Initializable {
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
 
-    public OrderMoveController(RemoteGame server, Player self) {
+    public OrderMoveController(RemoteGame server) throws RemoteException {
         this.server = server;
+        Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
         this.levList = FXCollections.observableArrayList();
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {

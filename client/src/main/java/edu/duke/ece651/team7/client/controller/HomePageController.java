@@ -2,6 +2,8 @@ package edu.duke.ece651.team7.client.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,8 +30,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+
 import edu.duke.ece651.team7.client.model.UserSession;
-import edu.duke.ece651.team7.shared.GameDto;
+import edu.duke.ece651.team7.shared.*;
 
 public class HomePageController implements Initializable {
 
@@ -99,8 +102,23 @@ public class HomePageController implements Initializable {
     }
 
     @FXML
-    public void clickOnEnter(ActionEvent event) {
-
+    public void clickOnEnter(ActionEvent event) throws NotBoundException, IOException {
+        String host = myGamesTable.getSelectionModel().getSelectedItem().getHost();
+        int port = myGamesTable.getSelectionModel().getSelectedItem().getPort();
+        String gamename = myGamesTable.getSelectionModel().getSelectedItem().getName();
+        RemoteGame server = (RemoteGame) LocateRegistry.getRegistry(host, port).lookup(gamename);
+        RemoteGame.GamePhase phase = server.getGamePhase();
+        Scene newScene = null;
+        if (phase == RemoteGame.GamePhase.PICK_GROUP) {
+            newScene = PickGroupController.getScene(server);
+        } else if (phase == RemoteGame.GamePhase.PLACE_UNITS) {
+            newScene = PlaceUnitsController.getScene(server);
+        } else {
+            newScene = PlayGameController.getScene(server);
+        }
+        Stage gameStage = new Stage();
+        gameStage.setScene(newScene);
+        gameStage.show();
     }
 
     @FXML

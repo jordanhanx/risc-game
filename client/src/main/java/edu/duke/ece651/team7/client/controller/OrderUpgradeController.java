@@ -21,10 +21,10 @@ import edu.duke.ece651.team7.shared.*;
 
 public class OrderUpgradeController implements Initializable {
 
-    public static Scene getScene(RemoteGame server, Player self) throws IOException {
+    public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = LoginSignupController.class.getResource("/fxml/pick-group-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderUpgradeController(server, self));
+        loader.setController(new OrderUpgradeController(server));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -38,8 +38,9 @@ public class OrderUpgradeController implements Initializable {
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
 
-    public OrderUpgradeController(RemoteGame server, Player self) {
+    public OrderUpgradeController(RemoteGame server) throws RemoteException {
         this.server = server;
+        Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
         this.levList = FXCollections.observableArrayList();
         for (int lev = 0; lev < 6; ++lev) {
