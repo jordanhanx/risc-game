@@ -39,8 +39,6 @@ public class HomePageController implements Initializable {
         return new Scene(loader.load(), 1000, 680);
     }
 
-    private ObservableList<GameDto> gameList = FXCollections.observableArrayList();
-
     @FXML
     private TableView<GameDto> allGamesTable = new TableView<>();
     @FXML
@@ -58,6 +56,8 @@ public class HomePageController implements Initializable {
     private TableColumn<GameDto, Integer> myGamesCapacity = new TableColumn<>();
     @FXML
     private TableColumn<GameDto, Integer> myGamesCurrentPlayers = new TableColumn<>();
+
+    private ObservableList<GameDto> gameList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

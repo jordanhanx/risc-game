@@ -11,5 +11,13 @@ public interface RemoteClient extends Remote {
 
     public void updateGameMap(GameMap gameMap) throws RemoteException;
 
+    public void updatePlayer(Player player) throws RemoteException;
+
+    public void doPickGroup() throws RemoteException;
+
+    public void doPlaceUnits() throws RemoteException;
+
+    public void initColorMap() throws RemoteException;
+
     public void showPopupWindow(String msg) throws RemoteException;
 }
