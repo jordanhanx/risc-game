@@ -236,6 +236,31 @@ public class GameEntityTest {
     }
 
     @Test
+    public void test_tryUpgradeOrder() throws RemoteException {
+        commitMap.put("Blue", false);
+        commitMap.put("Red", true);
+        Territory tMordor = mock(Territory.class);
+        when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
+        when(ox.visit(any(UpgradeOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
+        assertEquals(null, testgame.tryUpgradeOrder("Blue", "Mordor",0, 1, 5));
+        assertEquals("Invalid Input:", testgame.tryUpgradeOrder("Blue", "Mordor",0,1,5));
+        assertEquals("Please wait for other players to commit",
+                testgame.tryUpgradeOrder("Red", "Mordor",0,1,5));
+        verify(ox, times(2)).visit(any(UpgradeOrder.class));
+    }
+
+    @Test
+    public void test_tryResearchOrder() throws RemoteException {
+        commitMap.put("Blue", false);
+        commitMap.put("Red", true);
+        when(ox.visit(any(ResearchOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
+        assertEquals(null, testgame.tryResearchOrder("Blue"));
+        assertEquals("Invalid Input:", testgame.tryResearchOrder("Blue"));
+        assertEquals("Please wait for other players to commit",
+                testgame.tryResearchOrder("Red"));
+        verify(ox, times(2)).visit(any(ResearchOrder.class));
+    }
+    @Test
     public void test_doCommitOrder() throws RemoteException, InterruptedException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);

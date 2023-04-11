@@ -110,7 +110,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         setGamePhase(GamePhase.PLAY_GAME);
         while (true) {
             commitSignal.await();
-            ox.doAllCombats();
+            // ox.doAllCombats();
+            ox.resolveOneRound();
             if (!isGameOver()) {
                 resetCommitMap(true); // reset the commit record for not lost users
                 setCountDownLatch(commitMap.size()); // reset countDownLatch
@@ -281,6 +282,41 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
+    public synchronized String tryUpgradeOrder(String username, String target, int fromlevel, int tolevel, int units)
+            throws RemoteException {
+        String response = null;
+        try{
+            if (commitMap.get(username) == true) {
+                response = "Please wait for other players to commit";
+            } else {
+                UpgradeOrder uo = new UpgradeOrder(playerMap.get(username), gameMap.getTerritoryByName(target), 
+                    Level.valueOfLabel(fromlevel), Level.valueOfLabel(tolevel), units);
+                uo.accept(ox);
+            }
+        }catch (RuntimeException e){
+            response = e.getMessage();
+        }
+        return response;
+    }
+
+    @Override
+    public synchronized String tryResearchOrder(String username) throws RemoteException {
+        String response = null;
+        try{
+            if (commitMap.get(username) == true) {
+                response = "Please wait for other players to commit";
+            } else {
+                ResearchOrder ro = new ResearchOrder(playerMap.get(username));
+                ro.accept(ox);
+            }
+        }catch (RuntimeException e){
+            response = e.getMessage();
+        }
+        return response;
+    }
+
+
+    @Override
     public synchronized String doCommitOrder(String username) throws RemoteException, InterruptedException {
         String response = null;
         if (playerMap.get(username).isLose()) {
@@ -359,6 +395,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             }
         }
     }
+
 }
 
 /* EOF */

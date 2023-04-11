@@ -8,7 +8,9 @@ import java.util.List;
 import edu.duke.ece651.team7.shared.FoodResource;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
+import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Resource;
+import edu.duke.ece651.team7.shared.TechResource;
 import edu.duke.ece651.team7.shared.Territory;
 import edu.duke.ece651.team7.shared.Unit;
 
@@ -17,11 +19,14 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
      * @param checker the rule checker of order, checker whether the order is valid
      * @param map the gamemap
      * @param combatPool stores the requested combats
+     * @param researchPool stores the requested ReseachOrder's issuers
+     * @param costVisitor Used to calculate resource cost of different order types
      * 
      */
     private OrderRuleChecker checker;
     private GameMap map;
     private List<Combat> combatPool;
+    private List<Player> researchPool;
     private OrderCostVisitor costVisitor;
     // private final PrintStream out;
 
@@ -32,6 +37,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     public OrderExecuteVisitor(GameMap map){
         this.map = map;
         this.combatPool = new ArrayList<Combat>();
+        this.researchPool = new ArrayList<Player>();
         this.costVisitor = new OrderCostVisitor(map);
         // this.out = out;
         checker = new CostChecker(checker, costVisitor);
@@ -80,20 +86,46 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     }
 
     /**
-     * resolve all combats saved in combatPool and add one unit to each territory
+     * resolve all combats saved in combatPool
      */
-    public void doAllCombats(){
+    protected void doAllCombats(){
         for(Combat c : combatPool){
             c.resolveCombat();
-        }
-        for(Territory t: map.getTerritories()){
-            t.addUnits(new Unit());
         }
         combatPool.clear();
     }
 
     /**
+     * resolve all research order saved in researchPool
+     */
+    protected void doAllResearch(){
+        for(Player p: researchPool){
+            p.upgradeMaxLevel();
+        }
+        researchPool.clear();
+    }
+
+    /**
+     * when all users committed, finish current Round
+     * 1. resolving all the combats results
+     * 2. finish the research order by upgrading user level in the research pool
+     * 3. add onw basic unit to each territory
+     */
+    public void resolveOneRound(){
+        doAllCombats();
+        doAllResearch();
+        for(Territory t: map.getTerritories()){
+            t.addUnits(new Unit());
+        }
+    }
+   
+
+    /**
+     * check the validity of the move order then execute it
      * 
+     * @param order the MoveOrder to be executed
+     * @return null if success
+     * @throws IllegalArgumentException if the order is not valid
      */
     @Override
     public String visit(MoveOrder order) {
@@ -113,6 +145,13 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     }
 
 
+    /**
+     * check the validity of the AttackOrder, if it is valid, push it to the combat pool
+     * 
+     * @param order the AttackOrder to be executed
+     * @return null if success
+     * @throws IllegalArgumentException if the order is not valid
+     */
     @Override
     public String visit(AttackOrder order) {
         String err = checker.checkOrderValidity(map, order);
@@ -126,15 +165,26 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         }
     }
 
+    /**
+     * check the validity of the ResearchOrder, if it is valid, push it to the Research pool
+     * 
+     * @param order the ResearchOrder to be executed
+     * @return null if success
+     * @throws IllegalArgumentException if the order is not valid
+     */
     @Override
     public String visit(ResearchOrder order) {
         String err = checker.checkOrderValidity(map, order);
         if(err == null){
+            if(researchPool.contains(order.issuer)){
+                throw new IllegalArgumentException("You can only issue one Research Order per turn");
+            }
             Resource tech = order.accept(costVisitor);
-            order.issuer.getTech().consumeResource(tech.getAmount());
+            order.issuer.getTech().consumeResource((TechResource) tech);
+            researchPool.add(order.issuer);
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
-            order.issuer.upgradeMaxLevel();
+            // order.issuer.upgradeMaxLevel();
             return null;
         }else{
             throw new IllegalArgumentException(err);
@@ -143,6 +193,13 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         
     }
 
+    /**
+     * check the validity of the UpgradeOrder then execute it
+     * 
+     * @param order the UpgradeOrder to be executed
+     * @return null if success
+     * @throws IllegalArgumentException if the order is not valid
+     */
     @Override
     public String visit(UpgradeOrder order) {
         String err = checker.checkOrderValidity(map, order);

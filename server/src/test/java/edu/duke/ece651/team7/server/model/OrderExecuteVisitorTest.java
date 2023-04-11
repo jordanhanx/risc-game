@@ -78,23 +78,34 @@ public class OrderExecuteVisitorTest {
         ResearchOrder r1 = new ResearchOrder(p1);
         assertEquals(Level.INFANTRY, p1.getCurrentMaxLevel());
         r1.accept(ox);
+        assertThrows(IllegalArgumentException.class, ()->r1.accept(ox));
+        ox.doAllResearch();
         assertEquals(Level.CAVALRY, p1.getCurrentMaxLevel());
         assertEquals(980, p1.getTech().getAmount());
 
         r1.accept(ox);
+        assertEquals(Level.CAVALRY, p1.getCurrentMaxLevel());
+        ox.doAllResearch();
         assertEquals(Level.TROOPER, p1.getCurrentMaxLevel());
         assertEquals(940, p1.getTech().getAmount());
 
         r1.accept(ox);
+        assertEquals(Level.TROOPER, p1.getCurrentMaxLevel());
+        ox.doAllResearch();
         assertEquals(Level.ARTILLERY, p1.getCurrentMaxLevel());
         assertEquals(860, p1.getTech().getAmount());
 
 
         r1.accept(ox);
+        ox.doAllResearch();
         assertEquals(Level.AIRFORCE, p1.getCurrentMaxLevel());
         assertEquals(700, p1.getTech().getAmount());
 
         r1.accept(ox);
+        assertEquals(Level.AIRFORCE, p1.getCurrentMaxLevel());
+        assertEquals(380, p1.getTech().getAmount());
+
+        ox.doAllResearch();
         assertEquals(Level.ULTRON, p1.getCurrentMaxLevel());
         assertEquals(380, p1.getTech().getAmount());
 
@@ -138,6 +149,7 @@ public class OrderExecuteVisitorTest {
         ResearchOrder r1 = new ResearchOrder(p1);
         tech1 -= r1.accept(oc).getAmount();
         r1.accept(ox);
+        ox.doAllResearch();
         assertEquals(tech1, p1.getTech().getAmount());
 
         u3.accept(ox);
@@ -245,6 +257,46 @@ public class OrderExecuteVisitorTest {
     }
 
     @Test
+    public void test_doAllResearch(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        p1.getTech().addResource(1000);
+        p2.getTech().addResource(1000);
+        p3.getTech().addResource(1000);
+
+        ResearchOrder r1 = new ResearchOrder(p1);
+        ResearchOrder r2 = new ResearchOrder(p2);
+        ResearchOrder r3 = new ResearchOrder(p3);
+        r1.accept(ox);
+        r2.accept(ox);
+        r3.accept(ox);
+        ox.doAllResearch();
+        assertEquals(Level.CAVALRY, p1.getCurrentMaxLevel());
+        assertEquals(980, p1.getTech().getAmount());
+        assertEquals(Level.CAVALRY, p2.getCurrentMaxLevel());
+        assertEquals(980, p2.getTech().getAmount());
+        assertEquals(Level.CAVALRY, p3.getCurrentMaxLevel());
+        assertEquals(980, p3.getTech().getAmount());
+        r1.accept(ox);
+        r2.accept(ox);
+        r3.accept(ox);
+        ox.doAllResearch();
+        assertEquals(Level.TROOPER, p1.getCurrentMaxLevel());
+        assertEquals(940, p1.getTech().getAmount());
+        assertEquals(Level.TROOPER, p2.getCurrentMaxLevel());
+        assertEquals(940, p2.getTech().getAmount());
+        assertEquals(Level.TROOPER, p3.getCurrentMaxLevel());
+        assertEquals(940, p3.getTech().getAmount());
+
+
+
+    }
+
+    @Test
     public void test_doAllCombat(){
 
         GameMap map = makeGameMap();
@@ -298,10 +350,22 @@ public class OrderExecuteVisitorTest {
         // System.out.println(map.getTerritoryByName("Mordor").getOwner().getName());
         assertNull(ox.isInCombatPool(m4.dest));
         // assertNull(ox.isInCombatPool(m6.getDest()));
-        assertEquals(11, map.getTerritoryByName("Hogwarts").getUnitsNumber());
-        assertEquals(1, map.getTerritoryByName("Midkemia").getUnitsNumber());
-        assertEquals(8, map.getTerritoryByName("Elantris").getUnitsNumber());
+        assertEquals(10, map.getTerritoryByName("Hogwarts").getUnitsNumber());
+        assertEquals(0, map.getTerritoryByName("Midkemia").getUnitsNumber());
+        assertEquals(7, map.getTerritoryByName("Elantris").getUnitsNumber());
     }
     
+    @Test
+    public void test_resolveOneRound(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        // Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        // Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        // Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        ox.resolveOneRound();
+        assertEquals(11, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CIVILIAN));
+        assertEquals(11, map.getTerritoryByName("Elantris").getUnitsNumber());
+        assertEquals(11, map.getTerritoryByName("Gondor").getUnitsNumber());
+    }
     
 }
