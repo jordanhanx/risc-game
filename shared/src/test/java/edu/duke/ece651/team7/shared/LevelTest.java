@@ -30,6 +30,8 @@ public class LevelTest {
         assertEquals(l1, l2);
         assertEquals(l1, l3);
         assertEquals(l2, l3);
+        assertEquals(l1, l1);
+        assertTrue(l1==l2);
         assertTrue(l4.compareTo(l1) > 0);
         assertTrue(l1.compareTo(l4) < 0);
         assertTrue(l5.compareTo(l4) > 0);

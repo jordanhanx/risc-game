@@ -73,6 +73,14 @@ public class PlayerTest {
     }
 
     @Test
+    public void test_getCurrentMaxLevel(){
+        Player p = new Player("test", Level.AIRFORCE);
+        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+
+        Player p1 = new Player("test");
+        assertEquals(Level.INFANTRY, p1.getCurrentMaxLevel());
+    }
+    @Test
     public void test_isLose() {
         Player p = new Player("test");
         assertTrue(p.isLose());
@@ -81,6 +89,57 @@ public class PlayerTest {
         assertFalse(p.isLose());
         assertDoesNotThrow(() -> p.removeTerritory(tA));
         assertTrue(p.isLose());
+    }
+
+    @Test
+    public void test_upgradeMaxLevel(){
+        Player p = new Player("test", Level.AIRFORCE);
+        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+        p.upgradeMaxLevel();
+        assertEquals(Level.ULTRON, p.getCurrentMaxLevel());
+
+        assertThrows(IllegalArgumentException.class, ()->p.upgradeMaxLevel());
+    }
+
+    @Test
+    public void test_getResource(){
+        Player p = new Player("test", Level.AIRFORCE);
+        assertEquals(0,p.getFood().getAmount());
+        assertEquals(0,p.getTech().getAmount());
+        p.getFood().addResource(10);
+        p.getTech().addResource(10);
+        assertEquals(10,p.getFood().getAmount());
+        assertEquals(10,p.getTech().getAmount());
+    }
+
+    @Test
+    public void test_collectResource(){
+        Territory t1 = mock(Territory.class);
+        Territory t2 = mock(Territory.class);
+        Territory t3 = mock(Territory.class);
+        when(t1.produceFood()).thenReturn(new FoodResource(3));
+        when(t2.produceFood()).thenReturn(new FoodResource(4));
+        when(t3.produceFood()).thenReturn(new FoodResource(5));
+
+        when(t1.produceTech()).thenReturn(new TechResource(3));
+        when(t2.produceTech()).thenReturn(new TechResource(4));
+        when(t3.produceTech()).thenReturn(new TechResource(5));
+
+        Player p = new Player("test", Level.AIRFORCE);
+        p.addTerritory(t1);
+        p.addTerritory(t2);
+        p.addTerritory(t3);
+        assertEquals(0,p.getFood().getAmount());
+        assertEquals(0,p.getTech().getAmount());
+
+        p.collectResource();
+        assertEquals(12,p.getFood().getAmount());
+        assertEquals(12,p.getTech().getAmount());
+    }
+
+
+    @Test
+    public void test_getTech(){
     }
 
     @Test

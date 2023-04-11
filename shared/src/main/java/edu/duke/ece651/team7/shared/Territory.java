@@ -23,26 +23,11 @@ public class Territory implements Serializable {
    * @param name name of territory
    */
   public Territory(String name) {
-    this.name = name;
-    this.owner = null;
-    this.units = new ArrayList<Unit>();
-    this.foodProductionRate = 1;
-    this.techProductionRate = 1;
-
+    this(name, 0, 1,1);
   }
 
   public Territory(String name, int numUnits){
-    this.name = name;
-    this.owner = null;
-    if (numUnits < 0) {
-      throw new IllegalArgumentException("units cannot be less than 0");
-    }
-    this.units = new ArrayList<Unit>();
-    for(int i = 0; i < numUnits; i++){
-      this.units.add(new Unit());
-    }
-    this.foodProductionRate = 1;
-    this.techProductionRate = 1;
+    this(name, numUnits, 1, 1);
   }
 
   public Territory(String name, int numUnits, int foodProductionRate, int techProductionRate){
@@ -66,17 +51,8 @@ public class Territory implements Serializable {
    * @param units number of player's units present in territory
    */
   public Territory(String name, Player owner, int numUnits) {
-    this.name = name;
+    this(name, numUnits, 1,1);
     this.owner = owner;
-    if (numUnits < 0) {
-      throw new IllegalArgumentException("units cannot be less than 0");
-    }
-    this.units = new ArrayList<Unit>();
-    for(int i = 0; i < numUnits; i++){
-      this.units.add(new Unit());
-    }
-    this.foodProductionRate = 1;
-    this.techProductionRate = 1;
   }
 
   public String getName() {
@@ -180,24 +156,31 @@ public class Territory implements Serializable {
     return tomove;
   }
 
-  public int produceFood(){
-    return foodProductionRate;
+  public FoodResource produceFood(){
+    return new FoodResource(foodProductionRate);
   }
 
-  public int produceTech(){
-    return techProductionRate;
+  public TechResource produceTech(){
+    return new TechResource(techProductionRate);
   }
 
   public void upgradeUnits(Level from, Level to, int num){
+    ArrayList<Unit> toupgrade = new ArrayList<>();
     for(int i = 0; i < units.size(); i++){
       if(units.get(i).getLevel() == from){
-        units.get(i).upgrade(to);
-        // units.remove(units.get(i));
+        // units.get(i).upgrade(to);
+        toupgrade.add(units.get(i));
         num--;
         if(num == 0){
           break;
         }
       }
+    }
+    if(num > 0){
+      throw new IllegalArgumentException("No enough unit of level " + from);
+    }
+    for(Unit u: toupgrade){
+      u.upgrade(to);
     }
   }
   

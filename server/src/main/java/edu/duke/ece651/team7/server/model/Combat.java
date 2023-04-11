@@ -93,7 +93,7 @@ public class Combat {
     /**
      * Push an atttack into the order
      * @param p     player that issues the attack
-     * @param units number of units used to attack
+     * @param units collection of units used to attack
      */
     public void pushAttack(Player p, Collection<Unit> units){
         if(!participants.contains(p)){
@@ -132,6 +132,7 @@ public class Combat {
         return false;
     }
 
+    
     /**
      * Execute one unit combat between two Player
      * 
@@ -142,12 +143,12 @@ public class Combat {
      */
     protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
         //if the player does not have any units combating, return 
-        if(attackPool.get(attacker).size() == 0 ){
-            return false;
-        }
-        if(attackPool.get(defender).size() == 0 ){
-            return true;
-        }
+        // if(attackPool.get(attacker).size() == 0 ){
+        //     return false;
+        // }
+        // if(attackPool.get(defender).size() == 0 ){
+        //     return true;
+        // }
 
         Dice attackD = new Dice(20);
         Dice defenseD = new Dice(20);
@@ -280,7 +281,7 @@ public class Combat {
                 battleField.setOwner(participants.get(0));
                 participants.get(0).addTerritory(battleField);
                 battleField.addUnits(attackPool.get(participants.get(0)));
-                System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnits()+") is: " + participants.get(0).getName());
+                System.out.println("Winner of Combat in " +battleField.getName() + " (" + battleField.getUnitsNumber()+") is: " + participants.get(0).getName());
 
                 //for testing
                 return participants.get(0);

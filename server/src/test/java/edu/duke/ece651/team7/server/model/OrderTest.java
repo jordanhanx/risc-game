@@ -98,5 +98,14 @@ public class OrderTest {
         assertFalse(u1.equals(u2));
         assertTrue(u2.equals(u3));
         assertFalse(a1.equals(u3));
+
+        Order r1 = new ResearchOrder(p1);
+        Order r2 = new ResearchOrder(p2);
+        Order r3 = new ResearchOrder(p1);
+        assertEquals(ResearchOrder.class, r1.getClass());
+        assertFalse(r3.equals(null));
+        assertFalse(r1.equals(r2));
+        assertTrue(r1.equals(r3));
+        assertFalse(r1.equals(u3));
     }
 }

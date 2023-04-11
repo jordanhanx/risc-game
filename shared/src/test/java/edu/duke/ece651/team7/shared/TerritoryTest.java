@@ -29,6 +29,11 @@ public class TerritoryTest {
     assertEquals(p, t2.getOwner());
 
     assertThrows(IllegalArgumentException.class, () -> new Territory("", p, -1));
+
+    Territory t3 = new Territory("test3", 10);
+    assertEquals("test3", t3.getName());
+    assertEquals(10, t3.getUnitsNumber());
+    assertEquals(null, t3.getOwner());
   }
 
   @Test
@@ -51,10 +56,6 @@ public class TerritoryTest {
     units.add(new Unit());
     t.setUnits(units);
     assertEquals(5, t.getUnitsNumber());
-
-    // assertThrows(IllegalArgumentException.class, () -> t.setUnits(-1));
-    // assertDoesNotThrow(() -> t.setUnits(0));
-
   }
 
   @Test
@@ -71,6 +72,8 @@ public class TerritoryTest {
     t.addUnits(units);
     assertEquals(5, t.getUnitsNumber());
     assertTrue(t.getUnits().contains(u1));
+    assertThrows(IllegalArgumentException.class, ()->t.addUnits(u1));
+    assertThrows(IllegalArgumentException.class, ()->t.addUnits(units));
   }
 
 
@@ -120,6 +123,27 @@ public class TerritoryTest {
   }
 
 
+  @Test
+  public void test_upgradeUnits(){
+    Territory t = new Territory("test",10);
+    t.upgradeUnits(Level.CIVILIAN, Level.INFANTRY, 4);
+    assertEquals(4, t.getUnitsNumberByLevel(Level.INFANTRY));
+    assertEquals(6, t.getUnitsNumberByLevel(Level.CIVILIAN));
+
+    t.upgradeUnits(Level.INFANTRY, Level.ULTRON, 3);
+    assertEquals(1, t.getUnitsNumberByLevel(Level.INFANTRY));
+    assertEquals(6, t.getUnitsNumberByLevel(Level.CIVILIAN));
+    assertEquals(3, t.getUnitsNumberByLevel(Level.ULTRON));
+
+    assertThrows(IllegalArgumentException.class,()->t.upgradeUnits(Level.CIVILIAN, Level.INFANTRY, 20));
+  }
+
+  @Test
+  public void test_produceResource(){
+    Territory t = new Territory("test",10, 3, 3);
+    assertEquals(3, t.produceFood().getAmount());
+    assertEquals(3, t.produceTech().getAmount());
+  }
   // @Test
   // public void test_increaseUnits() {
   //   Territory t = new Territory("test");

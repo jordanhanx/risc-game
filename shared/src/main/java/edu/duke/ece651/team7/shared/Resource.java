@@ -3,10 +3,13 @@ package edu.duke.ece651.team7.shared;
 import java.io.Serializable;
 
 
-public abstract class Resource implements Serializable, Comparable<Resource>{
-    private int amount;
+public abstract class Resource implements Serializable{
+    protected int amount;
 
     public Resource(int a){
+        if(a < 0){
+            throw new IllegalArgumentException("Resource Error: cannot initialize negative amount of resource");
+        }
         amount = a;
     }
 
@@ -20,33 +23,25 @@ public abstract class Resource implements Serializable, Comparable<Resource>{
      * @param v amount of resource to add
      */
     public void addResource(int value){ 
+        if(value <= 0){
+            throw new IllegalArgumentException("Resource Error: cannnot add negative amount of resource");
+        }
         amount += value;
     }
-
     /**
      * 
      * @param v the amount of resource to consume
      * @return null if success, else error message
      */
-    public String comsumeResoure(int value){
-        if(amount - value< 0){
-            return "Resource Error: no enough resource";
+    public void consumeResource(int value){
+        if (value < 0){
+            throw new IllegalArgumentException("Resource Error: cannot consume negative amount of resource");
+        }
+        else if(amount - value< 0){
+            throw new IllegalArgumentException("Resource Error: no enough resource");
         }
         else{
             amount -= value;
-            return null;
         }
     }
-
-    @Override
-    public int compareTo(Resource re) {
-        if(amount > re.amount){
-            return 1;
-        }else if(amount == re.amount){
-            return 0;
-        }else{
-            return -1;
-        }
-    }
-
 }

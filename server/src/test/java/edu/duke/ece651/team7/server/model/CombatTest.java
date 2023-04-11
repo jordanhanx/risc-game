@@ -189,6 +189,18 @@ public class CombatTest {
 
     }
 
+    // @Test
+    // public void test_doOneUnitCombat(){
+    //     Player groupA = mock(Player.class);
+    //     Player groupB = mock(Player.class);
+    //     Player groupC = mock(Player.class);
+    //     Territory tScadrial = mock(Territory.class);
+
+    //     Combat combat = new Combat(tScadrial);
+    //     combat.pushAttack(groupA, null);
+    //     combat.doOneUnitCombat(groupB, null, groupC, null);
+
+    // }
     @Test
     public void test_doOneTurnCombat(){
         Player groupA = mock(Player.class);
@@ -204,8 +216,8 @@ public class CombatTest {
         // AIRFORCE(5), 
         // ULTRON(6);
 
-        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER), new Unit(Level.AIRFORCE), new Unit(Level.AIRFORCE)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER), new Unit(Level.AIRFORCE), new Unit(Level.AIRFORCE)));
 
 
         Combat combat = new Combat(tScadrial);

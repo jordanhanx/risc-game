@@ -322,6 +322,16 @@ public class GameMapTest {
     assertEquals(14 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Scadrial")));
   }
 
+  @Test
+  public void test_getCostBetween(){
+    MapFactory mf = new GUIMapFactory();
+    GameMap map = mf.createPlayerMap(2);
+
+    assertEquals(6,map.getCostBetween(map.getTerritoryByName("Hogwarts"), map.getTerritoryByName("Gondor")));
+
+  }
+
+
 
 
 
