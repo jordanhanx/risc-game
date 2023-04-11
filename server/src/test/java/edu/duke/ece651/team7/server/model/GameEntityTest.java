@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,8 @@ public class GameEntityTest {
     private Map<String, Player> playerMap = new HashMap<>();
     @Spy
     private Map<String, RemoteClient> clientMap = new HashMap<>();
-    @Spy
-    private Map<String, Boolean> commitMap = new HashMap<>();
+    @Mock
+    private Set<String> commitSet = new HashSet<>();
     @Mock
     private CountDownLatch commitSignal;
 
@@ -79,34 +80,10 @@ public class GameEntityTest {
     public void test_addUser() {
         assertDoesNotThrow(() -> testgame.addUser("player1"));
         assertEquals(1, playerMap.size());
-        assertEquals(1, commitMap.size());
-        assertEquals(false, commitMap.get("player1"));
         assertThrows(IllegalStateException.class, () -> testgame.addUser("player1"));
         assertDoesNotThrow(() -> testgame.addUser("player2"));
         assertEquals(2, playerMap.size());
-        assertEquals(2, commitMap.size());
-        assertEquals(false, commitMap.get("player2"));
         assertThrows(IllegalStateException.class, () -> testgame.addUser("player3"));
-    }
-
-    @Test
-    public void test_resetCommitMap() {
-        Player pBlue = mock(Player.class);
-        Player pGreen = mock(Player.class);
-        playerMap.put("Blue", pBlue);
-        playerMap.put("Green", pGreen);
-        commitMap.put("Blue", true);
-        commitMap.put("Green", true);
-        when(pBlue.isLose()).thenReturn(false);
-        when(pGreen.isLose()).thenReturn(true);
-        assertDoesNotThrow(() -> testgame.resetCommitMap(false));
-        assertEquals(2, commitMap.size());
-        assertFalse(commitMap.get("Blue"));
-        assertFalse(commitMap.get("Green"));
-        assertDoesNotThrow(() -> testgame.resetCommitMap(true));
-        assertEquals(1, commitMap.size());
-        assertFalse(commitMap.get("Blue"));
-        assertNull(commitMap.get("Green"));
     }
 
     @Test
@@ -119,7 +96,7 @@ public class GameEntityTest {
         RemoteClient cGreen = mock(RemoteClient.class);
         clientMap.put("Blue", cBlue);
         clientMap.put("Green", cGreen);
-        when(pBlue.isLose()).thenReturn(false, true);
+        when(pBlue.isLose()).thenReturn(false, false, true);
         when(pGreen.isLose()).thenReturn(false);
 
         assertDoesNotThrow(() -> testgame.start());
@@ -153,14 +130,10 @@ public class GameEntityTest {
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
-        commitMap.put("Red", true);
         doNothing().when(gameMap).assignGroup("GroupA", pBlue);
         doThrow(new IllegalArgumentException("GroupA has been Occupied")).when(gameMap).assignGroup("GroupA", pGreen);
         assertEquals(null, testgame.tryPickTerritoryGroupByName("Blue", "GroupA"));
         assertEquals("GroupA has been Occupied", testgame.tryPickTerritoryGroupByName("Green", "GroupA"));
-        assertEquals("Please wait for other players to commit", testgame.tryPickTerritoryGroupByName("Red", "GroupB"));
     }
 
     @Test
@@ -169,9 +142,6 @@ public class GameEntityTest {
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         when(gameMap.getTerritoryByName("404NotFound"))
@@ -188,19 +158,17 @@ public class GameEntityTest {
         assertEquals(null, testgame.tryPlaceUnitsOn("Blue", "Mordor", 5));
         assertEquals("Too many units", testgame.tryPlaceUnitsOn("Blue", "Mordor", 1));
         assertEquals("Permission denied", testgame.tryPlaceUnitsOn("Blue", "Hogwarts", 5));
-        assertEquals("Please wait for other players to commit", testgame.tryPlaceUnitsOn("Red", "Hogwarts", 1));
     }
 
     @Test
     public void test_tryMoveOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
         when(ox.visit(any(MoveOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
-
+        when(commitSet.contains("Blue")).thenReturn(false);
+        when(commitSet.contains("Red")).thenReturn(true);
         // Test
         assertEquals(null, testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
         assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
@@ -215,16 +183,14 @@ public class GameEntityTest {
 
     @Test
     public void test_tryAttackOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
         when(ox.visit(any(AttackOrder.class))).thenReturn(null)
                 .thenThrow(new IllegalArgumentException("Invalid Input:"));
-        // doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(ox)
-        // .pushCombat(any(AttackOrder.class));
+        when(commitSet.contains("Blue")).thenReturn(false);
+        when(commitSet.contains("Red")).thenReturn(true);
         // Test
         assertEquals(null, testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
         assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
@@ -238,12 +204,13 @@ public class GameEntityTest {
 
     @Test
     public void test_tryUpgradeOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
+
         Territory tMordor = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(ox.visit(any(UpgradeOrder.class))).thenReturn(null)
                 .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        when(commitSet.contains("Blue")).thenReturn(false);
+        when(commitSet.contains("Red")).thenReturn(true);
         assertEquals(null, testgame.tryUpgradeOrder("Blue", "Mordor", 0, 1, 5));
         assertEquals("Invalid Input:", testgame.tryUpgradeOrder("Blue", "Mordor", 0, 1, 5));
         assertEquals("Please wait for other players to commit",
@@ -253,10 +220,10 @@ public class GameEntityTest {
 
     @Test
     public void test_tryResearchOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
         when(ox.visit(any(ResearchOrder.class))).thenReturn(null)
                 .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        when(commitSet.contains("Blue")).thenReturn(false);
+        when(commitSet.contains("Red")).thenReturn(true);
         assertEquals(null, testgame.tryResearchOrder("Blue"));
         assertEquals("Invalid Input:", testgame.tryResearchOrder("Blue"));
         assertEquals("Please wait for other players to commit",
@@ -270,10 +237,9 @@ public class GameEntityTest {
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
         when(pBlue.isLose()).thenReturn(false);
         when(pGreen.isLose()).thenReturn(true);
+        when(commitSet.contains("Blue")).thenReturn(false, true);
         // Test
         assertEquals(null, testgame.doCommitOrder("Blue"));
         assertEquals("Please wait for other players to commit", testgame.doCommitOrder("Blue"));
@@ -282,6 +248,9 @@ public class GameEntityTest {
         // Verify
         verify(commitSignal, times(1)).countDown();
         verify(commitSignal, never()).await();
+        verify(commitSet, times(2)).contains("Blue");
+        verify(commitSet, never()).contains("Green");
+        verify(commitSet, times(1)).add("Blue");
     }
 
     @Test
