@@ -7,6 +7,7 @@ import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,6 +189,19 @@ public class OrderExecuteVisitorTest {
 
         MoveOrder m3 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 0);
         assertThrows(IllegalArgumentException.class, () -> m3.accept(ox));
+
+        map.getTerritoryByName("Roshar").upgradeUnits(Level.CIVILIAN, Level.TROOPER, 4);
+        
+        MoveOrder m4 = new MoveOrder(p2,map.getTerritoryByName("Roshar"),map.getTerritoryByName("Elantris"), Level.TROOPER, 3,Level.CIVILIAN,5);
+        m4.accept(ox);
+        assertEquals(1, map.getTerritoryByName("Roshar").getUnitsNumberByLevel(Level.CIVILIAN));
+        assertEquals(1, map.getTerritoryByName("Roshar").getUnitsNumberByLevel(Level.TROOPER));
+        assertEquals(2, map.getTerritoryByName("Roshar").getUnitsNumber());
+
+        assertEquals(18, map.getTerritoryByName("Elantris").getUnitsNumber());
+        assertEquals(15, map.getTerritoryByName("Elantris").getUnitsNumberByLevel(Level.CIVILIAN));
+        assertEquals(3, map.getTerritoryByName("Elantris").getUnitsNumberByLevel(Level.TROOPER));
+
     };
 
 
@@ -301,7 +315,7 @@ public class OrderExecuteVisitorTest {
 
         GameMap map = makeGameMap();
         OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
-        OrderCostVisitor oc = new OrderCostVisitor(map);
+        // OrderCostVisitor oc = new OrderCostVisitor(map);
         Player p1 = map.getTerritoryByName("Narnia").getOwner();
         Player p2 = map.getTerritoryByName("Elantris").getOwner();
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
