@@ -29,7 +29,7 @@ public class OrderUpgradeController implements Initializable {
     }
 
     @FXML
-    private ChoiceBox<String> terrSelector, srcLevSelectoir, destLevSelectoir;
+    private ChoiceBox<String> terrSelector, srcLevSelector, destLevSelector;
 
     @FXML
     private TextField numInputer;
@@ -51,16 +51,16 @@ public class OrderUpgradeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         terrSelector.setItems(terrList);
-        srcLevSelectoir.setItems(levList);
-        destLevSelectoir.setItems(levList);
+        srcLevSelector.setItems(levList);
+        destLevSelector.setItems(levList);
     }
 
     @FXML
     public void clickOnUpgrade(ActionEvent action) throws RemoteException {
         String response = server.tryUpgradeOrder(UserSession.getInstance().getUsername(),
                 terrSelector.getSelectionModel().getSelectedItem(),
-                Integer.parseInt(srcLevSelectoir.getSelectionModel().getSelectedItem()),
-                Integer.parseInt(destLevSelectoir.getSelectionModel().getSelectedItem()),
+                Integer.parseInt(srcLevSelector.getSelectionModel().getSelectedItem()),
+                Integer.parseInt(destLevSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
         if (response != null) {
             throw new IllegalArgumentException(response);
