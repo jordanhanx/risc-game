@@ -98,7 +98,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             setCountDownLatch(countNotLostPlayers()); // reset countDownLatch
             ox.resolveOneRound();
             if (countNotLostPlayers() != 1) {
-                notifyGameMapToClients(); // send game status to all clients
+                notifyUpdatesToClients(); // send game status to all clients
             } else {
                 notifyWinnerToClients(); // send game result to all clients
                 UnicastRemoteObject.unexportObject(this, true); // close this game
@@ -331,11 +331,12 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     /**
      * Notifies clients who have lost the game to switch to watcher mode using RMI.
      */
-    void notifyGameMapToClients() {
+    void notifyUpdatesToClients() {
         for (Map.Entry<String, RemoteClient> pair : clientMap.entrySet()) {
             try {
                 pair.getValue().updateGameMap(gameMap);
                 pair.getValue().updatePlayer(playerMap.get(pair.getKey()));
+                pair.getValue().showPopupWindow("Next turn");
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored

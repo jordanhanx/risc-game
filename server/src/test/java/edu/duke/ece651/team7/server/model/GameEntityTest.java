@@ -292,7 +292,7 @@ public class GameEntityTest {
     }
 
     @Test
-    public void test_notifyGameMapToClients() throws RemoteException {
+    public void test_notifyUpdatesToClients() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -303,10 +303,14 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).updateGameMap(gameMap);
         // Test
-        assertDoesNotThrow(() -> testgame.notifyGameMapToClients());
+        assertDoesNotThrow(() -> testgame.notifyUpdatesToClients());
         // Verify
         verify(cBlue, times(1)).updateGameMap(gameMap);
         verify(cGreen, times(1)).updateGameMap(gameMap);
+        verify(cBlue, times(1)).updatePlayer(pBlue);
+        verify(cGreen, never()).updatePlayer(pGreen);
+        verify(cBlue, times(1)).showPopupWindow(anyString());
+        verify(cGreen, never()).showPopupWindow(anyString());
     }
 
     @Test
