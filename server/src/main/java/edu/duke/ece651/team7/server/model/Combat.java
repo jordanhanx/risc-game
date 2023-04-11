@@ -132,6 +132,7 @@ public class Combat {
         return false;
     }
 
+    
     /**
      * Execute one unit combat between two Player
      * 
@@ -142,12 +143,12 @@ public class Combat {
      */
     protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
         //if the player does not have any units combating, return 
-        if(attackPool.get(attacker).size() == 0 ){
-            return false;
-        }
-        if(attackPool.get(defender).size() == 0 ){
-            return true;
-        }
+        // if(attackPool.get(attacker).size() == 0 ){
+        //     return false;
+        // }
+        // if(attackPool.get(defender).size() == 0 ){
+        //     return true;
+        // }
 
         Dice attackD = new Dice(20);
         Dice defenseD = new Dice(20);

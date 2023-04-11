@@ -190,6 +190,19 @@ public class CombatTest {
     }
 
     @Test
+    public void test_doOneUnitCombat(){
+        Player groupA = mock(Player.class);
+        Player groupB = mock(Player.class);
+        Player groupC = mock(Player.class);
+        Territory tScadrial = mock(Territory.class);
+
+        Combat combat = new Combat(tScadrial);
+        combat.pushAttack(groupA, null);
+        combat.doOneUnitCombat(groupB, null, groupC, null);
+        
+
+    }
+    @Test
     public void test_doOneTurnCombat(){
         Player groupA = mock(Player.class);
         Player groupB = mock(Player.class);
