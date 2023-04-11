@@ -31,10 +31,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     private GameMap gameMap;
     private OrderExecuteVisitor ox;
     private Map<String, Player> playerMap;
+    private Map<String, GamePhase> phaseMap;
     private Map<String, RemoteClient> clientMap;
     private Set<String> commitSet;
     private CountDownLatch commitSignal;
-    protected GamePhase phase;
 
     /**
      * Constructor for GameEntity class.
@@ -62,15 +62,11 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         this.gameMap = new TextMapFactory().createPlayerMap(capacity);
         this.ox = new OrderExecuteVisitor(gameMap);
         this.playerMap = new HashMap<>();
+        this.phaseMap = new HashMap<>();
         this.clientMap = new HashMap<>();
         this.commitSet = new HashSet<>();
-        setGamePhase(GamePhase.PICK_GROUP);
         setCountDownLatch(capacity);
         logger.info(name + " is ready");
-    }
-
-    public void setGamePhase(GamePhase phase) {
-        this.phase = phase;
     }
 
     /**
@@ -93,15 +89,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
      * @throws InterruptedException if the thread is interrupted while waiting
      */
     public void start() throws RemoteException, InterruptedException {
-        /* Pick Group Phase */
-        commitSignal.await(); // waits for all players picking groups of territories
-        setCountDownLatch(capacity); // reset countDownLatch
-        /* Place Units Phase */
-        setGamePhase(GamePhase.PLACE_UNITS);
+        /* Pick Group & Place Units Phase */
         commitSignal.await(); // waits for all players placing their initial units
         setCountDownLatch(capacity); // reset countDownLatch
         /* Game Start Phase */
-        setGamePhase(GamePhase.PLAY_GAME);
         notifyGameMapToClients(); // send game status to all clients
         while (true) {
             commitSignal.await();
@@ -161,6 +152,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             throw new IllegalStateException("The Game:" + name + " is already full");
         } else {
             playerMap.put(username, new Player(username));
+            phaseMap.put(username, RemoteGame.GamePhase.PICK_GROUP);
         }
     }
 
@@ -175,8 +167,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized GamePhase getGamePhase() throws RemoteException {
-        return phase;
+    public synchronized GamePhase getGamePhase(String username) throws RemoteException {
+        return phaseMap.get(username);
     }
 
     @Override
@@ -194,6 +186,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         String response = null;
         try {
             gameMap.assignGroup(groupName, playerMap.get(username));
+            phaseMap.put(username, RemoteGame.GamePhase.PLACE_UNITS);
             response = null;
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -305,6 +298,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         } else {
             commitSignal.countDown();
             commitSet.add(username);
+            phaseMap.put(username, RemoteGame.GamePhase.PLAY_GAME);
         }
         return response;
     }

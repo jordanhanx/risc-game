@@ -13,7 +13,7 @@ public interface RemoteGame extends Remote {
                 PICK_GROUP, PLACE_UNITS, PLAY_GAME
         }
 
-        public GamePhase getGamePhase() throws RemoteException;
+        public GamePhase getGamePhase(String username) throws RemoteException;
 
         public int getGameInitUnits() throws RemoteException;
 

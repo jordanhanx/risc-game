@@ -107,7 +107,7 @@ public class GameLobbyController implements Initializable {
         int port = myGamesTable.getSelectionModel().getSelectedItem().getPort();
         String gamename = myGamesTable.getSelectionModel().getSelectedItem().getName();
         RemoteGame server = (RemoteGame) LocateRegistry.getRegistry(host, port).lookup(gamename);
-        RemoteGame.GamePhase phase = server.getGamePhase();
+        RemoteGame.GamePhase phase = server.getGamePhase(UserSession.getInstance().getUsername());
         Scene newScene = null;
         if (phase == RemoteGame.GamePhase.PICK_GROUP) {
             newScene = PickGroupController.getScene(server);
