@@ -22,7 +22,7 @@ import edu.duke.ece651.team7.shared.*;
 public class PickGroupController implements Initializable {
 
     public static Scene getScene(RemoteGame server) throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/pick-group-page.fxml");
+        URL xmlResource = PickGroupController.class.getResource("/fxml/pick-group-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new PickGroupController(server));
         return new Scene(loader.load(), 669, 457);

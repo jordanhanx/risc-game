@@ -38,14 +38,14 @@ public class LoginSignupController {
     @FXML
     public void clickOnLogin(ActionEvent event) throws IOException {
         doLogin("http://localhost:8080/api/login");
-        gotoHomePage();
+        loadGameLobbyPage();
     }
 
     @FXML
     public void clickOnSignup(ActionEvent event) throws IOException {
         doSignup("http://localhost:8080/api/signup");
         doLogin("http://localhost:8080/api/login");
-        gotoHomePage();
+        loadGameLobbyPage();
     }
 
     public void doLogin(String url) {
@@ -84,8 +84,8 @@ public class LoginSignupController {
         return restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
     }
 
-    public void gotoHomePage() throws IOException {
-        Scene newScene = HomePageController.getScene();
+    public void loadGameLobbyPage() throws IOException {
+        Scene newScene = GameLobbyController.getScene();
         Stage primaryStage = (Stage) username.getScene().getWindow();
         primaryStage.setScene(newScene);
         primaryStage.show();

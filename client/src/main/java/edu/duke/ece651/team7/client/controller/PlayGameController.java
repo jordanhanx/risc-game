@@ -30,7 +30,7 @@ import edu.duke.ece651.team7.shared.*;
 public class PlayGameController extends UnicastRemoteObject implements RemoteClient, Initializable {
 
     public static Scene getScene(RemoteGame server) throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/play-game-page.fxml");
+        URL xmlResource = PlayGameController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new PlayGameController(server));
         return new Scene(loader.load(), 1325, 607);
@@ -151,25 +151,25 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
         Scene newScene = OrderMoveController.getScene(server);
-        Stage secondaryStage = new Stage();
-        secondaryStage.setScene(newScene);
-        secondaryStage.showAndWait();
+        Stage popupStage = new Stage();
+        popupStage.setScene(newScene);
+        popupStage.showAndWait();
     }
 
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
         Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
-        Stage secondaryStage = new Stage();
-        secondaryStage.setScene(newScene);
-        secondaryStage.showAndWait();
+        Stage popupStage = new Stage();
+        popupStage.setScene(newScene);
+        popupStage.showAndWait();
     }
 
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
         Scene newScene = OrderUpgradeController.getScene(server);
-        Stage secondaryStage = new Stage();
-        secondaryStage.setScene(newScene);
-        secondaryStage.showAndWait();
+        Stage popupStage = new Stage();
+        popupStage.setScene(newScene);
+        popupStage.showAndWait();
     }
 
     @FXML

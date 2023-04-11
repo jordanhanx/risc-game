@@ -25,7 +25,7 @@ import edu.duke.ece651.team7.client.model.UserSession;
 public class ReqNewGameController {
 
     public static Scene getScene() throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/req-new-game-page.fxml");
+        URL xmlResource = ReqNewGameController.class.getResource("/fxml/req-new-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         return new Scene(loader.load(), 640, 480);
     }

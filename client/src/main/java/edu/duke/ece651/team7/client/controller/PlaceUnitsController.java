@@ -25,7 +25,7 @@ import edu.duke.ece651.team7.shared.*;
 public class PlaceUnitsController implements Initializable {
 
     public static Scene getScene(RemoteGame server) throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/place-units-page");
+        URL xmlResource = PlaceUnitsController.class.getResource("/fxml/place-units-page");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new PlaceUnitsController(server));
         return new Scene(loader.load(), 669, 457);

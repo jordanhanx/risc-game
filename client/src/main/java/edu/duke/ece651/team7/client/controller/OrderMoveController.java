@@ -22,7 +22,7 @@ import edu.duke.ece651.team7.shared.*;
 public class OrderMoveController implements Initializable {
 
     public static Scene getScene(RemoteGame server) throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/pick-group-page.fxml");
+        URL xmlResource = OrderMoveController.class.getResource("/fxml/order-move-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new OrderMoveController(server));
         return new Scene(loader.load(), 600, 400);

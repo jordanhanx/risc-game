@@ -34,10 +34,10 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
-public class HomePageController implements Initializable {
+public class GameLobbyController implements Initializable {
 
     public static Scene getScene() throws IOException {
-        URL xmlResource = LoginSignupController.class.getResource("/fxml/home-page.fxml");
+        URL xmlResource = GameLobbyController.class.getResource("/fxml/game-lobby-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         return new Scene(loader.load(), 1000, 680);
     }
