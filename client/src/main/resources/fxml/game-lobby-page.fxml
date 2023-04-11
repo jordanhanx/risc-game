@@ -8,7 +8,7 @@
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
     prefHeight="679.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="edu.duke.ece651.team7.client.controller.HomePageController">
+    fx:controller="edu.duke.ece651.team7.client.controller.GameLobbyController">
 
     <children>
         <SplitPane dividerPositions="0.5076152304609219" layoutX="-5.0" layoutY="-4.0"

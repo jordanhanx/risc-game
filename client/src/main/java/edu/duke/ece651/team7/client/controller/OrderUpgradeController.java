@@ -59,8 +59,9 @@ public class OrderUpgradeController implements Initializable {
     public void clickOnUpgrade(ActionEvent action) throws RemoteException {
         String response = server.tryUpgradeOrder(UserSession.getInstance().getUsername(),
                 terrSelector.getSelectionModel().getSelectedItem(),
-                srcLevSelectoir.getSelectionModel().getSelectedItem(),
-                destLevSelectoir.getSelectionModel().getSelectedItem(), Integer.parseInt(numInputer.getText()));
+                Integer.parseInt(srcLevSelectoir.getSelectionModel().getSelectedItem()),
+                Integer.parseInt(destLevSelectoir.getSelectionModel().getSelectedItem()),
+                Integer.parseInt(numInputer.getText()));
         if (response != null) {
             throw new IllegalArgumentException(response);
         }

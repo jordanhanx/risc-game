@@ -59,7 +59,8 @@ public class OrderMoveController implements Initializable {
     public void clickOnMove(ActionEvent action) throws RemoteException {
         String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),
                 srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
-                levelSelector.getSelectionModel().getSelectedItem(), Integer.parseInt(numInputer.getText()));
+                Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
+                Integer.parseInt(numInputer.getText()));
         if (response != null) {
             throw new IllegalArgumentException(response);
         }

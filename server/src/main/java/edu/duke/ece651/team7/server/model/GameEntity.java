@@ -110,16 +110,13 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         setGamePhase(GamePhase.PLAY_GAME);
         while (true) {
             commitSignal.await();
-            // ox.doAllCombats();
             ox.resolveOneRound();
-            if (!isGameOver()) {
+            if (findWinner() == null) {
                 resetCommitMap(true); // reset the commit record for not lost users
                 setCountDownLatch(commitMap.size()); // reset countDownLatch
                 notifyGameMapToClients(); // send game status to all watching clients
             } else {
                 notifyWinnerToClients(); // send game result to all clients
-                closeAllClients(); // close all clients
-
                 UnicastRemoteObject.unexportObject(this, true); // close this game
                 logger.info(name + " is over");
                 break;
@@ -229,13 +226,12 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                     response = "Permission denied";
                 } else if (units > remainingUnits) {
                     response = "Too many units";
-                } else if(units < 0){
+                } else if (units < 0) {
                     response = "units cannot be less than 0";
-                }else {
-                    for(int i = 0; i <units; i++){
+                } else {
+                    for (int i = 0; i < units; i++) {
                         t.addUnits(new Unit());
-                      }
-                    // t.increaseUnits(units);
+                    }
                 }
             }
         } catch (RuntimeException e) {
@@ -245,7 +241,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String tryMoveOrder(String username, String src, String dest, int units)
+    public synchronized String tryMoveOrder(String username, String src, String dest, int level, int units)
             throws RemoteException {
         String response = null;
         try {
@@ -253,9 +249,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 response = "Please wait for other players to commit";
             } else {
                 MoveOrder mo = new MoveOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
-                        gameMap.getTerritoryByName(dest), units);
+                        gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 mo.accept(ox);
-                // ox.doOneMove(mo);
             }
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -264,7 +259,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String tryAttackOrder(String username, String src, String dest, int units)
+    public synchronized String tryAttackOrder(String username, String src, String dest, int level, int units)
             throws RemoteException {
         String response = null;
         try {
@@ -272,7 +267,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 response = "Please wait for other players to commit";
             } else {
                 AttackOrder ao = new AttackOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
-                        gameMap.getTerritoryByName(dest), units);
+                        gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 ao.accept(ox);
             }
         } catch (RuntimeException e) {
@@ -285,15 +280,15 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     public synchronized String tryUpgradeOrder(String username, String target, int fromlevel, int tolevel, int units)
             throws RemoteException {
         String response = null;
-        try{
+        try {
             if (commitMap.get(username) == true) {
                 response = "Please wait for other players to commit";
             } else {
-                UpgradeOrder uo = new UpgradeOrder(playerMap.get(username), gameMap.getTerritoryByName(target), 
-                    Level.valueOfLabel(fromlevel), Level.valueOfLabel(tolevel), units);
+                UpgradeOrder uo = new UpgradeOrder(playerMap.get(username), gameMap.getTerritoryByName(target),
+                        Level.valueOfLabel(fromlevel), Level.valueOfLabel(tolevel), units);
                 uo.accept(ox);
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             response = e.getMessage();
         }
         return response;
@@ -302,19 +297,18 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     @Override
     public synchronized String tryResearchOrder(String username) throws RemoteException {
         String response = null;
-        try{
+        try {
             if (commitMap.get(username) == true) {
                 response = "Please wait for other players to commit";
             } else {
                 ResearchOrder ro = new ResearchOrder(playerMap.get(username));
                 ro.accept(ox);
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             response = e.getMessage();
         }
         return response;
     }
-
 
     @Override
     public synchronized String doCommitOrder(String username) throws RemoteException, InterruptedException {
@@ -328,11 +322,6 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             commitMap.replace(username, true);
         }
         return response;
-    }
-
-    @Override
-    public synchronized boolean isGameOver() throws RemoteException {
-        return (findWinner() != null) ? true : false;
     }
 
     String findWinner() {
@@ -355,9 +344,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
      * Notifies clients who have lost the game to switch to watcher mode using RMI.
      */
     void notifyGameMapToClients() {
-        for (RemoteClient client : clientMap.values()) {
+        for (Map.Entry<String, RemoteClient> pair : clientMap.entrySet()) {
             try {
-                client.doDisplay(gameMap);
+                pair.getValue().updateGameMap(gameMap);
+                pair.getValue().updatePlayer(playerMap.get(pair.getKey()));
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
@@ -372,7 +362,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     void notifyWinnerToClients() {
         for (RemoteClient client : clientMap.values()) {
             try {
-                client.doDisplay("Game over! Winner is " + findWinner());
+                client.showPopupWindow("Game over! Winner is " + findWinner());
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
@@ -380,22 +370,6 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             }
         }
     }
-
-    /**
-     * Closes all clients using RMI.
-     */
-    void closeAllClients() {
-        for (RemoteClient client : clientMap.values()) {
-            try {
-                client.close();
-            } catch (RemoteException e) {
-                /*
-                 * RemoteException because the remote Client has disconnected, can be ignored
-                 */
-            }
-        }
-    }
-
 }
 
 /* EOF */

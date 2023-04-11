@@ -27,10 +27,10 @@ public interface RemoteGame extends Remote {
 
         public String tryRegisterClient(String username, RemoteClient client) throws RemoteException;
 
-        public String tryMoveOrder(String username, String src, String dest, String level, int units)
+        public String tryMoveOrder(String username, String src, String dest, int level, int units)
                         throws RemoteException;
 
-        public String tryAttackOrder(String username, String src, String dest, String level, int units)
+        public String tryAttackOrder(String username, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**
