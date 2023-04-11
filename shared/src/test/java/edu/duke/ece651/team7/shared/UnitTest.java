@@ -22,14 +22,22 @@ public class UnitTest {
 
         u1.upgrade(2);
         assertEquals(u1.getLevel(), Level.ULTRON);
+
+        u3.upgrade(Level.CAVALRY);
+        assertEquals(u3.getLevel(), Level.CAVALRY);
     }
 
     @Test
     public void test_compare(){
         Unit u1 = new Unit();
         Unit u2 = new Unit();
-        Unit u3 = new Unit();
+        Unit u3 = new Unit(Level.AIRFORCE);
         assertFalse(u1 == u2);
         assertFalse(u1.equals(u2));
+        assertTrue(u1.compareTo(u3) < 0);
+        assertTrue(u3.compareTo(u1) > 0);
+        assertTrue(u1.compareTo(u2) == 0);
+
+        assertFalse(u1.equals(null));
     }
 }
