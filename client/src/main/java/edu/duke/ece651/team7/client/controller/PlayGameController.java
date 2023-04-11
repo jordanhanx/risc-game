@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
@@ -64,6 +65,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         this.server = server;
         this.gameMap = new SimpleObjectProperty<>(server.getGameMap());
         this.self = new SimpleObjectProperty<>(server.getSelfStatus(UserSession.getInstance().getUsername()));
+        this.colorMap = new HashMap<String, Color>();
         String response = server.tryRegisterClient(UserSession.getInstance().getUsername(), this);
         if (response != null) {
             throw new IllegalStateException(response);

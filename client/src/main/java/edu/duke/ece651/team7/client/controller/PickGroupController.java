@@ -54,10 +54,6 @@ public class PickGroupController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
-        response = server.doCommitOrder(UserSession.getInstance().getUsername());
-        if (response != null) {
-            throw new IllegalArgumentException(response);
-        }
         Scene newScene = PlaceUnitsController.getScene(server);
         Stage currStage = (Stage) confirmButton.getScene().getWindow();
         currStage.setScene(newScene);
