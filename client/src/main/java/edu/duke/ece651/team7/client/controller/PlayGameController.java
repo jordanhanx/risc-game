@@ -23,6 +23,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
@@ -141,6 +142,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Scene newScene = OrderMoveController.getScene(server);
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
+        popupStage.initOwner(playerName.getScene().getWindow());
+        popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.showAndWait();
     }
 
@@ -149,6 +152,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
+        popupStage.initOwner(playerName.getScene().getWindow());
+        popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.showAndWait();
     }
 
@@ -157,6 +162,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Scene newScene = OrderUpgradeController.getScene(server);
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
+        popupStage.initOwner(playerName.getScene().getWindow());
+        popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.showAndWait();
     }
 

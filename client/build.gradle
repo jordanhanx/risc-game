@@ -64,14 +64,4 @@ test {
     systemProperty "testfx.robot", "glass"
 }
 
-// clover {
-//     compiler {
-//         additionalArgs = '-g:lines,source,vars'
-//     }
-// }
-
-//compileJava {
-//    options.release = 17
-//}
-
 

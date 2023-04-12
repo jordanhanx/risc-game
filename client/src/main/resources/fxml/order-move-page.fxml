@@ -3,7 +3,6 @@
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -11,9 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-    prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19"
-    xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -32,9 +29,11 @@
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints />
     </columnConstraints>
     <rowConstraints>
+        <RowConstraints />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -50,66 +49,25 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Make Move Choice"
-            GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
-            GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Make Move Choice" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="30.0" />
             </font>
         </Text>
-        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            text="From :" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER"
-            GridPane.vgrow="ALWAYS">
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="From :" wrappingWidth="66.15625" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="24.0" />
             </font>
         </Text>
-        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            text="To:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
-            GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="To:" wrappingWidth="42.83984375" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="24.0" />
             </font>
         </Text>
-        <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            text="With :" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.valignment="CENTER"
-            GridPane.vgrow="ALWAYS">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <Text fill="#c92424" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            strokeWidth="0.0" text="Territory" GridPane.columnIndex="3" GridPane.rowIndex="7">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <Text fill="#b50f0f" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            strokeWidth="0.0" text="Territory" GridPane.columnIndex="3" GridPane.rowIndex="4">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <Text fill="#e40707" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            strokeWidth="0.0" text="Level :" GridPane.columnIndex="3" GridPane.rowIndex="10">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <Text fill="#dd0d0d" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0"
-            strokeWidth="0.0" text="Number :" GridPane.columnIndex="3" GridPane.rowIndex="12">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <Button fx:id="Move2" mnemonicParsing="false" onAction="#clickOnMove" prefHeight="35.0"
-            prefWidth="109.0" text="Move" GridPane.columnIndex="5" GridPane.columnSpan="2"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
+        <Button fx:id="Move2" mnemonicParsing="false" onAction="#clickOnMove" prefHeight="35.0" prefWidth="109.0" text="Move" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>
@@ -118,9 +76,7 @@
                 <String fx:value="expandable" />
             </styleClass>
         </Button>
-        <Button fx:id="finish" mnemonicParsing="false" onAction="#clickOnFinish" prefHeight="35.0"
-            prefWidth="109.0" text="Finish" GridPane.columnIndex="11" GridPane.columnSpan="2"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
+        <Button fx:id="finish" mnemonicParsing="false" onAction="#clickOnFinish" prefHeight="35.0" prefWidth="109.0" text="Finish" GridPane.columnIndex="11" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>
@@ -129,19 +85,19 @@
                 <String fx:value="expandable" />
             </styleClass>
         </Button>
-        <ChoiceBox fx:id="levelSelector" prefHeight="32.0" prefWidth="122.0"
-            GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS"
-            GridPane.rowIndex="10" GridPane.vgrow="ALWAYS" />
-        <ChoiceBox fx:id="srcSelector" prefHeight="32.0" prefWidth="122.0" GridPane.columnIndex="6"
-            GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4"
-            GridPane.vgrow="ALWAYS" />
-        <ChoiceBox fx:id="destSelector" prefHeight="32.0" prefWidth="122.0" GridPane.columnIndex="6"
-            GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7"
-            GridPane.vgrow="ALWAYS" />
-        <ListView fx:id="moveList" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="9"
-            GridPane.columnSpan="8" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6"
-            GridPane.rowSpan="3" GridPane.vgrow="ALWAYS" />
-        <TextField fx:id="numInputer" GridPane.columnIndex="6" GridPane.columnSpan="2"
-            GridPane.rowIndex="12" />
+        <ChoiceBox fx:id="levelSelector" prefHeight="32.0" prefWidth="122.0" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.vgrow="ALWAYS" />
+        <ChoiceBox fx:id="srcSelector" prefHeight="32.0" prefWidth="122.0" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS" />
+        <ChoiceBox fx:id="destSelector" prefHeight="32.0" prefWidth="122.0" GridPane.columnIndex="12" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="numInputer" GridPane.columnIndex="12" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+      <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="Level :" GridPane.columnIndex="4" GridPane.rowIndex="10">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text stroke="BLACK" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" text="Units :" GridPane.columnIndex="10" GridPane.rowIndex="10">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
     </children>
 </GridPane>

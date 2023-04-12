@@ -29,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
@@ -90,6 +91,8 @@ public class GameLobbyController implements Initializable {
         Scene newScene = ReqNewGameController.getScene();
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
+        popupStage.initOwner(allGamesTable.getScene().getWindow());
+        popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.showAndWait();
         updateGameList("http://localhost:8080/api/riscgame/all");
     }
