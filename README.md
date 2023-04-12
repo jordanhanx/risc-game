@@ -13,13 +13,13 @@ ECE 651 Team 7: World conquering game (Risk)
 ### Start the server
 In a terminal, run the following command:
 ```bash
-$ ./gradlew :server:run --args "<port number><number of players><initial number of armies>"
+$ ./gradlew run-server
 ```
 
 ### Start a client (player)
 In a new terminal, run the following command:
 ```bash
-$ ./gradlew :client:run --args "<player name> <port number>"
+$ ./gradlew run-client
 ```
 Repeat the above command to start more clients.
 
@@ -30,11 +30,11 @@ When all clients are connected, the server will start the game automatically. On
 
 Each territory produces a number of food and technology resources.
 
-Each player has the option to move, attach, research, and upgrade. 
-- ***Move***: specify the number of armies to move, the source territory, and the destination territory. This order costs food resources.
-- ***Attack***: specify the number of armies to attack, the source territory, and the destination territory. Each attack costs food resources as a function of the number of armies attacking and distance between the two territories.
-- ***Research***: an order to increase the "technology level" of the player. Each research costs resources.
-- ***Upgrade***: upgrading a unit increases its combat bonuses in combat resolution. This order costs technology resources.
+Each player has the option to move, attack, research, and upgrade. 
+- ***Move***: specify the level and the number of armies to move, the source territory, and the destination territory. This order costs food resources.
+- ***Attack***: specify the level and the number of armies to attack, the source territory, and the destination territory. Each attack costs food resources as a function of the number of armies attacking and distance between the two territories.
+- ***Research***: an order to increase the "technology level" of the player. Each research costs resources. Upgrade will be effective in the next round.
+- ***Upgrade***: specify the level and number of armies to upgrade, the target territory. Upgrading a unit increases its combat bonuses in combat resolution. This order costs technology resources.
 
 
 ![Alt text](https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1200/https://inkarnate-api-as-production.s3.amazonaws.com/LoR7Kpr6BBB7TfdEYFdcLr)
