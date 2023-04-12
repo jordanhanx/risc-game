@@ -46,6 +46,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     private Label terrName, ownerName;
     @FXML
     private Label levelValue0, levelValue1, levelValue2, levelValue3, levelValue4, levelValue5, levelValue6;
+    @FXML
+    private Label territoryTech, territoryFood;
 
     @FXML
     private Button Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
@@ -132,6 +134,9 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             levelValue4.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4))));
             levelValue5.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5))));
             levelValue6.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6))));
+            territoryFood.setText(String.valueOf(selectedTerr.produceFood().getAmount()));
+            territoryTech.setText(String.valueOf(selectedTerr.produceTech().getAmount()));
+
         } else {
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
