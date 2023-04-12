@@ -40,9 +40,15 @@
                                 <Font size="18.0" />
                             </font>
                         </Text>
-                  <Label fx:id="food" layoutX="106.0" layoutY="295.0" text="food" />
+                  <Label fx:id="playername" layoutX="80.0" layoutY="146.0" prefHeight="17.0" prefWidth="82.0" text="username" />
                   <Label fx:id="techResource" layoutX="106.0" layoutY="381.0" text="techResource" />
                   <Label fx:id="techLevel" layoutX="106.0" layoutY="464.0" text="techLevel" />
+                  <Text layoutX="44.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Name:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="food" layoutX="103.0" layoutY="295.0" prefHeight="17.0" prefWidth="82.0" text="food" />
                     </children>
                 </Pane>
                 <Pane prefHeight="587.0" prefWidth="800.0">
@@ -143,122 +149,122 @@
                         <Label layoutX="497.0" layoutY="158.0" style="-fx-background-color: white;" text="1" />
                         <Label layoutX="313.0" layoutY="142.0" style="-fx-background-color: white;" text="4" />
                         <Label layoutX="352.0" layoutY="317.0" style="-fx-background-color: white;" text="3" />
-                        <Button fx:id="Volantis" layoutX="72.0" layoutY="149.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Volantis" textFill="#d64c00">
+                        <Button fx:id="Volantis" layoutX="72.0" layoutY="149.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Volantis" textFill="#000000e3">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Pentos" layoutX="72.0" layoutY="311.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pentos" textFill="#d64c00">
+                        <Button fx:id="Pentos" layoutX="72.0" layoutY="311.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pentos">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Braavos" layoutX="175.0" layoutY="371.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Braavos" textFill="#d64c00">
+                        <Button fx:id="Braavos" layoutX="175.0" layoutY="371.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Braavos">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Oldtown" layoutX="221.0" layoutY="443.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Oldtown" textFill="#d64c00">
+                        <Button fx:id="Oldtown" layoutX="221.0" layoutY="443.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Oldtown">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Pyke" layoutX="153.0" layoutY="231.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pyke" textFill="#d64c00">
+                        <Button fx:id="Pyke" layoutX="153.0" layoutY="231.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pyke">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Dragonstone" layoutX="221.0" layoutY="158.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="87.0" styleClass="expandable" text="Dragonstone" textFill="#d64c00">
+                        <Button fx:id="Dragonstone" layoutX="221.0" layoutY="158.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="87.0" styleClass="expandable" text="Dragonstone">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Helvoria" layoutX="264.0" layoutY="319.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Helvoria" textFill="#d64c00">
+                        <Button fx:id="Helvoria" layoutX="264.0" layoutY="319.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Helvoria">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Winterfell" layoutX="360.0" layoutY="402.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Winterfell" textFill="#d64c00">
+                        <Button fx:id="Winterfell" layoutX="360.0" layoutY="402.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Winterfell">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Highgarden" layoutX="480.0" layoutY="351.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="82.0" styleClass="expandable" text="Highgarden" textFill="#d64c00">
+                        <Button fx:id="Highgarden" layoutX="480.0" layoutY="351.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="82.0" styleClass="expandable" text="Highgarden">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Galadria" layoutX="376.0" layoutY="275.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Galadria" textFill="#d64c00">
+                        <Button fx:id="Galadria" layoutX="376.0" layoutY="275.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Galadria">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Drakoria" layoutX="307.0" layoutY="211.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Drakoria" textFill="#d64c00">
+                        <Button fx:id="Drakoria" layoutX="307.0" layoutY="211.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Drakoria">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Aranthia" layoutX="459.0" layoutY="229.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Aranthia" textFill="#d64c00">
+                        <Button fx:id="Aranthia" layoutX="459.0" layoutY="229.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Aranthia">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Dorne" layoutX="625.0" layoutY="311.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Dorne" textFill="#2961da">
+                        <Button fx:id="Dorne" layoutX="625.0" layoutY="311.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Dorne">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Essos" layoutX="768.0" layoutY="276.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Essos" textFill="#2961da">
+                        <Button fx:id="Essos" layoutX="768.0" layoutY="276.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Essos">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Westeros" layoutX="415.0" layoutY="154.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Westeros" textFill="#2961da">
+                        <Button fx:id="Westeros" layoutX="415.0" layoutY="154.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Westeros">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Hogwarts" layoutX="560.0" layoutY="228.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Hogwarts" textFill="#2961da">
+                        <Button fx:id="Hogwarts" layoutX="560.0" layoutY="228.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Hogwarts">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Mordor" layoutX="689.0" layoutY="200.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Mordor" textFill="#2961da">
+                        <Button fx:id="Mordor" layoutX="689.0" layoutY="200.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Mordor">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Roshar" layoutX="738.0" layoutY="118.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Roshar" textFill="#2961da">
+                        <Button fx:id="Roshar" layoutX="738.0" layoutY="118.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Roshar">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Scadrial" layoutX="640.0" layoutY="63.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Scadrial" textFill="#2961da">
+                        <Button fx:id="Scadrial" layoutX="640.0" layoutY="63.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Scadrial">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Elantris" layoutX="610.0" layoutY="139.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Elantris" textFill="#2961da">
+                        <Button fx:id="Elantris" layoutX="610.0" layoutY="139.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Elantris">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Gondor" layoutX="511.0" layoutY="138.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Gondor" textFill="#2961da">
+                        <Button fx:id="Gondor" layoutX="511.0" layoutY="138.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Gondor">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Oz" layoutX="470.0" layoutY="63.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Oz" textFill="#2961da">
+                        <Button fx:id="Oz" layoutX="470.0" layoutY="63.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Oz">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Midkemia" layoutX="297.0" layoutY="51.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Midkemia" textFill="#2961da">
+                        <Button fx:id="Midkemia" layoutX="297.0" layoutY="51.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Midkemia">
                             <font>
                                 <Font size="10.0" />
                             </font>
                         </Button>
-                        <Button fx:id="Narnia" layoutX="350.0" layoutY="118.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Narnia" textFill="#2961da">
+                        <Button fx:id="Narnia" layoutX="350.0" layoutY="118.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Narnia">
                             <font>
                                 <Font size="10.0" />
                             </font>

@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javafx.application.Platform;
@@ -38,7 +39,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     }
 
     @FXML
-    private Label food, techResource, techLevel;
+    private Label playername, food, techResource, techLevel;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton;
     @FXML
@@ -72,16 +73,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        // gameMap.addListener((observable, oldValue, newValue) -> {
-        // setTerritoryColor();
-        // });
-
-        // self.addListener((observable, oldValue, newValue) -> {
-        // food.setText(String.valueOf(self.getValue().getFood().getAmount()));
-        // techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
-        // techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()));
-        // });
+        setPlayerInfo();
+        setTerritoryColor();
     }
 
     @Override
@@ -96,9 +89,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     public void updatePlayer(Player player) throws RemoteException {
         Platform.runLater(() -> {
             this.self.setValue(player);
-            food.setText(String.valueOf(self.getValue().getFood().getAmount()));
-            techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
-            techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()));
+            setPlayerInfo();
         });
     }
 
@@ -182,9 +173,16 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
-    public void setTerritoryColor() {
-        Color[] colorArr = { Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.BLUE };
-        TreeSet<String> playerSet = new TreeSet<>();
+    public void setPlayerInfo() {
+        playername.setText(UserSession.getInstance().getUsername());
+        food.setText(String.valueOf(self.getValue().getFood().getAmount()));
+        techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
+        techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()));
+    }
+
+    public Map<String, Color> initColorMap() {
+        Color[] colorArr = { Color.MAGENTA, Color.GREEN, Color.BLUE, Color.ORANGE };
+        Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
         }
@@ -194,32 +192,38 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             colorMap.put(name, colorArr[idx]);
             ++idx;
         }
+        return colorMap;
+    }
+
+    public void setTerritoryColor() {
+        Map<String, Color> colorMap = initColorMap();
         // Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
-        Midkemia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getName()));
-        Narnia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Narnia").getName()));
-        Oz.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oz").getName()));
-        Westeros.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Westeros").getName()));
-        Gondor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Gondor").getName()));
-        Elantris.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Elantris").getName()));
-        Scadrial.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Scadrial").getName()));
-        Roshar.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Roshar").getName()));
+        Midkemia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getOwner().getName()));
+        Narnia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Narnia").getOwner().getName()));
+        Oz.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oz").getOwner().getName()));
+        Westeros.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Westeros").getOwner().getName()));
+        Gondor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Gondor").getOwner().getName()));
+        Elantris.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Elantris").getOwner().getName()));
+        Scadrial.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Scadrial").getOwner().getName()));
+        Roshar.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Roshar").getOwner().getName()));
         // Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
-        Hogwarts.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Hogwarts").getName()));
-        Mordor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Mordor").getName()));
-        Essos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Essos").getName()));
-        Dorne.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dorne").getName()));
-        Highgarden.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Highgarden").getName()));
-        Aranthia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Aranthia").getName()));
-        Galadria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Galadria").getName()));
-        Drakoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Drakoria").getName()));
+        Hogwarts.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Hogwarts").getOwner().getName()));
+        Mordor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Mordor").getOwner().getName()));
+        Essos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Essos").getOwner().getName()));
+        Dorne.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dorne").getOwner().getName()));
+        Highgarden.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Highgarden").getOwner().getName()));
+        Aranthia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Aranthia").getOwner().getName()));
+        Galadria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Galadria").getOwner().getName()));
+        Drakoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Drakoria").getOwner().getName()));
         // Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
-        Dragonstone.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dragonstone").getName()));
-        Winterfell.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Winterfell").getName()));
-        Helvoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Helvoria").getName()));
-        Pyke.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pyke").getName()));
-        Volantis.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Volantis").getName()));
-        Pentos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pentos").getName()));
-        Braavos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Braavos").getName()));
-        Oldtown.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oldtown").getName()));
+        Dragonstone
+                .setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dragonstone").getOwner().getName()));
+        Winterfell.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Winterfell").getOwner().getName()));
+        Helvoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Helvoria").getOwner().getName()));
+        Pyke.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pyke").getOwner().getName()));
+        Volantis.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Volantis").getOwner().getName()));
+        Pentos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pentos").getOwner().getName()));
+        Braavos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Braavos").getOwner().getName()));
+        Oldtown.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oldtown").getOwner().getName()));
     }
 }

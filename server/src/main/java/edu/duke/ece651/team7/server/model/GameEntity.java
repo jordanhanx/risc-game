@@ -59,7 +59,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         this.name = name;
         this.capacity = capacity;
         this.initUnits = initUnits;
-        this.gameMap = new TextMapFactory().createPlayerMap(capacity);
+        this.gameMap = new GUIMapFactory().createPlayerMap(capacity);
         this.ox = new OrderExecuteVisitor(gameMap);
         this.playerMap = new HashMap<>();
         this.phaseMap = new HashMap<>();
@@ -77,9 +77,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
      */
     protected void setCountDownLatch(int num) {
         this.commitSignal = new CountDownLatch(num);
-        if (commitSet.size() > 0) {
-            commitSet.clear();
-        }
+        commitSet.clear();
     }
 
     /**
@@ -336,7 +334,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             try {
                 pair.getValue().updateGameMap(gameMap);
                 pair.getValue().updatePlayer(playerMap.get(pair.getKey()));
-                pair.getValue().showPopupWindow("Next turn");
+                pair.getValue().showPopupWindow("MAP UPDATES, NEW TURN BEGINS");
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
@@ -351,7 +349,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     void notifyWinnerToClients() {
         for (RemoteClient client : clientMap.values()) {
             try {
-                client.showPopupWindow("Game over! Winner is " + findWinner());
+                client.showPopupWindow("GAME OVER! Winner is " + findWinner());
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored

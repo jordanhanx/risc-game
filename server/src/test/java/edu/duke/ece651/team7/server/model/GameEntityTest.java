@@ -18,7 +18,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.duke.ece651.team7.shared.*;
-import edu.duke.ece651.team7.shared.RemoteGame.GamePhase;
 
 @ExtendWith(MockitoExtension.class)
 public class GameEntityTest {
@@ -33,6 +32,7 @@ public class GameEntityTest {
     private Map<String, RemoteGame.GamePhase> phaseMap = new HashMap<>();
     @Spy
     private Map<String, RemoteClient> clientMap = new HashMap<>();
+    // @Spy
     @Mock
     private Set<String> commitSet = new HashSet<>();
     @Mock
