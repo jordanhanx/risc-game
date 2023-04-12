@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -104,6 +105,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         });
     }
 
+    public Territory findTerritory(String terrName) {
+        for (Territory t : self.getValue().getTerritories()) {
+            if (t.getName().equals(terrName)) {
+                return t;
+            }
+        }
+        return gameMap.getValue().getTerritoryByName(terrName);
+    }
+
     @FXML
     public void clickOnTerr(ActionEvent event) {
         Object source = event.getSource();
@@ -122,15 +132,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         } else {
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
-    }
-
-    public Territory findTerritory(String terrName) {
-        for (Territory t : self.getValue().getTerritories()) {
-            if (t.getName().equals(terrName)) {
-                return t;
-            }
-        }
-        return gameMap.getValue().getTerritoryByName(terrName);
     }
 
     @FXML
@@ -177,7 +178,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         playername.setText(UserSession.getInstance().getUsername());
         food.setText(String.valueOf(self.getValue().getFood().getAmount()));
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
-        techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()));
+        techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
+                + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
     }
 
     public Map<String, Color> initColorMap() {
