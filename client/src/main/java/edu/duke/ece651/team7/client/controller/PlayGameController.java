@@ -22,9 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
@@ -40,13 +38,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     }
 
     @FXML
-    private Label playername, food, techResource, techLevel;
+    private Label playerName, food, techResource, techLevel;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton;
     @FXML
     private Label terrName, ownerName;
-    @FXML
-    private Text levelName0, levelName1, levelName2, levelName3, levelName4, levelName5, levelName6;
     @FXML
     private Label levelValue0, levelValue1, levelValue2, levelValue3, levelValue4, levelValue5, levelValue6;
 
@@ -60,12 +56,14 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
+    private Map<String, Color> colorMap;
 
     public PlayGameController(RemoteGame server) throws RemoteException {
         super();
         this.server = server;
         this.gameMap = new SimpleObjectProperty<>(server.getGameMap());
         this.self = new SimpleObjectProperty<>(server.getSelfStatus(UserSession.getInstance().getUsername()));
+        this.colorMap = new HashMap<>();
         String response = server.tryRegisterClient(UserSession.getInstance().getUsername(), this);
         if (response != null) {
             throw new IllegalStateException(response);
@@ -74,6 +72,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initColorMap();
         setPlayerInfo();
         setTerritoryColor();
     }
@@ -82,6 +81,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     public void updateGameMap(GameMap gameMap) throws RemoteException {
         Platform.runLater(() -> {
             this.gameMap.setValue(gameMap);
+            initColorMap();
             setTerritoryColor();
         });
     }
@@ -122,6 +122,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             Territory selectedTerr = findTerritory(btn.getText());
             terrName.setText(selectedTerr.getName());
             ownerName.setText(selectedTerr.getOwner().getName());
+            terrName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
+            ownerName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
             levelValue0.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0))));
             levelValue1.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1))));
             levelValue2.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2))));
@@ -174,31 +176,34 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
-    public void setPlayerInfo() {
-        playername.setText(UserSession.getInstance().getUsername());
-        food.setText(String.valueOf(self.getValue().getFood().getAmount()));
-        techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
-        techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
-                + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
-    }
-
-    public Map<String, Color> initColorMap() {
-        Color[] colorArr = { Color.MAGENTA, Color.GREEN, Color.BLUE, Color.ORANGE };
+    public void initColorMap() {
+        colorMap.clear();
+        Color[] colorArr = { Color.MAGENTA, Color.GREEN, Color.BLUE, Color.ORANGERED };
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
         }
-        Map<String, Color> colorMap = new HashMap<String, Color>();
         int idx = 0;
         for (String name : playerSet) {
             colorMap.put(name, colorArr[idx]);
             ++idx;
         }
-        return colorMap;
+    }
+
+    public void setPlayerInfo() {
+        playerName.setText(UserSession.getInstance().getUsername());
+        food.setText(String.valueOf(self.getValue().getFood().getAmount()));
+        techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
+        techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
+                + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
+
+        playerName.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
+        food.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
+        techResource.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
+        techLevel.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
     }
 
     public void setTerritoryColor() {
-        Map<String, Color> colorMap = initColorMap();
         // Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
         Midkemia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getOwner().getName()));
         Narnia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Narnia").getOwner().getName()));
