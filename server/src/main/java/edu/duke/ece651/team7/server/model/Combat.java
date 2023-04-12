@@ -234,7 +234,7 @@ public class Combat {
     //     System.out.println();
     // }
     /**
-     * resolve combats, do one unit attack recurcively, 0/1, 1/2, 2/3....5/0
+     * resolve combats, do one unit attack recursively, 0/1, 1/2, 2/3....5/0
      * until only one player left
      * 
      * @return null if does not have combat
