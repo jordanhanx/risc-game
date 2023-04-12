@@ -91,6 +91,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         commitSignal.await(); // waits for all players placing their initial units
         setCountDownLatch(capacity); // reset countDownLatch
         /* Game Start Phase */
+        ox.collectAllResource();
         while (true) {
             commitSignal.await();
             setCountDownLatch(countNotLostPlayers()); // reset countDownLatch
