@@ -10,38 +10,39 @@ public class GUIMapFactory implements MapFactory {
                 if (initGroupNum < 2 || initGroupNum > 4) {
                         throw new IllegalArgumentException("Only support 2 to 4 players game");
                 } else {
-                        return createMap(initGroupNum);
+                        
+                        return createMap(initGroupNum, 8 + (-1) * initGroupNum, initGroupNum*2);
                 }
 
         }
 
-        public GameMap createMap(int initGroupNum) {
+        public GameMap createMap(int initGroupNum, int initfood, int inittech) {
                 GameMap map = new GameMap(initGroupNum);
                 List<Player> initGroupOwners = map.getInitGroupOwners();
-                Territory territory1 = new Territory("Narnia", 0, 2, 2);
-                Territory territory2 = new Territory("Midkemia", 0, 2, 2);
-                Territory territory3 = new Territory("Oz", 0, 2, 2);
-                Territory territory4 = new Territory("Gondor", 0, 2, 2);
-                Territory territory5 = new Territory("Elantris", 0, 2, 2);
-                Territory territory6 = new Territory("Scadrial", 0, 2, 2);
-                Territory territory7 = new Territory("Roshar", 0, 2, 2);
-                Territory territory8 = new Territory("Mordor", 0, 2, 2);
-                Territory territory9 = new Territory("Hogwarts", 0, 2, 2);
-                Territory territory10 = new Territory("Westeros", 0, 2, 2);
-                Territory territory11 = new Territory("Essos", 0, 2, 2);
-                Territory territory12 = new Territory("Dorne", 0, 2, 2);
-                Territory territory13 = new Territory("Aranthia", 0, 2, 2);
-                Territory territory14 = new Territory("Drakoria", 0, 2, 2);
-                Territory territory15 = new Territory("Galadria", 0, 2, 2);
-                Territory territory16 = new Territory("Highgarden", 0, 2, 2);
-                Territory territory17 = new Territory("Winterfell", 0, 2, 2);
-                Territory territory18 = new Territory("Helvoria", 0, 2, 2);
-                Territory territory19 = new Territory("Dragonstone", 0, 2, 2);
-                Territory territory20 = new Territory("Pyke", 0, 2, 2);
-                Territory territory21 = new Territory("Oldtown", 0, 2, 2);
-                Territory territory22 = new Territory("Braavos", 0, 2, 2);
-                Territory territory23 = new Territory("Pentos", 0, 2, 2);
-                Territory territory24 = new Territory("Volantis", 0, 2, 2);
+                Territory territory1 = new Territory("Narnia", 0, initfood, inittech);
+                Territory territory2 = new Territory("Midkemia", 0, initfood, inittech);
+                Territory territory3 = new Territory("Oz", 0, initfood, inittech);
+                Territory territory4 = new Territory("Gondor", 0, initfood, inittech);
+                Territory territory5 = new Territory("Elantris", 0, initfood, inittech);
+                Territory territory6 = new Territory("Scadrial", 0, initfood, inittech);
+                Territory territory7 = new Territory("Roshar", 0, initfood, inittech);
+                Territory territory8 = new Territory("Mordor", 0, initfood, inittech);
+                Territory territory9 = new Territory("Hogwarts", 0, initfood, inittech);
+                Territory territory10 = new Territory("Westeros", 0, initfood, inittech);
+                Territory territory11 = new Territory("Essos", 0, initfood, inittech);
+                Territory territory12 = new Territory("Dorne", 0, initfood, inittech);
+                Territory territory13 = new Territory("Aranthia", 0, initfood, inittech);
+                Territory territory14 = new Territory("Drakoria", 0, initfood, inittech);
+                Territory territory15 = new Territory("Galadria", 0, initfood, inittech);
+                Territory territory16 = new Territory("Highgarden", 0, initfood, inittech);
+                Territory territory17 = new Territory("Winterfell", 0, initfood, inittech);
+                Territory territory18 = new Territory("Helvoria", 0, initfood, inittech);
+                Territory territory19 = new Territory("Dragonstone", 0, initfood, inittech);
+                Territory territory20 = new Territory("Pyke", 0, initfood, inittech);
+                Territory territory21 = new Territory("Oldtown", 0, initfood, inittech);
+                Territory territory22 = new Territory("Braavos", 0, initfood, inittech);
+                Territory territory23 = new Territory("Pentos", 0, initfood, inittech);
+                Territory territory24 = new Territory("Volantis", 0, initfood, inittech);
                 map.addTerritoryAndNeighbors(territory1, territory2, 2, territory3, 3, territory19, 4);
                 map.addTerritoryAndNeighbors(territory2, territory1, 2, territory3, 3, territory24, 8);
                 map.addTerritoryAndNeighbors(territory3, territory1, 3, territory2, 3, territory4, 4, territory5, 9,

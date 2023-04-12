@@ -22,7 +22,6 @@ public class DiceTest {
         for(int i  = 0; i<10; i++){
             assertTrue(d.throwDicewithBonus(Level.CIVILIAN)>0 && d.throwDicewithBonus(Level.CIVILIAN)<= 20);
         }
-
         for(int i  = 0; i<10; i++){
             assertTrue(d.throwDicewithBonus(Level.ULTRON)>0 && d.throwDicewithBonus(Level.ULTRON)<= 35);
         }
