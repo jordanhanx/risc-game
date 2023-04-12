@@ -27,7 +27,7 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
-
+    
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
@@ -35,6 +35,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.+"
 
     // JavaFX test
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.6.2'
     testImplementation "org.testfx:testfx-core:4.0.16-alpha"
     testImplementation "org.testfx:testfx-junit5:4.0.16-alpha"
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
