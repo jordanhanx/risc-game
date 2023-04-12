@@ -31,10 +31,12 @@ public class ReqNewGameController {
     }
 
     @FXML
-    private TextField capacity;
+    TextField capacity;
 
     @FXML
-    private TextField initUnits;
+    TextField initUnits;
+
+    RestTemplate restTemplate = new RestTemplate();
 
     @FXML
     public void clickOnCreate(ActionEvent event) throws IOException {
@@ -52,9 +54,6 @@ public class ReqNewGameController {
     }
 
     public void requestNewGame(String url, int capacity, int initUnits) {
-        // create a RestTemplate object
-        RestTemplate restTemplate = new RestTemplate();
-
         // create a headers object with the session cookie
         HttpHeaders header = new HttpHeaders();
         header.add("Cookie", UserSession.getInstance().getSession());

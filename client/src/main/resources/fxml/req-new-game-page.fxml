@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-    prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="edu.duke.ece651.team7.client.controller.ReqNewGameController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.duke.ece651.team7.client.controller.ReqNewGameController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -47,36 +48,25 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE"
-            text="Choose Number of Players for Your Game: " GridPane.columnIndex="8"
-            GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"
-            GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Number of Players for Your Game: " GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="30.0" />
             </font>
         </Text>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="(2 -- 4)" wrappingWidth="97.07275390625"
-            GridPane.columnIndex="11" GridPane.rowIndex="4">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="(2 -- 4)" wrappingWidth="97.07275390625" GridPane.columnIndex="11" GridPane.rowIndex="4">
             <font>
                 <Font size="18.0" />
             </font>
         </Text>
-        <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="8"
-            GridPane.rowIndex="11" />
-        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Initial Units :"
-            GridPane.columnIndex="6" GridPane.rowIndex="7">
+        <Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="8" GridPane.rowIndex="11" />
+        <Text fill="#b04d4d" stroke="#b04d4d" strokeType="OUTSIDE" text="Choose Initial Units :" GridPane.columnIndex="6" GridPane.rowIndex="7">
             <font>
                 <Font size="30.0" />
             </font>
         </Text>
-        <TextField fx:id="capacity" prefHeight="32.0" prefWidth="161.0"
-            style="-fx-border-color: #000000;" GridPane.columnIndex="7" GridPane.columnSpan="3"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
-        <TextField fx:id="initUnits" GridPane.columnIndex="7" GridPane.columnSpan="3"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
-        <Button fx:id="Create" mnemonicParsing="false" onAction="#clickOnCreate" prefHeight="35.0"
-            prefWidth="109.0" text="Create" GridPane.columnIndex="4" GridPane.columnSpan="3"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+        <TextField fx:id="capacity" prefHeight="32.0" prefWidth="161.0" style="-fx-border-color: #000000;" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+        <TextField fx:id="initUnits" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
+        <Button fx:id="createButton" mnemonicParsing="false" onAction="#clickOnCreate" prefHeight="35.0" prefWidth="109.0" text="Create" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>
@@ -85,9 +75,7 @@
                 <String fx:value="expandable" />
             </styleClass>
         </Button>
-        <Button fx:id="Cancel" mnemonicParsing="false" onAction="#clickOnCancel" prefHeight="35.0"
-            prefWidth="109.0" text="Cancel" GridPane.columnIndex="10" GridPane.columnSpan="3"
-            GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#clickOnCancel" prefHeight="35.0" prefWidth="109.0" text="Cancel" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="14.0" />
             </font>

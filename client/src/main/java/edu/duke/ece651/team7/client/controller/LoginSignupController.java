@@ -32,11 +32,11 @@ public class LoginSignupController {
     }
 
     @FXML
-    private TextField username;
+    TextField username;
     @FXML
-    private PasswordField password;
+    PasswordField password;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = new RestTemplate();
 
     @FXML
     public void clickOnLogin(ActionEvent event) throws IOException {
