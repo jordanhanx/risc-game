@@ -3,12 +3,15 @@ package edu.duke.ece651.team7.server.model;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Field;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +20,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.duke.ece651.team7.shared.*;
-import edu.duke.ece651.team7.shared.RemoteGame.GamePhase;
 
 @ExtendWith(MockitoExtension.class)
 public class GameEntityTest {
@@ -29,9 +31,11 @@ public class GameEntityTest {
     @Spy
     private Map<String, Player> playerMap = new HashMap<>();
     @Spy
-    private Map<String, RemoteClient> clientMap = new HashMap<>();
+    private Map<String, RemoteGame.GamePhase> phaseMap = new HashMap<>();
     @Spy
-    private Map<String, Boolean> commitMap = new HashMap<>();
+    private Map<String, RemoteClient> clientMap = new HashMap<>();
+    // @Spy
+    private Set<String> commitSet = new HashSet<>();
     @Mock
     private CountDownLatch commitSignal;
 
@@ -47,6 +51,14 @@ public class GameEntityTest {
 
     @InjectMocks
     private TestGameEntity testgame;
+
+    @BeforeEach
+    public void injectCommitSetManually()
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        Field gameEnetityCommitSet = testgame.getClass().getSuperclass().getDeclaredField("commitSet");
+        gameEnetityCommitSet.setAccessible(true);
+        gameEnetityCommitSet.set(testgame, commitSet);
+    }
 
     @Test
     public void test_constructor() throws RemoteException {
@@ -70,43 +82,25 @@ public class GameEntityTest {
         assertEquals(10, testgame.getInitUnits());
         assertEquals(10, testgame.getGameInitUnits());
         assertEquals(new HashSet<>(), testgame.getUsers());
-        assertEquals(GamePhase.PICK_GROUP, testgame.getGamePhase());
-        assertDoesNotThrow(() -> testgame.setGamePhase(GamePhase.PLAY_GAME));
-        assertEquals(GamePhase.PLAY_GAME, testgame.getGamePhase());
     }
 
     @Test
-    public void test_addUser() {
+    public void test_getGamePhase() throws RemoteException {
+        assertEquals(0, phaseMap.size());
+        phaseMap.put("username", RemoteGame.GamePhase.PICK_GROUP);
+        assertEquals(RemoteGame.GamePhase.PICK_GROUP, testgame.getGamePhase("username"));
+    }
+
+    @Test
+    public void test_addUser() throws RemoteException {
         assertDoesNotThrow(() -> testgame.addUser("player1"));
         assertEquals(1, playerMap.size());
-        assertEquals(1, commitMap.size());
-        assertEquals(false, commitMap.get("player1"));
+        assertEquals(RemoteGame.GamePhase.PICK_GROUP, testgame.getGamePhase("player1"));
         assertThrows(IllegalStateException.class, () -> testgame.addUser("player1"));
         assertDoesNotThrow(() -> testgame.addUser("player2"));
         assertEquals(2, playerMap.size());
-        assertEquals(2, commitMap.size());
-        assertEquals(false, commitMap.get("player2"));
+        assertEquals(RemoteGame.GamePhase.PICK_GROUP, testgame.getGamePhase("player2"));
         assertThrows(IllegalStateException.class, () -> testgame.addUser("player3"));
-    }
-
-    @Test
-    public void test_resetCommitMap() {
-        Player pBlue = mock(Player.class);
-        Player pGreen = mock(Player.class);
-        playerMap.put("Blue", pBlue);
-        playerMap.put("Green", pGreen);
-        commitMap.put("Blue", true);
-        commitMap.put("Green", true);
-        when(pBlue.isLose()).thenReturn(false);
-        when(pGreen.isLose()).thenReturn(true);
-        assertDoesNotThrow(() -> testgame.resetCommitMap(false));
-        assertEquals(2, commitMap.size());
-        assertFalse(commitMap.get("Blue"));
-        assertFalse(commitMap.get("Green"));
-        assertDoesNotThrow(() -> testgame.resetCommitMap(true));
-        assertEquals(1, commitMap.size());
-        assertFalse(commitMap.get("Blue"));
-        assertNull(commitMap.get("Green"));
     }
 
     @Test
@@ -119,12 +113,12 @@ public class GameEntityTest {
         RemoteClient cGreen = mock(RemoteClient.class);
         clientMap.put("Blue", cBlue);
         clientMap.put("Green", cGreen);
-        when(pBlue.isLose()).thenReturn(false, true);
+        when(pBlue.isLose()).thenReturn(false, false, true);
         when(pGreen.isLose()).thenReturn(false);
 
         assertDoesNotThrow(() -> testgame.start());
         verify(commitSignal, never()).countDown();
-        verify(commitSignal, times(4)).await();
+        verify(commitSignal, times(3)).await();
     }
 
     @Test
@@ -153,14 +147,12 @@ public class GameEntityTest {
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
-        commitMap.put("Red", true);
         doNothing().when(gameMap).assignGroup("GroupA", pBlue);
         doThrow(new IllegalArgumentException("GroupA has been Occupied")).when(gameMap).assignGroup("GroupA", pGreen);
         assertEquals(null, testgame.tryPickTerritoryGroupByName("Blue", "GroupA"));
         assertEquals("GroupA has been Occupied", testgame.tryPickTerritoryGroupByName("Green", "GroupA"));
-        assertEquals("Please wait for other players to commit", testgame.tryPickTerritoryGroupByName("Red", "GroupB"));
+        assertEquals(RemoteGame.GamePhase.PLACE_UNITS, testgame.getGamePhase("Blue"));
+        assertEquals(null, testgame.getGamePhase("Green"));
     }
 
     @Test
@@ -169,43 +161,37 @@ public class GameEntityTest {
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
+        when(gameMap.getTerritoryByName("404NotFound"))
+                .thenThrow(new IllegalArgumentException("Not Found the Territory"));
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
         when(tMordor.getOwner()).thenReturn(pBlue);
         when(tHogwarts.getOwner()).thenReturn(pGreen);
         when(pBlue.getTotalUnits()).thenReturn(0, 0, 5, 10);
-        // doThrow(new IllegalArgumentException("units cannot be less than 0")).when(tMordor).increaseUnits(-1);
         // Test
+        assertEquals("Not Found the Territory", testgame.tryPlaceUnitsOn("Blue", "404NotFound", 1));
         assertEquals("units cannot be less than 0", testgame.tryPlaceUnitsOn("Blue", "Mordor", -1));
         assertEquals(null, testgame.tryPlaceUnitsOn("Blue", "Mordor", 5));
         assertEquals(null, testgame.tryPlaceUnitsOn("Blue", "Mordor", 5));
         assertEquals("Too many units", testgame.tryPlaceUnitsOn("Blue", "Mordor", 1));
         assertEquals("Permission denied", testgame.tryPlaceUnitsOn("Blue", "Hogwarts", 5));
-        assertEquals("Please wait for other players to commit", testgame.tryPlaceUnitsOn("Red", "Hogwarts", 1));
     }
 
     @Test
     public void test_tryMoveOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
-        // doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(ox)
-        //         .doOneMove(any(MoveOrder.class));
         when(ox.visit(any(MoveOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
-        // doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(ox)
-        //         .visit(any(MoveOrder.class));        
+        commitSet.add("Red");
         // Test
-        assertEquals(null, testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 5));
-        assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 5));
-        assertEquals("Please wait for other players to commit", testgame.tryMoveOrder("Red", "Hogwarts", "Mordor", 1));
+        assertEquals(null, testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Please wait for other players to commit",
+                testgame.tryMoveOrder("Red", "Hogwarts", "Mordor", 0, 1));
         // Verify
         verify(gameMap, atLeastOnce()).getTerritoryByName("Hogwarts");
         verify(gameMap, atLeastOnce()).getTerritoryByName("Mordor");
@@ -215,20 +201,18 @@ public class GameEntityTest {
 
     @Test
     public void test_tryAttackOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
         Territory tMordor = mock(Territory.class);
         Territory tHogwarts = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
-        when(ox.visit(any(AttackOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
-        // doNothing().doThrow(new IllegalArgumentException("Invalid Input:")).when(ox)
-        //         .pushCombat(any(AttackOrder.class));
+        when(ox.visit(any(AttackOrder.class))).thenReturn(null)
+                .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        commitSet.add("Red");
         // Test
-        assertEquals(null, testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 5));
-        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 5));
+        assertEquals(null, testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
         assertEquals("Please wait for other players to commit",
-                testgame.tryAttackOrder("Red", "Hogwarts", "Mordor", 1));
+                testgame.tryAttackOrder("Red", "Hogwarts", "Mordor", 0, 1));
         // Verify
         verify(gameMap, atLeastOnce()).getTerritoryByName("Hogwarts");
         verify(gameMap, atLeastOnce()).getTerritoryByName("Mordor");
@@ -237,43 +221,47 @@ public class GameEntityTest {
 
     @Test
     public void test_tryUpgradeOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
+
         Territory tMordor = mock(Territory.class);
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
-        when(ox.visit(any(UpgradeOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
-        assertEquals(null, testgame.tryUpgradeOrder("Blue", "Mordor",0, 1, 5));
-        assertEquals("Invalid Input:", testgame.tryUpgradeOrder("Blue", "Mordor",0,1,5));
+        when(ox.visit(any(UpgradeOrder.class))).thenReturn(null)
+                .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        commitSet.add("Red");
+        assertEquals(null, testgame.tryUpgradeOrder("Blue", "Mordor", 0, 1, 5));
+        assertEquals("Invalid Input:", testgame.tryUpgradeOrder("Blue", "Mordor", 0, 1, 5));
         assertEquals("Please wait for other players to commit",
-                testgame.tryUpgradeOrder("Red", "Mordor",0,1,5));
+                testgame.tryUpgradeOrder("Red", "Mordor", 0, 1, 5));
         verify(ox, times(2)).visit(any(UpgradeOrder.class));
     }
 
     @Test
     public void test_tryResearchOrder() throws RemoteException {
-        commitMap.put("Blue", false);
-        commitMap.put("Red", true);
-        when(ox.visit(any(ResearchOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
+        when(ox.visit(any(ResearchOrder.class))).thenReturn(null)
+                .thenThrow(new IllegalArgumentException("Invalid Input:"));
+                commitSet.add("Red");
         assertEquals(null, testgame.tryResearchOrder("Blue"));
         assertEquals("Invalid Input:", testgame.tryResearchOrder("Blue"));
         assertEquals("Please wait for other players to commit",
                 testgame.tryResearchOrder("Red"));
         verify(ox, times(2)).visit(any(ResearchOrder.class));
     }
+
     @Test
     public void test_doCommitOrder() throws RemoteException, InterruptedException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        commitMap.put("Blue", false);
-        commitMap.put("Green", false);
         when(pBlue.isLose()).thenReturn(false);
         when(pGreen.isLose()).thenReturn(true);
         // Test
         assertEquals(null, testgame.doCommitOrder("Blue"));
+        assertEquals(RemoteGame.GamePhase.PLAY_GAME, testgame.getGamePhase("Blue"));
         assertEquals("Please wait for other players to commit", testgame.doCommitOrder("Blue"));
         assertEquals("Lost user cannot commit", testgame.doCommitOrder("Green"));
+        assertEquals(null, testgame.getGamePhase("Green"));
+        assertTrue(commitSet.contains("Blue"));
+        assertFalse(commitSet.contains("Green"));
 
         // Verify
         verify(commitSignal, times(1)).countDown();
@@ -281,15 +269,16 @@ public class GameEntityTest {
     }
 
     @Test
-    public void test_isGameOver() throws RemoteException {
-        assertFalse(testgame.isGameOver());
+    public void test_countNotLostPlayers() {
+        assertEquals(0, testgame.countNotLostPlayers());
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
         playerMap.put("Green", pGreen);
-        when(pBlue.isLose()).thenReturn(true);
-        when(pGreen.isLose()).thenReturn(false);
-        assertTrue(testgame.isGameOver());
+        when(pBlue.isLose()).thenReturn(false);
+        when(pGreen.isLose()).thenReturn(false, true);
+        assertEquals(2, testgame.countNotLostPlayers());
+        assertEquals(1, testgame.countNotLostPlayers());
     }
 
     @Test
@@ -306,7 +295,7 @@ public class GameEntityTest {
     }
 
     @Test
-    public void test_notifyGameMapToClients() throws RemoteException {
+    public void test_notifyUpdatesToClients() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -315,12 +304,16 @@ public class GameEntityTest {
         RemoteClient cGreen = mock(RemoteClient.class);
         clientMap.put("Blue", cBlue);
         clientMap.put("Green", cGreen);
-        doThrow(RemoteException.class).when(cGreen).doDisplay(gameMap);
+        doThrow(RemoteException.class).when(cGreen).updateGameMap(gameMap);
         // Test
-        assertDoesNotThrow(() -> testgame.notifyGameMapToClients());
+        assertDoesNotThrow(() -> testgame.notifyUpdatesToClients());
         // Verify
-        verify(cBlue, times(1)).doDisplay(gameMap);
-        verify(cGreen, times(1)).doDisplay(gameMap);
+        verify(cBlue, times(1)).updateGameMap(gameMap);
+        verify(cGreen, times(1)).updateGameMap(gameMap);
+        verify(cBlue, times(1)).updatePlayer(pBlue);
+        verify(cGreen, never()).updatePlayer(pGreen);
+        verify(cBlue, times(1)).showPopupWindow(anyString());
+        verify(cGreen, never()).showPopupWindow(anyString());
     }
 
     @Test
@@ -333,23 +326,11 @@ public class GameEntityTest {
         RemoteClient cGreen = mock(RemoteClient.class);
         clientMap.put("Blue", cBlue);
         clientMap.put("Green", cGreen);
-        doThrow(RemoteException.class).when(cGreen).doDisplay(anyString());
+        doThrow(RemoteException.class).when(cGreen).showPopupWindow(anyString());
         // Test
         assertDoesNotThrow(() -> testgame.notifyWinnerToClients());
         // Verify
-        verify(cBlue, times(1)).doDisplay(anyString());
-        verify(cGreen, times(1)).doDisplay(anyString());
-    }
-
-    @Test
-    public void test_closeAllClients() throws RemoteException {
-        RemoteClient cBlue = mock(RemoteClient.class);
-        RemoteClient cGreen = mock(RemoteClient.class);
-        clientMap.put("Blue", cBlue);
-        clientMap.put("Green", cGreen);
-        doThrow(RemoteException.class).when(cGreen).close();
-        assertDoesNotThrow(() -> testgame.closeAllClients());
-        verify(cBlue, times(1)).close();
-        verify(cGreen, times(1)).close();
+        verify(cBlue, times(1)).showPopupWindow(anyString());
+        verify(cGreen, times(1)).showPopupWindow(anyString());
     }
 }
