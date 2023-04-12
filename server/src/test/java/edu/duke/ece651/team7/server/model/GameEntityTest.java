@@ -300,7 +300,7 @@ public class GameEntityTest {
     }
 
     @Test
-    public void test_sendGameMapToClients() throws RemoteException {
+    public void test_sendGameMapToUsers() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -311,14 +311,14 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).updateGameMap(gameMap);
         // Test
-        assertDoesNotThrow(() -> testgame.sendGameMapToClients());
+        assertDoesNotThrow(() -> testgame.sendGameMapToUsers(playerMap.keySet()));
         // Verify
         verify(cBlue, times(1)).updateGameMap(gameMap);
         verify(cGreen, times(1)).updateGameMap(gameMap);
     }
 
     @Test
-    public void test_sendPlayersToClients() throws RemoteException {
+    public void test_sendPlayersToUsers() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -329,14 +329,14 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).updatePlayer(pGreen);
         // Test
-        assertDoesNotThrow(() -> testgame.sendPlayersToClients());
+        assertDoesNotThrow(() -> testgame.sendPlayersToUsers(playerMap.keySet()));
         // Verify
         verify(cBlue, times(1)).updatePlayer(pBlue);
         verify(cGreen, times(1)).updatePlayer(pGreen);
     }
 
     @Test
-    public void test_sendMessageToClients() throws RemoteException {
+    public void test_sendMessageToUsers() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -347,7 +347,7 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).showPopupWindow(anyString());
         // Test
-        assertDoesNotThrow(() -> testgame.sendMessageToClients("msg"));
+        assertDoesNotThrow(() -> testgame.sendMessageToUsers(playerMap.keySet(), "msg"));
         // Verify
         verify(cBlue, times(1)).showPopupWindow(anyString());
         verify(cGreen, times(1)).showPopupWindow(anyString());
