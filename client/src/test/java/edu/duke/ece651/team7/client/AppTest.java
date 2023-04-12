@@ -3,25 +3,25 @@ package edu.duke.ece651.team7.client;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import edu.duke.ece651.team7.client.controller.ErrorReporter;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
+@ExtendWith(ApplicationExtension.class)
 public class AppTest {
-  /* 
-  @Test
-  public void test_clientApp_main() {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bytes, true);
 
-    PrintStream oldErr = System.err;
-    try {
-      System.setErr(out);
-      App.main(new String[0]);
-    } finally {
-      System.setErr(oldErr);
-    }
-    assertEquals("Usage: client <host> <port> <gamename>\n", bytes.toString());
+  @Test
+  public void test_start() {
+    Platform.runLater(() -> {
+      Stage stage = new Stage();
+      App app = new App();
+      app.start(stage);
+      assertTrue(Thread.getDefaultUncaughtExceptionHandler() instanceof ErrorReporter);
+      assertNotNull(stage.getScene());
+    });
   }
-  */
+
 }
