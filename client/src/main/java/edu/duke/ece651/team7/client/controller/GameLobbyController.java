@@ -83,7 +83,8 @@ public class GameLobbyController implements Initializable {
             return new SimpleIntegerProperty(curr).asObject();
         });
 
-        updateGameList("http://localhost:8080/api/riscgame/all");
+        updateGameList("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/all");
         myGamesTable.setItems(
                 gameList.filtered(game -> game.getInGameUsers().contains(UserSession.getInstance().getUsername())));
     }
@@ -96,14 +97,17 @@ public class GameLobbyController implements Initializable {
         popupStage.initOwner(allGamesTable.getScene().getWindow());
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.showAndWait();
-        updateGameList("http://localhost:8080/api/riscgame/all");
+        updateGameList("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/all");
     }
 
     @FXML
     public void clickOnJoin(ActionEvent event) {
         String gamename = allGamesTable.getSelectionModel().getSelectedItem().getName();
-        requestJoinGame("http://localhost:8080/api/riscgame/join", gamename);
-        updateGameList("http://localhost:8080/api/riscgame/all");
+        requestJoinGame("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/join", gamename);
+        updateGameList("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/all");
     }
 
     @FXML
@@ -128,7 +132,8 @@ public class GameLobbyController implements Initializable {
 
     @FXML
     public void clickOnRefresh(ActionEvent event) {
-        updateGameList("http://localhost:8080/api/riscgame/all");
+        updateGameList("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/all");
     }
 
     public void requestJoinGame(String url, String gamename) {

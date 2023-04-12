@@ -32,7 +32,7 @@ public class LoginSignupController {
     }
 
     @FXML
-    TextField username;
+    private TextField host, port, username;
     @FXML
     PasswordField password;
 
@@ -40,27 +40,31 @@ public class LoginSignupController {
 
     @FXML
     public void clickOnLogin(ActionEvent event) throws IOException {
-        doLogin("http://localhost:8080/api/login", username.getText(), password.getText());
+        doLogin(host.getText(), port.getText(), username.getText(), password.getText());
         loadGameLobbyPage();
     }
 
     @FXML
     public void clickOnSignup(ActionEvent event) throws IOException {
-        doSignup("http://localhost:8080/api/signup", username.getText(), password.getText());
-        doLogin("http://localhost:8080/api/login", username.getText(), password.getText());
+        doSignup(host.getText(), port.getText(), username.getText(), password.getText());
+        doLogin(host.getText(), port.getText(), username.getText(), password.getText());
         loadGameLobbyPage();
     }
 
-    public void doLogin(String url, String username, String password) {
+    public void doLogin(String host, String port, String username, String password) {
+        String url = "http://" + host + ":" + port + "/api/login";
         ResponseEntity<String> response = getHttpPostResponse(username, password, url);
         if (response.getStatusCode() != HttpStatus.FOUND) {
             throw new IllegalArgumentException(response.getBody());
         }
+        UserSession.getInstance().setHost(host);
+        UserSession.getInstance().setPort(port);
         UserSession.getInstance().setUsername(username);
         UserSession.getInstance().setSession(response.getHeaders().getFirst("Set-Cookie"));
     }
 
-    public void doSignup(String url, String username, String password) {
+    public void doSignup(String host, String port, String username, String password) {
+        String url = "http://" + host + ":" + port + "/api/signup";
         ResponseEntity<String> response = getHttpPostResponse(username, password, url);
         if (response.getStatusCode() != HttpStatus.CREATED) {
             throw new IllegalArgumentException(response.getBody());
