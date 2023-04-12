@@ -112,6 +112,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             commitSignal.await();
             // ox.doAllCombats();
             ox.resolveOneRound();
+            
+            //need collect resource for each player
             if (!isGameOver()) {
                 resetCommitMap(true); // reset the commit record for not lost users
                 setCountDownLatch(commitMap.size()); // reset countDownLatch
