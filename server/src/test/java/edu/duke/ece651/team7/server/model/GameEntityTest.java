@@ -186,7 +186,10 @@ public class GameEntityTest {
         when(gameMap.getTerritoryByName("Mordor")).thenReturn(tMordor);
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
         when(ox.visit(any(MoveOrder.class))).thenReturn(null).thenThrow(new IllegalArgumentException("Invalid Input:"));
+        RemoteClient cBlue = mock(RemoteClient.class);
+        clientMap.put("Blue", cBlue);
         commitSet.add("Red");
+
         // Test
         assertEquals(null, testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
         assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
@@ -207,6 +210,8 @@ public class GameEntityTest {
         when(gameMap.getTerritoryByName("Hogwarts")).thenReturn(tHogwarts);
         when(ox.visit(any(AttackOrder.class))).thenReturn(null)
                 .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        RemoteClient cBlue = mock(RemoteClient.class);
+        clientMap.put("Blue", cBlue);
         commitSet.add("Red");
         // Test
         assertEquals(null, testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
@@ -295,7 +300,7 @@ public class GameEntityTest {
     }
 
     @Test
-    public void test_notifyUpdatesToClients() throws RemoteException {
+    public void test_sendGameMapToClients() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -306,18 +311,32 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).updateGameMap(gameMap);
         // Test
-        assertDoesNotThrow(() -> testgame.notifyUpdatesToClients());
+        assertDoesNotThrow(() -> testgame.sendGameMapToClients());
         // Verify
         verify(cBlue, times(1)).updateGameMap(gameMap);
         verify(cGreen, times(1)).updateGameMap(gameMap);
-        verify(cBlue, times(1)).updatePlayer(pBlue);
-        verify(cGreen, never()).updatePlayer(pGreen);
-        verify(cBlue, times(1)).showPopupWindow(anyString());
-        verify(cGreen, never()).showPopupWindow(anyString());
     }
 
     @Test
-    public void test_notifyWinnerToClients() throws RemoteException {
+    public void test_sendPlayersToClients() throws RemoteException {
+        Player pBlue = mock(Player.class);
+        Player pGreen = mock(Player.class);
+        playerMap.put("Blue", pBlue);
+        playerMap.put("Green", pGreen);
+        RemoteClient cBlue = mock(RemoteClient.class);
+        RemoteClient cGreen = mock(RemoteClient.class);
+        clientMap.put("Blue", cBlue);
+        clientMap.put("Green", cGreen);
+        doThrow(RemoteException.class).when(cGreen).updatePlayer(pGreen);
+        // Test
+        assertDoesNotThrow(() -> testgame.sendPlayersToClients());
+        // Verify
+        verify(cBlue, times(1)).updatePlayer(pBlue);
+        verify(cGreen, times(1)).updatePlayer(pGreen);
+    }
+
+    @Test
+    public void test_sendMessageToClients() throws RemoteException {
         Player pBlue = mock(Player.class);
         Player pGreen = mock(Player.class);
         playerMap.put("Blue", pBlue);
@@ -328,7 +347,7 @@ public class GameEntityTest {
         clientMap.put("Green", cGreen);
         doThrow(RemoteException.class).when(cGreen).showPopupWindow(anyString());
         // Test
-        assertDoesNotThrow(() -> testgame.notifyWinnerToClients());
+        assertDoesNotThrow(() -> testgame.sendMessageToClients("msg"));
         // Verify
         verify(cBlue, times(1)).showPopupWindow(anyString());
         verify(cGreen, times(1)).showPopupWindow(anyString());
