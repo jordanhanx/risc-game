@@ -2,6 +2,8 @@ package edu.duke.ece651.team7.server.model;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -91,17 +93,18 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         commitSignal.await(); // waits for all players placing their initial units
         setCountDownLatch(capacity); // reset countDownLatch
         /* Game Start Phase */
-        sendGameMapToClients();
+        sendGameMapToUsers(playerMap.keySet());
+        sendPlayersToUsers(playerMap.keySet());
         while (true) {
             commitSignal.await();
             setCountDownLatch(countNotLostPlayers()); // reset countDownLatch
             ox.resolveOneRound();
             if (countNotLostPlayers() != 1) {
-                sendGameMapToClients();
-                sendPlayersToClients();
-                sendMessageToClients("NEXT TURN: GAMEMAP UPDATED!");
+                sendGameMapToUsers(playerMap.keySet());
+                sendPlayersToUsers(playerMap.keySet());
+                sendMessageToUsers(playerMap.keySet(), "NEXT TURN: GAMEMAP UPDATED!");
             } else {
-                sendMessageToClients("GAME OVER! Winner is " + findWinner());
+                sendMessageToUsers(playerMap.keySet(), "GAME OVER! Winner is " + findWinner());
                 UnicastRemoteObject.unexportObject(this, true); // close this game
                 logger.info(name + " is over");
                 break;
@@ -160,6 +163,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     public synchronized String tryRegisterClient(String username, RemoteClient client) throws RemoteException {
         if (playerMap.containsKey(username)) {
             clientMap.put(username, client);
+            sendMessageToUsers(playerMap.keySet().stream().filter(str -> !str.equals(username)).toList(),
+                    username + "is connected to the game");
             return null;
         } else {
             return "Username didn't match";
@@ -229,7 +234,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 MoveOrder mo = new MoveOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 mo.accept(ox);
-                clientMap.get(username).updatePlayer(playerMap.get(username));
+                sendPlayersToUsers(Arrays.asList(username));
             }
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -248,7 +253,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 AttackOrder ao = new AttackOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 ao.accept(ox);
-                clientMap.get(username).updatePlayer(playerMap.get(username));
+                sendPlayersToUsers(Arrays.asList(username));
             }
         } catch (RuntimeException e) {
             response = e.getMessage();
@@ -334,10 +339,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     /**
      * Notifies clients who have lost the game to switch to watcher mode using RMI.
      */
-    void sendGameMapToClients() {
-        for (Map.Entry<String, RemoteClient> pair : clientMap.entrySet()) {
+    void sendGameMapToUsers(Collection<String> users) {
+        for (String username : users) {
             try {
-                pair.getValue().updateGameMap(gameMap);
+                clientMap.get(username).updateGameMap(gameMap);
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
@@ -346,10 +351,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         }
     }
 
-    void sendPlayersToClients() {
-        for (Map.Entry<String, RemoteClient> pair : clientMap.entrySet()) {
+    void sendPlayersToUsers(Collection<String> users) {
+        for (String username : users) {
             try {
-                pair.getValue().updatePlayer(playerMap.get(pair.getKey()));
+                clientMap.get(username).updatePlayer(playerMap.get(username));
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
@@ -361,10 +366,10 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     /**
      * Notifies all clients that the game is over and displays the winner using RMI.
      */
-    void sendMessageToClients(String msg) {
-        for (RemoteClient client : clientMap.values()) {
+    void sendMessageToUsers(Collection<String> users, String msg) {
+        for (String username : users) {
             try {
-                client.showPopupWindow(msg);
+                clientMap.get(username).showPopupWindow(msg);
             } catch (RemoteException e) {
                 /*
                  * RemoteException because the remote Client has disconnected, can be ignored
