@@ -44,24 +44,26 @@ public class GameLobbyController implements Initializable {
     }
 
     @FXML
-    private TableView<GameDto> allGamesTable = new TableView<>();
+    TableView<GameDto> allGamesTable = new TableView<>();
     @FXML
-    private TableColumn<GameDto, String> allGamesName = new TableColumn<>();
+    TableColumn<GameDto, String> allGamesName = new TableColumn<>();
     @FXML
-    private TableColumn<GameDto, Integer> allGamesCapacity = new TableColumn<>();
+    TableColumn<GameDto, Integer> allGamesCapacity = new TableColumn<>();
     @FXML
-    private TableColumn<GameDto, Integer> allGamesCurrentPlayers = new TableColumn<>();
+    TableColumn<GameDto, Integer> allGamesCurrentPlayers = new TableColumn<>();
 
     @FXML
-    private TableView<GameDto> myGamesTable = new TableView<>();
+    TableView<GameDto> myGamesTable = new TableView<>();
     @FXML
-    private TableColumn<GameDto, String> myGamesName = new TableColumn<>();
+    TableColumn<GameDto, String> myGamesName = new TableColumn<>();
     @FXML
-    private TableColumn<GameDto, Integer> myGamesCapacity = new TableColumn<>();
+    TableColumn<GameDto, Integer> myGamesCapacity = new TableColumn<>();
     @FXML
-    private TableColumn<GameDto, Integer> myGamesCurrentPlayers = new TableColumn<>();
+    TableColumn<GameDto, Integer> myGamesCurrentPlayers = new TableColumn<>();
 
-    private ObservableList<GameDto> gameList = FXCollections.observableArrayList();
+    ObservableList<GameDto> gameList = FXCollections.observableArrayList();
+
+    RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -130,9 +132,6 @@ public class GameLobbyController implements Initializable {
     }
 
     public void requestJoinGame(String url, String gamename) {
-        // create a RestTemplate object
-        RestTemplate restTemplate = new RestTemplate();
-
         // create a headers object with the session cookie
         HttpHeaders header = new HttpHeaders();
         header.add("Cookie", UserSession.getInstance().getSession());
@@ -152,9 +151,6 @@ public class GameLobbyController implements Initializable {
     }
 
     public void updateGameList(String url) {
-        // create a RestTemplate object
-        RestTemplate restTemplate = new RestTemplate();
-
         // create a headers object with the session cookie
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", UserSession.getInstance().getSession());
