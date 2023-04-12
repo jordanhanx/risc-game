@@ -43,8 +43,9 @@ public class OrderUpgradeController implements Initializable {
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
         this.levList = FXCollections.observableArrayList();
-        for (int lev = 0; lev < 6; ++lev) {
+        for (int lev = 0; lev < 7; ++lev) {
             levList.add(String.valueOf(lev));
+            // levList.add(Level.valueOfLabel(lev).name());
         }
     }
 

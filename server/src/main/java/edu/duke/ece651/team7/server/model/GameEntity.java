@@ -93,6 +93,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         commitSignal.await(); // waits for all players placing their initial units
         setCountDownLatch(capacity); // reset countDownLatch
         /* Game Start Phase */
+        ox.collectAllResource();
         sendGameMapToUsers(playerMap.keySet());
         sendPlayersToUsers(playerMap.keySet());
         while (true) {
@@ -170,7 +171,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             return "Username didn't match";
         }
     }
-
+    
     @Override
     public synchronized GamePhase getGamePhase(String username) throws RemoteException {
         return phaseMap.get(username);
@@ -343,10 +344,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         for (String username : users) {
             try {
                 clientMap.get(username).updateGameMap(gameMap);
-            } catch (RemoteException e) {
-                /*
-                 * RemoteException because the remote Client has disconnected, can be ignored
-                 */
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -355,10 +354,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         for (String username : users) {
             try {
                 clientMap.get(username).updatePlayer(playerMap.get(username));
-            } catch (RemoteException e) {
-                /*
-                 * RemoteException because the remote Client has disconnected, can be ignored
-                 */
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -370,10 +367,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         for (String username : users) {
             try {
                 clientMap.get(username).showPopupWindow(msg);
-            } catch (RemoteException e) {
-                /*
-                 * RemoteException because the remote Client has disconnected, can be ignored
-                 */
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
     }

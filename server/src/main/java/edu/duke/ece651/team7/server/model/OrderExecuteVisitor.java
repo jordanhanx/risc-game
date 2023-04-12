@@ -106,6 +106,21 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     }
 
     /**
+     * collect all player's resource
+     */
+    protected void collectAllResource(){
+        ArrayList<Player> players = new ArrayList<>();
+        for(Territory t: map.getTerritories()){
+            Player p = t.getOwner();
+            if(!players.contains(p)){
+                p.collectResource();
+                players.add(p);
+            }else{
+                continue;
+            }
+        }
+    }
+    /**
      * when all users committed, finish current Round
      * 1. resolving all the combats results
      * 2. finish the research order by upgrading user level in the research pool
@@ -117,6 +132,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         for(Territory t: map.getTerritories()){
             t.addUnits(new Unit());
         }
+        collectAllResource();
     }
    
 

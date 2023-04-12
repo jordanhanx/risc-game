@@ -120,6 +120,11 @@ public class TerritoryTest {
     assertEquals(8, tomove.size());
     assertTrue(tomove.contains(u1));
     assertTrue(tomove.contains(u2));
+
+    t.addUnits(tomove);
+    assertTrue(tomove.contains(u1));
+    assertTrue(tomove.contains(u2));
+    assertEquals(tomove.size(), t.getUnitsNumber());
   }
 
 

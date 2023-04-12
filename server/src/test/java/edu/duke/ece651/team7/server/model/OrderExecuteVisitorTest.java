@@ -305,8 +305,30 @@ public class OrderExecuteVisitorTest {
         assertEquals(940, p2.getTech().getAmount());
         assertEquals(Level.TROOPER, p3.getCurrentMaxLevel());
         assertEquals(940, p3.getTech().getAmount());
+    }
 
+    @Test
+    public void test_collectResource(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        // OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        assertEquals(0, p1.getTech().getAmount());
+        assertEquals(0, p2.getTech().getAmount());
+        assertEquals(0, p3.getTech().getAmount());
+        assertEquals(0, p1.getFood().getAmount());
+        assertEquals(0, p2.getFood().getAmount());
+        assertEquals(0, p3.getFood().getAmount());
 
+        ox.collectAllResource();
+        assertEquals(3, p1.getFood().getAmount());
+        assertEquals(3, p2.getFood().getAmount());
+        assertEquals(3, p3.getFood().getAmount());
+        assertEquals(3, p1.getTech().getAmount());
+        assertEquals(3, p2.getTech().getAmount());
+        assertEquals(3, p3.getTech().getAmount());
 
     }
 
