@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -33,40 +34,40 @@ public class LoginSignupController {
     @FXML
     private TextField username;
     @FXML
-    private TextField password;
+    private PasswordField password;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @FXML
     public void clickOnLogin(ActionEvent event) throws IOException {
-        doLogin("http://localhost:8080/api/login");
+        doLogin("http://localhost:8080/api/login", username.getText(), password.getText());
         loadGameLobbyPage();
     }
 
     @FXML
     public void clickOnSignup(ActionEvent event) throws IOException {
-        doSignup("http://localhost:8080/api/signup");
-        doLogin("http://localhost:8080/api/login");
+        doSignup("http://localhost:8080/api/signup", username.getText(), password.getText());
+        doLogin("http://localhost:8080/api/login", username.getText(), password.getText());
         loadGameLobbyPage();
     }
 
-    public void doLogin(String url) {
-        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(), url);
+    public void doLogin(String url, String username, String password) {
+        ResponseEntity<String> response = getHttpPostResponse(username, password, url);
         if (response.getStatusCode() != HttpStatus.FOUND) {
             throw new IllegalArgumentException(response.getBody());
         }
-        UserSession.getInstance().setUsername(username.getText());
+        UserSession.getInstance().setUsername(username);
         UserSession.getInstance().setSession(response.getHeaders().getFirst("Set-Cookie"));
     }
 
-    public void doSignup(String url) {
-        ResponseEntity<String> response = getHttpPostResponse(username.getText(), password.getText(), url);
+    public void doSignup(String url, String username, String password) {
+        ResponseEntity<String> response = getHttpPostResponse(username, password, url);
         if (response.getStatusCode() != HttpStatus.CREATED) {
             throw new IllegalArgumentException(response.getBody());
         }
     }
 
     public ResponseEntity<String> getHttpPostResponse(String username, String password, String apiUrl) {
-        // create a RestTemplate object
-        RestTemplate restTemplate = new RestTemplate();
 
         // create the request body as a MultiValueMap
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
