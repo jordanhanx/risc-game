@@ -171,7 +171,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             return "Username didn't match";
         }
     }
-    
+
     @Override
     public synchronized GamePhase getGamePhase(String username) throws RemoteException {
         return phaseMap.get(username);
@@ -297,7 +297,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String doCommitOrder(String username) throws RemoteException, InterruptedException {
+    public synchronized String doCommitOrder(String username) throws RemoteException {
         String response = null;
         if (playerMap.get(username).isLose()) {
             response = "Lost user cannot commit";
