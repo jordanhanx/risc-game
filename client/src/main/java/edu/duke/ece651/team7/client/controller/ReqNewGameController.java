@@ -55,7 +55,8 @@ public class ReqNewGameController {
      */
     @FXML
     public void clickOnCreate(ActionEvent event) {
-        requestNewGame("http://localhost:8080/api/riscgame/new",
+        requestNewGame("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
+                + "/api/riscgame/new",
                 Integer.parseInt(capacity.getText()),
                 Integer.parseInt(initUnits.getText()));
         Stage currStage = (Stage) capacity.getScene().getWindow();
