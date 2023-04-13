@@ -35,8 +35,17 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * This class is responsible for the game lobby page of a Risk-like game. The
+ * class defines a number of instance variables, including tables and columns to
+ * display information about available games and the user's games.
+ */
 public class GameLobbyController implements Initializable {
 
+    /**
+     * The getScene method loads an FXML file for the game-lobby-page and
+     * returns a new Scene object.
+     */
     public static Scene getScene() throws IOException {
         URL xmlResource = GameLobbyController.class.getResource("/fxml/game-lobby-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -89,6 +98,15 @@ public class GameLobbyController implements Initializable {
                 gameList.filtered(game -> game.getInGameUsers().contains(UserSession.getInstance().getUsername())));
     }
 
+    /**
+     * The clickOnNew method is called when the user clicks the "NewGame" button. It
+     * creates a new game by opening a popup window that allows the user to enter
+     * the number of players and initial units per player. It then sends an HTTP
+     * POST request to the server to create the new game and updates the list of
+     * games.
+     * 
+     * @param event the event that triggered the action.
+     */
     @FXML
     public void clickOnNew(ActionEvent event) throws IOException {
         Scene newScene = ReqNewGameController.getScene();
@@ -101,6 +119,13 @@ public class GameLobbyController implements Initializable {
                 + "/api/riscgame/all");
     }
 
+    /**
+     * The clickOnJoin method is called when the user clicks the "Join" button. It
+     * sends an HTTP POST request to the server to join the selected game and
+     * updates the list of games.
+     * 
+     * @param event the event that triggered the action.
+     */
     @FXML
     public void clickOnJoin(ActionEvent event) {
         String gamename = allGamesTable.getSelectionModel().getSelectedItem().getName();
@@ -110,6 +135,14 @@ public class GameLobbyController implements Initializable {
                 + "/api/riscgame/all");
     }
 
+    /**
+     * The clickOnEnter method is called when the user clicks the "Enter" button. It
+     * gets the selected game from the user's game table, looks up the server for
+     * the game, and creates a new scene to display the game. The scene depends on
+     * the game phase.
+     * 
+     * @param event the event that triggered the action.
+     */
     @FXML
     public void clickOnEnter(ActionEvent event) throws NotBoundException, IOException {
         String host = myGamesTable.getSelectionModel().getSelectedItem().getHost();
@@ -130,12 +163,26 @@ public class GameLobbyController implements Initializable {
         gameStage.show();
     }
 
+    /**
+     * The clickOnRefresh method is called when the user clicks the "Refresh"
+     * button. It sends an HTTP GET request to the server to update the list of
+     * games.
+     * 
+     * @param event the event that triggered the action.
+     */
     @FXML
     public void clickOnRefresh(ActionEvent event) {
         updateGameList("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
                 + "/api/riscgame/all");
     }
 
+    /**
+     * The requestJoinGame method is called by clickOnJoin to send an HTTP POST
+     * request to the server to join the game.
+     * 
+     * @param url      is the join a game service endpoint.
+     * @param gamename is the target game.
+     */
     public void requestJoinGame(String url, String gamename) {
         // create a headers object with the session cookie
         HttpHeaders header = new HttpHeaders();
@@ -155,6 +202,12 @@ public class GameLobbyController implements Initializable {
         }
     }
 
+    /**
+     * The updateGameList method sends an HTTP GET request to the server to get a
+     * list of all available games, and updates the list of games in the GUI.
+     * 
+     * @param url is the query all games service endpoint.
+     */
     public void updateGameList(String url) {
         // create a headers object with the session cookie
         HttpHeaders headers = new HttpHeaders();

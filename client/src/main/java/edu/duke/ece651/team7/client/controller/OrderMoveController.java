@@ -19,8 +19,19 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * The OrderMoveController class controls the "move order" page, which allows
+ * players to create a move order to move armies from one territory to another.
+ */
 public class OrderMoveController implements Initializable {
 
+    /**
+     * Creates and returns the Scene for the OrderMove page.
+     * 
+     * @param server The RemoteGame object representing the game server.
+     * @return The Scene object for the OrderMove page.
+     * @throws IOException If there is an error loading the FXML file.
+     */
     public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = OrderMoveController.class.getResource("/fxml/order-move-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -38,6 +49,12 @@ public class OrderMoveController implements Initializable {
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
 
+    /**
+     * Constructs an OrderMoveController object.
+     * 
+     * @param server The RemoteGame object representing the game server.
+     * @throws RemoteException If there is an error communicating with the server.
+     */
     public OrderMoveController(RemoteGame server) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
@@ -55,6 +72,14 @@ public class OrderMoveController implements Initializable {
         levelSelector.setItems(levList);
     }
 
+    /**
+     * Handles the click on the Move button.
+     * 
+     * @param action The ActionEvent object representing the click event.
+     * @throws RemoteException          If there is an error communicating with the
+     *                                  server.
+     * @throws IllegalArgumentException If there is an invalid input from the user.
+     */
     @FXML
     public void clickOnMove(ActionEvent action) throws RemoteException {
         String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),
@@ -66,6 +91,11 @@ public class OrderMoveController implements Initializable {
         }
     }
 
+    /**
+     * Handles the click on the Finish button.
+     * 
+     * @param action The ActionEvent object representing the click event.
+     */
     @FXML
     public void clickOnFinish(ActionEvent action) {
         Stage currStage = (Stage) srcSelector.getScene().getWindow();

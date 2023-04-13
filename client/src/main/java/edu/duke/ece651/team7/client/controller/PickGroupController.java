@@ -19,8 +19,20 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * The PickGroupController class implements the functionality for the "pick
+ * group" screen of the RISC game. This screen allows the user to select a group
+ * to join from the list of available groups. Once a group is selected, the user
+ * can confirm their choice and proceed to the "place units" scene.
+ */
 public class PickGroupController implements Initializable {
-
+    /**
+     * Returns a new Scene object that displays the "pick group" screen.
+     * 
+     * @param server the remote game server object
+     * @return a new Scene object for the "pick group" screen
+     * @throws IOException if there is an error loading the FXML file
+     */
     public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = PickGroupController.class.getResource("/fxml/pick-group-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -36,6 +48,13 @@ public class PickGroupController implements Initializable {
     private final RemoteGame server;
     private ObservableList<String> groupList;
 
+    /**
+     * Constructor for the PickGroupController class.
+     * 
+     * @param server the remote game server object
+     * @throws RemoteException if there is a problem communicating with the remote
+     *                         game server
+     */
     public PickGroupController(RemoteGame server) throws RemoteException {
         this.server = server;
         this.groupList = FXCollections
@@ -47,8 +66,17 @@ public class PickGroupController implements Initializable {
         selector.setItems(groupList);
     }
 
+    /**
+     * Event handler for the confirm button. When the confirm button is clicked, the
+     * selected group is sent to the server and the user is taken to the "place
+     * units" scene.
+     * 
+     * @param action the ActionEvent object representing the click event
+     * @throws IOException if there is an error communicating with the
+     *                     remote game server
+     */
     @FXML
-    public void clickOnConfirm(ActionEvent action) throws InterruptedException, IOException {
+    public void clickOnConfirm(ActionEvent action) throws IOException {
         String groupName = selector.getSelectionModel().getSelectedItem();
         String response = server.tryPickTerritoryGroupByName(UserSession.getInstance().getUsername(), groupName);
         if (response != null) {

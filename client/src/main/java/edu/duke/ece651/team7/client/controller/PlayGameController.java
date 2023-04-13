@@ -29,8 +29,25 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * The PlayGameController class is responsible for managing the game view, which
+ * displays the current state of the game to the user, and allows the user to
+ * interact with the game by clicking on territories and performing various
+ * actions, such as moving, attacking, upgrading, researching, and committing
+ * orders.
+ * This class implements the RemoteClient and Initializable interfaces, and
+ * extends the UnicastRemoteObject class to provide remote access to the game
+ * server.
+ */
 public class PlayGameController extends UnicastRemoteObject implements RemoteClient, Initializable {
 
+    /**
+     * Returns the scene of the game view with the specified server.
+     *
+     * @param server the remote game server.
+     * @return the scene of the game view.
+     * @throws IOException if the FXML file cannot be loaded.
+     */
     public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = PlayGameController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -61,6 +78,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     private Property<Player> self;
     private Map<String, Color> colorMap;
 
+    /**
+     * Constructs a new PlayGameController object with the specified remote game
+     * server.
+     * 
+     * @param server the remote game server.
+     * @throws RemoteException if there is a problem with the remote connection.
+     */
     public PlayGameController(RemoteGame server) throws RemoteException {
         super();
         this.server = server;
@@ -80,6 +104,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         setTerritoryColor();
     }
 
+    /**
+     * Updates the game map property.
+     * 
+     * @param gameMap the updated game map.
+     * @throws RemoteException if there is a remote communication error.
+     */
     @Override
     public void updateGameMap(GameMap gameMap) throws RemoteException {
         Platform.runLater(() -> {
@@ -89,6 +119,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         });
     }
 
+    /**
+     * Updates the player property.
+     * 
+     * @param player the updated player.
+     * @throws RemoteException if there is a remote communication error.
+     */
     @Override
     public void updatePlayer(Player player) throws RemoteException {
         Platform.runLater(() -> {
@@ -97,6 +133,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         });
     }
 
+    /**
+     * Displays a popup window with the specified message.
+     * 
+     * @param msg the message to display.
+     * @throws RemoteException if there is a remote communication error.
+     */
     @Override
     public void showPopupWindow(String msg) throws RemoteException {
         Platform.runLater(() -> {
@@ -108,6 +150,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         });
     }
 
+    /**
+     * 
+     * This method finds the territory object with the given name in the player's
+     * owned territories, if it doesn't exist in the owned territories, returns the
+     * territory object with the given name from the game map.
+     * 
+     * @param terrName name of the territory to be searched
+     * @return Territory object with the given name
+     */
     public Territory findTerritory(String terrName) {
         for (Territory t : self.getValue().getTerritories()) {
             if (t.getName().equals(terrName)) {
@@ -117,6 +168,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         return gameMap.getValue().getTerritoryByName(terrName);
     }
 
+    /**
+     * This method is called when a player clicks on a territory button. It sets the
+     * necessary information of the selected territory such as name, owner, unit
+     * levels, produced food and tech.
+     * 
+     * @param event the action event triggered by the click
+     */
     @FXML
     public void clickOnTerr(ActionEvent event) {
         Object source = event.getSource();
@@ -142,6 +200,14 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    /**
+     * This method is called when a player clicks on the move button. It opens the
+     * OrderMoveController scene to allow the player to make move orders.
+     * 
+     * @param event the action event triggered by the click
+     * @throws IOException if there is an error while opening the
+     *                     OrderMoveController scene
+     */
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
         Scene newScene = OrderMoveController.getScene(server);
@@ -152,6 +218,14 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         popupStage.showAndWait();
     }
 
+    /**
+     * This method is called when a player clicks on the attack button. It opens the
+     * OrderAttackController scene to allow the player to make attack orders.
+     * 
+     * @param event the action event triggered by the click
+     * @throws IOException if there is an error while opening the
+     *                     OrderAttackController scene
+     */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
         Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
@@ -162,6 +236,14 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         popupStage.showAndWait();
     }
 
+    /**
+     * Event handler for the "Upgrade" button. Opens a new window to upgrade the
+     * user's orders.
+     * 
+     * @param event The ActionEvent triggered by clicking the "Upgrade" button.
+     * @throws IOException If an input/output error occurs while opening the new
+     *                     window.
+     */
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
         Scene newScene = OrderUpgradeController.getScene(server);
@@ -172,6 +254,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         popupStage.showAndWait();
     }
 
+    /**
+     * Event handler for the "Research" button.
+     * Attempts to research a new order for the current user.
+     * 
+     * @param event The ActionEvent triggered by clicking the "Research" button.
+     * @throws RemoteException          If a remote method invocation error occurs
+     *                                  while attempting to research the order.
+     * @throws IllegalArgumentException If the server returns an error message.
+     */
     @FXML
     public void clickOnResearch(ActionEvent event) throws RemoteException {
         String response = server.tryResearchOrder(UserSession.getInstance().getUsername());
@@ -180,14 +271,27 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    /**
+     * Event handler for the "Commit" button.
+     * Attempts to commit the current user's orders.
+     * 
+     * @param event The ActionEvent triggered by clicking the "Commit" button.
+     * @throws RemoteException          If a remote method invocation error occurs
+     *                                  while attempting to commit the orders.
+     * @throws IllegalArgumentException If the server returns an error message.
+     */
     @FXML
-    public void clickOnCommit(ActionEvent event) throws RemoteException, InterruptedException {
+    public void clickOnCommit(ActionEvent event) throws RemoteException {
         String response = server.doCommitOrder(UserSession.getInstance().getUsername());
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
     }
 
+    /**
+     * Initializes the color map used to display player information.
+     * The map maps each player's name to a color used to display their information.
+     */
     public void initColorMap() {
         colorMap.clear();
         Color[] colorArr = { Color.MAGENTA, Color.GREEN, Color.BLUE, Color.ORANGERED };
@@ -202,6 +306,10 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    /**
+     * Sets the current user's information in the UI. This includes the user's name,
+     * food and tech resources, and current tech level.
+     */
     public void setPlayerInfo() {
         playerName.setText(UserSession.getInstance().getUsername());
         food.setText(String.valueOf(self.getValue().getFood().getAmount()));
@@ -215,6 +323,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techLevel.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
     }
 
+    /**
+     * Sets the color of each territory based on the owner's color.
+     * The color is retrieved from the colorMap that is initialized in the
+     * constructor.
+     */
     public void setTerritoryColor() {
         // Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
         Midkemia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getOwner().getName()));

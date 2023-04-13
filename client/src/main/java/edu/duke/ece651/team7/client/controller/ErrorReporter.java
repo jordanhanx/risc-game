@@ -5,6 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import javafx.scene.control.Alert;
 
+/**
+ * This class implements the Thread.UncaughtExceptionHandler interface, which
+ * allows it to handle uncaught exceptions that occur within a thread.
+ * When an uncaught exception occurs, the uncaughtException() method is called
+ * automatically.
+ * It then creates an Alert dialog box with the error message and displays it to
+ * the user.
+ */
 public class ErrorReporter implements Thread.UncaughtExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorReporter.class);

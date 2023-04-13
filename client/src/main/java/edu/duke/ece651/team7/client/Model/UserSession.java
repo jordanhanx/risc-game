@@ -1,5 +1,11 @@
 package edu.duke.ece651.team7.client.model;
 
+/**
+ * This class represents a user information and follows the Singleton design
+ * pattern.
+ * The instance is created and maintained within the class itself and can be
+ * accessed through the getInstance() method.
+ */
 public class UserSession {
 
     private static UserSession obj = new UserSession();

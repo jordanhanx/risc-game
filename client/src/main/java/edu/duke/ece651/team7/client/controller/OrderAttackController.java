@@ -19,8 +19,22 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * This class controls the Attack Order page of the game, where the player can
+ * choose a source territory, a target territory, a level, and the number of
+ * armies to use in the attack order.
+ */
 public class OrderAttackController implements Initializable {
 
+    /**
+     * Returns a new Scene object containing the Attack Order UI layout.
+     * 
+     * @param server  the RemoteGame object representing the game server
+     * @param gameMap the GameMap object representing the game map
+     * @return a new Scene object containing the Attack Order UI layout
+     * @throws IOException if the FXML file for the Attack Order UI layout cannot be
+     *                     found
+     */
     public static Scene getScene(RemoteGame server, GameMap gameMap) throws IOException {
         URL xmlResource = OrderAttackController.class.getResource("/fxml/order-attack-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -39,6 +53,14 @@ public class OrderAttackController implements Initializable {
     private ObservableList<String> destList;
     private ObservableList<String> levList;
 
+    /**
+     * Constructs a new instance of OrderAttackController with the specified server
+     * and game map.
+     * 
+     * @param server  the RemoteGame object representing the game server
+     * @param gameMap the GameMap object representing the game map
+     * @throws RemoteException if a remote method call fails
+     */
     public OrderAttackController(RemoteGame server, GameMap gameMap) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
@@ -58,6 +80,15 @@ public class OrderAttackController implements Initializable {
         levelSelector.setItems(levList);
     }
 
+    /**
+     * Handles the event when the player clicks the "Attack" button.
+     * Calls the corresponding remote method on the game server with the selected
+     * values.
+     * 
+     * @param action the event triggered by clicking the "Attack" button
+     * @throws RemoteException          if a remote method call fails
+     * @throws IllegalArgumentException if the attack order is invalid
+     */
     @FXML
     public void clickOnAttack(ActionEvent action) throws RemoteException {
         String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),
@@ -69,6 +100,11 @@ public class OrderAttackController implements Initializable {
         }
     }
 
+    /**
+     * Handles the event when the player clicks the "Finish" button.
+     * 
+     * @param action the triggered event.
+     */
     @FXML
     public void clickOnFinish(ActionEvent action) {
         Stage currStage = (Stage) srcSelector.getScene().getWindow();

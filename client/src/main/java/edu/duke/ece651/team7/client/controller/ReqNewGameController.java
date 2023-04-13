@@ -22,8 +22,18 @@ import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 
+/**
+ * The ReqNewGameController class is responsible for handling requests for
+ * creating a new game.
+ */
 public class ReqNewGameController {
 
+    /**
+     * Returns the scene for the request new game page.
+     * 
+     * @return the scene for the request new game page.
+     * @throws IOException if there is an error loading the FXML file for the scene.
+     */
     public static Scene getScene() throws IOException {
         URL xmlResource = ReqNewGameController.class.getResource("/fxml/req-new-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -38,8 +48,13 @@ public class ReqNewGameController {
 
     RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Handles the click event for the Create button.
+     * 
+     * @param event the action event.
+     */
     @FXML
-    public void clickOnCreate(ActionEvent event) throws IOException {
+    public void clickOnCreate(ActionEvent event) {
         requestNewGame("http://localhost:8080/api/riscgame/new",
                 Integer.parseInt(capacity.getText()),
                 Integer.parseInt(initUnits.getText()));
@@ -47,12 +62,26 @@ public class ReqNewGameController {
         currStage.close();
     }
 
+    /**
+     * Handles the click event for the Cancel button.
+     * 
+     * @param event the action event.
+     */
     @FXML
-    public void clickOnCancel(ActionEvent event) throws IOException {
+    public void clickOnCancel(ActionEvent event) {
         Stage currStage = (Stage) capacity.getScene().getWindow();
         currStage.close();
     }
 
+    /**
+     * Sends a request to the server to create a new game.
+     * 
+     * @param url       the URL for the new game API.
+     * @param capacity  the capacity of the game.
+     * @param initUnits the number of initial units in the game.
+     * @throws IllegalStateException if the response from the server indicates that
+     *                               the request was not successful.
+     */
     public void requestNewGame(String url, int capacity, int initUnits) {
         // create a headers object with the session cookie
         HttpHeaders header = new HttpHeaders();
