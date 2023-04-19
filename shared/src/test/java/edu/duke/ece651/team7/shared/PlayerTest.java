@@ -145,6 +145,8 @@ public class PlayerTest {
         Player p3 = new Player("test 3");
 
         p.addAlliance(p1);
+        p1.addAlliance(p);
+
         assertThrows(IllegalArgumentException.class, ()->p1.addAlliance(p));
         assertTrue(p.isAlliance(p1));
         assertTrue(p1.isAlliance(p));
@@ -159,6 +161,7 @@ public class PlayerTest {
         Player p3 = new Player("test3");
 
         p.addAlliance(p1);
+        p1.addAlliance(p);
         
         assertTrue(p.isAlliance(p1));
         assertTrue(p1.isAlliance(p));

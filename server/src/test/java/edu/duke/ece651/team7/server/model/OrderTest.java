@@ -63,6 +63,11 @@ public class OrderTest {
 
         UpgradeOrder m6 = new UpgradeOrder(groupB, tGondor, Level.CIVILIAN, Level.AIRBORNE, 10);
 
+
+        AllianceOrder m7 = new AllianceOrder(groupB, groupC);
+        assertEquals(groupB, m7.issuer);
+        assertEquals(groupC, m7.alliance);
+
     }
     @Test
     public void test_equal(){

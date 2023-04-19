@@ -3,7 +3,9 @@ package edu.duke.ece651.team7.server.model;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.duke.ece651.team7.shared.FoodResource;
 import edu.duke.ece651.team7.shared.GameMap;
@@ -27,6 +29,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     private GameMap map;
     private List<Combat> combatPool;
     private List<Player> researchPool;
+    private Map<Player, Player> alliancePool;
     private OrderCostVisitor costVisitor;
     // private final PrintStream out;
 
@@ -38,6 +41,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         this.map = map;
         this.combatPool = new ArrayList<Combat>();
         this.researchPool = new ArrayList<Player>();
+        this.alliancePool = new HashMap<>();
         this.costVisitor = new OrderCostVisitor(map);
         // this.out = out;
         checker = new CostChecker(checker, costVisitor);
@@ -84,57 +88,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
             // System.out.println("Player " + o.getPlayer().getName()+ " adds new Combat at " + o.getDest().getName() + " from " + o.getSrc().getName()+ " with " + o.getUnits() + " units");
         }
     }
-
-    /**
-     * resolve all combats saved in combatPool
-     */
-    protected void doAllCombats(){
-        for(Combat c : combatPool){
-            c.resolveCombat();
-        }
-        combatPool.clear();
-    }
-
-    /**
-     * resolve all research order saved in researchPool
-     */
-    protected void doAllResearch(){
-        for(Player p: researchPool){
-            p.upgradeMaxLevel();
-        }
-        researchPool.clear();
-    }
-
-    /**
-     * collect all player's resource
-     */
-    protected void collectAllResource(){
-        ArrayList<Player> players = new ArrayList<>();
-        for(Territory t: map.getTerritories()){
-            Player p = t.getOwner();
-            if(!players.contains(p)){
-                p.collectResource();
-                players.add(p);
-            }else{
-                continue;
-            }
-        }
-    }
-    /**
-     * when all users committed, finish current Round
-     * 1. resolving all the combats results
-     * 2. finish the research order by upgrading user level in the research pool
-     * 3. add onw basic unit to each territory
-     */
-    public void resolveOneRound(){
-        doAllCombats();
-        doAllResearch();
-        for(Territory t: map.getTerritories()){
-            t.addUnits(new Unit());
-        }
-        collectAllResource();
-    }
-   
 
     /**
      * check the validity of the move order then execute it
@@ -231,5 +184,79 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         }
         
     }
+    @Override
+    public String visit(AllianceOrder order) {
+        //needs to be more than 3 player.
+        // if(map.getInitGroupOwners().size() < 3){
+        //     throw new IllegalArgumentException("Can only form alliance when game has more than 3 players");
+        // }
+        if(order.alliance.equals(order.issuer)){
+            throw new IllegalArgumentException("You cannot align with yourself.");
+        }
+        if(alliancePool.containsKey(order.issuer)){
+            throw new IllegalArgumentException("You can only issue one AllianceOrder per turn");
+        }
+        alliancePool.put(order.issuer, order.alliance);
+        return null;
+    }
 
+    /**
+     * resolve all combats saved in combatPool
+     */
+    protected void doAllCombats(){
+        for(Combat c : combatPool){
+            c.resolveCombat();
+        }
+        combatPool.clear();
+    }
+
+    /**
+     * resolve all research order saved in researchPool
+     */
+    protected void doAllResearch(){
+        for(Player p: researchPool){
+            p.upgradeMaxLevel();
+        }
+        researchPool.clear();
+    }
+
+    protected void resolveAllAlliance(){
+        for(Player p: alliancePool.keySet()){
+            if(alliancePool.get(alliancePool.get(p)).equals(p)){
+                p.addAlliance(alliancePool.get(p));
+            }
+        }
+        alliancePool.clear();
+    }
+    /**
+     * collect all player's resource
+     */
+    protected void collectAllResource(){
+        ArrayList<Player> players = new ArrayList<>();
+        for(Territory t: map.getTerritories()){
+            Player p = t.getOwner();
+            if(!players.contains(p)){
+                p.collectResource();
+                players.add(p);
+            }else{
+                continue;
+            }
+        }
+    }
+    /**
+     * when all users committed, finish current Round
+     * 1. resolving all the combats results
+     * 2. finish the research order by upgrading user level in the research pool
+     * 3. add onw basic unit to each territory
+     */
+    public void resolveOneRound(){
+        doAllCombats();
+        doAllResearch();
+        resolveAllAlliance();
+        for(Territory t: map.getTerritories()){
+            t.addUnits(new Unit());
+        }
+        collectAllResource();
+    }
+   
 }

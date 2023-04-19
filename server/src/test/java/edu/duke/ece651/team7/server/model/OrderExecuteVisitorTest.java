@@ -271,6 +271,55 @@ public class OrderExecuteVisitorTest {
     }
 
     @Test
+    public void test_visitAllianceOrder(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        int food1 = 1000;
+        int food2 = 1000;
+        int food3 = 1000;
+        p1.getFood().addResource(food1);
+        p2.getFood().addResource(food2);
+        p3.getFood().addResource(food3);
+
+        AllianceOrder a1 = new AllianceOrder(p1, p2);
+        a1.accept(ox);
+        AllianceOrder a2 = new AllianceOrder(p2, p3);
+        a2.accept(ox);
+        AllianceOrder a3 = new AllianceOrder(p3, p1);
+        a3.accept(ox);
+
+        ox.resolveAllAlliance();
+        assertNull(p1.getAlliance());
+        assertNull(p2.getAlliance());
+        assertNull(p3.getAlliance());
+
+        AllianceOrder a4 = new AllianceOrder(p1, p2);
+        a4.accept(ox);
+        AllianceOrder a5 = new AllianceOrder(p2, p1);
+        a5.accept(ox);
+        AllianceOrder a6 = new AllianceOrder(p3, p1);
+        a6.accept(ox);
+
+        ox.resolveAllAlliance();
+        assertEquals(p2, p1.getAlliance());
+        assertEquals(p1, p2.getAlliance());
+        assertNull(p3.getAlliance());
+
+        AllianceOrder a7 = new AllianceOrder(p1, p1);
+        assertThrows(IllegalArgumentException.class, ()->a7.accept(ox));
+
+        AllianceOrder a8 = new AllianceOrder(p1, p2);
+        a8.accept(ox);
+        AllianceOrder a9 = new AllianceOrder(p1, p3);
+        assertThrows(IllegalArgumentException.class, ()->a9.accept(ox));
+    }
+
+    @Test
     public void test_doAllResearch(){
         GameMap map = makeGameMap();
         OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
@@ -307,6 +356,7 @@ public class OrderExecuteVisitorTest {
         assertEquals(940, p3.getTech().getAmount());
     }
 
+    
     @Test
     public void test_collectResource(){
         GameMap map = makeGameMap();

@@ -124,7 +124,7 @@ public class Player implements Serializable, Comparable<Player> {
             throw new IllegalArgumentException("Player: " + name + " already alliant with another Player");
         }
         this.alliance = p;
-        p.alliance = this;
+        // p.alliance = this;
         // if (this.alliances.contains(p)){
         //     throw new IllegalArgumentException("Player: " + name + " already is alliance of Player " + p.getName());
         // }else{
