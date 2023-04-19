@@ -79,7 +79,7 @@ public class Combat {
 
 
     // /**
-    //  * Push an atttack into the order
+    //  * Push an attack into the order
     //  * @param p player that issues the attack
     //  * @param units number of units used to attack
     //  */
@@ -91,7 +91,7 @@ public class Combat {
     // }
 
     /**
-     * Push an atttack into the order
+     * Push an attack into the order
      * @param p     player that issues the attack
      * @param units collection of units used to attack
      */
