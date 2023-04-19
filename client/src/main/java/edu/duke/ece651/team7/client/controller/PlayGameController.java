@@ -22,12 +22,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * The PlayGameController class is responsible for managing the game view, which
@@ -73,6 +78,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     @FXML
     private Button Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
 
+    @FXML private ImageView playerImage;
+
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
@@ -102,7 +109,45 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         initColorMap();
         setPlayerInfo();
         setTerritoryColor();
+        DisplayImage();
     }
+
+    private void setImageForPlayer(int playerIndex, String territoryName) {
+        if (gameMap.getValue().getTerritoryByName(territoryName).getOwner().getName().equals(UserSession.getInstance().getUsername())) {
+            Image image = new Image(getClass().getResourceAsStream(PLAYER_IMAGE_NAMES[playerIndex]));
+            playerImage.setImage(image);
+        }
+    }
+
+    private static final String[] PLAYER_IMAGE_NAMES = {
+            "/image/player0.png",
+            "/image/player1.png",
+            "/image/player2.png",
+            "/image/player3.png"
+    };
+
+    public void DisplayImage(){
+        Set<String> playerSet = new TreeSet<>();
+        for (Territory t : gameMap.getValue().getTerritories()) {
+            playerSet.add(t.getOwner().getName());
+        }
+        int capacity = playerSet.size();
+
+        if(capacity==2) {
+            setImageForPlayer(0, "Narnia");
+            setImageForPlayer(1, "Aranthia");
+        }else if(capacity==3){
+            setImageForPlayer(0,"Narnia" );
+            setImageForPlayer(1,"Hogwarts" );
+            setImageForPlayer(2,"Winterfell");
+        }else{
+            setImageForPlayer(0,"Narnia" );
+            setImageForPlayer(1,"Hogwarts" );
+            setImageForPlayer(2,"Aranthia");
+            setImageForPlayer(3,"Dragonstone");
+        }
+    }
+
 
     /**
      * Updates the game map property.

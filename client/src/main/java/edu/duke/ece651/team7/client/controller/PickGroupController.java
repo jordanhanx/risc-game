@@ -16,6 +16,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.util.HashMap;
+
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
@@ -44,6 +48,11 @@ public class PickGroupController implements Initializable {
     private ChoiceBox<String> selector;
     @FXML
     private Button confirmButton;
+    @FXML private ImageView player0;
+    @FXML private ImageView player1;
+    @FXML private ImageView player2;
+    @FXML private ImageView player3;
+    private HashMap<Integer, ImageView> ImageViewMap;
 
     private final RemoteGame server;
     private ObservableList<String> groupList;
@@ -64,6 +73,16 @@ public class PickGroupController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         selector.setItems(groupList);
+        setUpImageView();
+        DisplayImage();
+    }
+
+    private void setUpImageView(){
+        ImageViewMap = new HashMap<>();
+        ImageViewMap.put(0,player0);
+        ImageViewMap.put(1,player1);
+        ImageViewMap.put(2,player2);
+        ImageViewMap.put(3,player3);
     }
 
     /**
@@ -88,4 +107,18 @@ public class PickGroupController implements Initializable {
         currStage.show();
     }
 
+
+    public void DisplayImage(){
+        int number = groupList.size();
+        for(int i = 0; i < 4; i++){
+            if(i < number){
+                Image validImage = new Image(getClass().getResourceAsStream("/image/player" + i + ".png"));
+                ImageViewMap.get(i).setImage(validImage);
+            }
+            else{
+                Image lockedImage = new Image(getClass().getResourceAsStream("/image/player" + i + "_lock.png"));
+                ImageViewMap.get(i).setImage(lockedImage);
+            }
+        }
+    }
 }
