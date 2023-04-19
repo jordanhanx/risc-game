@@ -74,8 +74,8 @@ public class PlayerTest {
 
     @Test
     public void test_getCurrentMaxLevel(){
-        Player p = new Player("test", Level.AIRFORCE);
-        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+        Player p = new Player("test", Level.AIRBORNE);
+        assertEquals(Level.AIRBORNE, p.getCurrentMaxLevel());
 
         Player p1 = new Player("test");
         assertEquals(Level.INFANTRY, p1.getCurrentMaxLevel());
@@ -93,8 +93,8 @@ public class PlayerTest {
 
     @Test
     public void test_upgradeMaxLevel(){
-        Player p = new Player("test", Level.AIRFORCE);
-        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+        Player p = new Player("test", Level.AIRBORNE);
+        assertEquals(Level.AIRBORNE, p.getCurrentMaxLevel());
         p.upgradeMaxLevel();
         assertEquals(Level.ULTRON, p.getCurrentMaxLevel());
 
@@ -103,7 +103,7 @@ public class PlayerTest {
 
     @Test
     public void test_getResource(){
-        Player p = new Player("test", Level.AIRFORCE);
+        Player p = new Player("test", Level.AIRBORNE);
         assertEquals(0,p.getFood().getAmount());
         assertEquals(0,p.getTech().getAmount());
         p.getFood().addResource(10);
@@ -125,7 +125,7 @@ public class PlayerTest {
         when(t2.produceTech()).thenReturn(new TechResource(4));
         when(t3.produceTech()).thenReturn(new TechResource(5));
 
-        Player p = new Player("test", Level.AIRFORCE);
+        Player p = new Player("test", Level.AIRBORNE);
         p.addTerritory(t1);
         p.addTerritory(t2);
         p.addTerritory(t3);

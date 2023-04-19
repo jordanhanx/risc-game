@@ -117,7 +117,7 @@ public class OrderCostVisitorTest {
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
         OrderCostVisitor costVisitor = new OrderCostVisitor(map);
 
-        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.AIRFORCE, 3);
+        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.AIRBORNE, 3);
         assertEquals(270, costVisitor.visit(u1).getAmount());
 
         UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.INFANTRY, Level.ULTRON, 3);
@@ -133,7 +133,7 @@ public class OrderCostVisitorTest {
         OrderCostVisitor costVisitor = new OrderCostVisitor(map);
 
         Player playerA = new Player("GroupA", Level.INFANTRY);
-        Player playerB = new Player("GroupB", Level.AIRFORCE);
+        Player playerB = new Player("GroupB", Level.AIRBORNE);
         Player playerC = new Player("GroupC", Level.CAVALRY);
         Player playerD = new Player("GroupC", Level.ULTRON);
 

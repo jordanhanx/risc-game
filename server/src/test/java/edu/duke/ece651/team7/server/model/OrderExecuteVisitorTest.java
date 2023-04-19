@@ -99,11 +99,11 @@ public class OrderExecuteVisitorTest {
 
         r1.accept(ox);
         ox.doAllResearch();
-        assertEquals(Level.AIRFORCE, p1.getCurrentMaxLevel());
+        assertEquals(Level.AIRBORNE, p1.getCurrentMaxLevel());
         assertEquals(700, p1.getTech().getAmount());
 
         r1.accept(ox);
-        assertEquals(Level.AIRFORCE, p1.getCurrentMaxLevel());
+        assertEquals(Level.AIRBORNE, p1.getCurrentMaxLevel());
         assertEquals(380, p1.getTech().getAmount());
 
         ox.doAllResearch();

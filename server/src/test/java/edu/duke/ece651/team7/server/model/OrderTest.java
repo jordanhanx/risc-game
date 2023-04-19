@@ -37,31 +37,31 @@ public class OrderTest {
         units.put(Level.CIVILIAN, 10);
         units.put(Level.INFANTRY, 8);
         units.put(Level.CAVALRY, 5);
-        units.put(Level.AIRFORCE, 9);
+        units.put(Level.AIRBORNE, 9);
         MoveOrder m1 = new MoveOrder(groupA, tNarnia, tElantris, Level.CIVILIAN, 10, Level.INFANTRY, 20);
         assertEquals(10, m1.units.get(Level.CIVILIAN));
         assertEquals(20, m1.units.get(Level.INFANTRY));
-        assertNull(m1.units.get(Level.AIRFORCE));
+        assertNull(m1.units.get(Level.AIRBORNE));
 
         MoveOrder m2 = new MoveOrder(groupB, tOz, tRoshar, units);
         assertEquals(10, m2.units.get(Level.CIVILIAN));
         assertEquals(8, m2.units.get(Level.INFANTRY));
-        assertEquals(9, m2.units.get(Level.AIRFORCE));
+        assertEquals(9, m2.units.get(Level.AIRBORNE));
 
         AttackOrder m3 = new AttackOrder(groupA, tMidkemia, tGondor, Level.CIVILIAN, 10,  Level.INFANTRY, 20);
         assertEquals(10, m3.units.get(Level.CIVILIAN));
         assertEquals(20, m3.units.get(Level.INFANTRY));
-        assertNull(m3.units.get(Level.AIRFORCE));
+        assertNull(m3.units.get(Level.AIRBORNE));
 
         AttackOrder m4 = new AttackOrder(groupA, tScadrial, tGondor, units);
         assertEquals(10, m4.units.get(Level.CIVILIAN));
         assertEquals(8, m4.units.get(Level.INFANTRY));
-        assertEquals(9, m4.units.get(Level.AIRFORCE));
+        assertEquals(9, m4.units.get(Level.AIRBORNE));
 
         ResearchOrder m5 = new ResearchOrder(groupA);
         assertEquals(groupA, m5.issuer);
 
-        UpgradeOrder m6 = new UpgradeOrder(groupB, tGondor, Level.CIVILIAN, Level.AIRFORCE, 10);
+        UpgradeOrder m6 = new UpgradeOrder(groupB, tGondor, Level.CIVILIAN, Level.AIRBORNE, 10);
 
     }
     @Test
