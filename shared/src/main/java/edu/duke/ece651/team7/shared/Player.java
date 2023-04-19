@@ -146,6 +146,10 @@ public class Player implements Serializable, Comparable<Player> {
         return p.equals(this.alliance) && this.equals(p.alliance);
     }
 
+    public Player getAlliance(){
+        return this.alliance;
+    }
+
     public void breakAllianceWith(Player p){
         if(!isAlliance(p)){
             throw new IllegalArgumentException("Player: " + name + " and Player " + p.getName() + " are not alliances ");

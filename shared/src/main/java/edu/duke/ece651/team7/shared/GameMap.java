@@ -239,11 +239,11 @@ public class GameMap implements Serializable {
             Territory curTerritory = queue.removeFirst();
             for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory).keySet()) {
                 if (neighbourTerritory.equals(destination)
-                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
+                        && (neighbourTerritory.getOwner().equals(source.getOwner()) || neighbourTerritory.getOwner().isAlliance(source.getOwner()))) {
                     return true;
                 }
                 if (!territoryVisited.contains(neighbourTerritory)
-                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
+                        && (neighbourTerritory.getOwner().equals(source.getOwner()) || neighbourTerritory.getOwner().isAlliance(source.getOwner()))) {
                     territoryVisited.add(neighbourTerritory);
                     queue.add(neighbourTerritory);
                 }
@@ -264,6 +264,9 @@ public class GameMap implements Serializable {
 
         Player p = source.getOwner();
         ArrayList<Territory> territories = new ArrayList<>(p.getTerritories());
+        if(p.getAlliance()!=null){
+            territories.addAll(p.getAlliance().getTerritories());
+        }
         Map<Territory, Integer> distances = new LinkedHashMap<>();
 
         for (Territory t: territories){
@@ -280,7 +283,7 @@ public class GameMap implements Serializable {
             Territory currentTerri= pq.poll().keySet().iterator().next();
             for (Territory next : territoriesAdjacentList.get(currentTerri).keySet()) {
                 // System.out.println("reach Territory: " + currentTerri.getName() + " Neighbor is: " + next.getName());
-                if(next.getOwner() != p){
+                if(next.getOwner() != p && !next.getOwner().isAlliance(p)){
                     continue;
                 }
                 // System.out.println("Current territory: " + next.getName());
