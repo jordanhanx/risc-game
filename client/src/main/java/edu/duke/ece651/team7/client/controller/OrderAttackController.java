@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,8 +13,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
@@ -98,6 +99,10 @@ public class OrderAttackController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+
+        //set the attack music
+        MediaPlayer attackPlayer = MusicFactory.createAttackPlayer();
+        attackPlayer.play();
     }
 
     /**

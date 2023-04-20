@@ -15,7 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.media.MediaPlayer;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
@@ -89,6 +91,10 @@ public class OrderMoveController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+
+        //set the move music
+        MediaPlayer movePlayer = MusicFactory.createMovePlayer();
+        movePlayer.play();
     }
 
     /**

@@ -9,6 +9,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javafx.scene.media.MediaPlayer;
+
 import edu.duke.ece651.team7.client.controller.ErrorReporter;
 import edu.duke.ece651.team7.client.controller.LoginSignupController;
 
@@ -23,6 +25,11 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) {
     try {
+      //set the background music
+      MediaPlayer backgroundPlayer = MusicFactory.createBackgroundPlayer();
+      backgroundPlayer.setAutoPlay(true);
+      backgroundPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+
       Thread.setDefaultUncaughtExceptionHandler(new ErrorReporter());
       Scene scene = LoginSignupController.getScene();
       primaryStage.setScene(scene);

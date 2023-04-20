@@ -15,7 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.media.MediaPlayer;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
@@ -98,6 +100,10 @@ public class OrderUpgradeController implements Initializable {
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+
+        //set the upgrade music
+        MediaPlayer upgradePlayer = MusicFactory.createUpgradePlayer();
+        upgradePlayer.play();
     }
 
     /**

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,8 +25,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.duke.ece651.team7.client.model.UserSession;
@@ -55,7 +51,7 @@ public class ReqNewGameController {
 //    TextField capacity;
 
     @FXML
-    private ComboBox<String> capacity;
+    ComboBox<String> capacity;
 
     @FXML
     TextField initUnits;
