@@ -215,7 +215,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
                 response = "units cannot be less than 0";
             } else {
                 for (int i = 0; i < units; i++) {
-                    t.addUnits(new Unit());
+                    t.addUnits(new Unit(p));
                 }
             }
         } catch (RuntimeException e) {

@@ -51,8 +51,17 @@ public class Territory implements Serializable {
    * @param units number of player's units present in territory
    */
   public Territory(String name, Player owner, int numUnits) {
-    this(name, numUnits, 1,1);
+    this.name = name;
     this.owner = owner;
+    if (numUnits < 0) {
+      throw new IllegalArgumentException("units cannot be less than 0");
+    }
+    this.units = new ArrayList<Unit>();
+    for(int i = 0; i < numUnits; i++){
+      this.units.add(new Unit(owner));
+    }
+    this.foodProductionRate = 1;
+    this.techProductionRate = 1;
   }
 
   public String getName() {
@@ -62,6 +71,7 @@ public class Territory implements Serializable {
   public int getUnitsNumber() {
     return units.size();
   }
+
 
   public int getUnitsNumberByLevel(Level l) {
     int num = 0;
@@ -90,13 +100,6 @@ public class Territory implements Serializable {
   public void setUnits(ArrayList<Unit> newUnits) {
     units = newUnits;
   }
-  // public void setUnits(int num) {
-  //   if (num < 0) {
-  //     throw new IllegalArgumentException("Set Territory Units: input num must be greater than or equal to 0");
-  //   } else {
-  //     units = num;
-  //   }
-  // }
 
   /**
    * 
@@ -105,6 +108,9 @@ public class Territory implements Serializable {
   public void addUnits(Unit u){
     if(units.contains(u)){
       throw new IllegalArgumentException("Cannot repeatedly add the same unit");
+    }
+    if(!owner.equals(u.getOwner()) && !owner.isAlliance(u.getOwner())){
+      throw new IllegalArgumentException("Cannot add unit that does not belong to owner/alliance of the territory");
     }
       units.add(u);
   }
@@ -115,10 +121,7 @@ public class Territory implements Serializable {
    */
   public void addUnits(Collection<Unit> us){
     for(Unit u: us){
-      if(units.contains(u)){
-        throw new IllegalArgumentException("Cannot repeatedly add the same unit");
-      }
-      units.add(u);
+      addUnits(u);
     }
   }
 
@@ -126,12 +129,13 @@ public class Territory implements Serializable {
    * 
    * @param l the level of unit that want to be removed
    * @param num the number of units want to remove
+   * @param p the player to move units
    * @return null if no enough unit with level l, else return the collection of units to be moved
    */
-  public Collection<Unit> removeUnits(Level l, int num){
+  public Collection<Unit> removeUnits(Level l, int num, Player p){
     ArrayList<Unit> tomove = new ArrayList<>();
     for(int i = 0; i < units.size(); i++){
-      if(units.get(i).getLevel() == l){
+      if(units.get(i).getLevel() == l && p.equals(units.get(i).getOwner())){
         tomove.add(units.get(i));
         // units.remove(units.get(i));
         num--;
@@ -150,6 +154,34 @@ public class Territory implements Serializable {
     }
   }
 
+  /**
+   * 
+   * @param l the level of unit that want to be removed
+   * @param num the number of units want to remove
+   * @return null if no enough unit with level l, else return the collection of units to be moved
+   */
+  public Collection<Unit> removeUnits(Level l, int num){
+    return removeUnits(l, num, owner);
+  }
+
+
+  public Collection<Unit> removeAllUnitsOfPlayer(Player p){
+    ArrayList<Unit> tomove = new ArrayList<>();
+    for(int i = 0; i < units.size(); i++){
+      if(p.equals(units.get(i).getOwner())){
+        tomove.add(units.get(i));
+      }
+    }
+    for(Unit u: tomove){
+      units.remove(u);
+    }
+    return tomove;
+  }
+
+  /**
+   * remove all units of the territory
+   * @return the units that has been moved
+   */
   public Collection<Unit> removeAllUnits(){
     ArrayList<Unit> tomove = this.units;
     this.units = new ArrayList<>();
@@ -164,6 +196,12 @@ public class Territory implements Serializable {
     return new TechResource(techProductionRate);
   }
 
+  /**
+   * 
+   * @param from the level of unit upgrade from
+   * @param to the level of unit upgrade to
+   * @param num number of units to be upgraded
+   */
   public void upgradeUnits(Level from, Level to, int num){
     ArrayList<Unit> toupgrade = new ArrayList<>();
     for(int i = 0; i < units.size(); i++){

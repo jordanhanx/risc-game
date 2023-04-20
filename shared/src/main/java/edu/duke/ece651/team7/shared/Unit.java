@@ -4,13 +4,26 @@ import java.io.Serializable;
 
 public class Unit implements Comparable<Unit>, Serializable {
     private Level level;
+    private final Player owner;
 
     public Unit() {
         this.level = Level.CIVILIAN;
+        this.owner = null;
+    }
+
+    public Unit(Player p){
+        this.level = Level.CIVILIAN;
+        this.owner = p;
+    }
+
+    public Unit(Level l, Player p) {
+        this.level = l;
+        this.owner = p;
     }
 
     public Unit(Level l) {
         this.level = l;
+        this.owner = null;
     }
 
     public Level getLevel() {
@@ -33,6 +46,10 @@ public class Unit implements Comparable<Unit>, Serializable {
 
     public void upgrade(Level newlevel) {
         this.level = newlevel;
+    }
+
+    public Player getOwner(){
+        return this.owner;
     }
 
     @Override

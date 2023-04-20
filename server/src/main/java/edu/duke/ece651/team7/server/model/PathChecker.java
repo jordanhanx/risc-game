@@ -22,7 +22,6 @@ public class PathChecker extends OrderRuleChecker {
             if(order.getClass() == AttackOrder.class){
                 return checkAttackRule(map, (AttackOrder)order);
             }else{
-                //dest is not issuer's
                 return checkMoveRule(map, (MoveOrder)order);
             }
         }else if(o.getClass() == UpgradeOrder.class){

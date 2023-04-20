@@ -72,7 +72,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     protected void pushCombat(AttackOrder o) throws IllegalArgumentException{
         ArrayList<Unit> departUnits = new ArrayList<>();
         for(Level l: o.units.keySet()){
-            departUnits.addAll(o.src.removeUnits(l, o.units.get(l)));
+            departUnits.addAll(o.src.removeUnits(l, o.units.get(l), o.issuer));
         }
         Combat targetCombat = isInCombatPool(o.dest);
         if(targetCombat != null){
