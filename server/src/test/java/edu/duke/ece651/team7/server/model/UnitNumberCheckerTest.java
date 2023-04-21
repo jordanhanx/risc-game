@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.regex.RegexUtil.CheckedPatternSyntaxException;
 import org.junit.jupiter.api.Test;
 import edu.duke.ece651.team7.shared.*;
 
@@ -73,6 +74,19 @@ public class UnitNumberCheckerTest {
         ResearchOrder r1 = new ResearchOrder(p3);
         assertNull(checker.checkOrderValidity(map, r1));
 
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+        map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
+        map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
+
+        map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
+        map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        MoveOrder m3 = new MoveOrder(p1, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 2);
+        assertNull(checker.checkMyRule(map, m3));
+
+        MoveOrder m4 = new MoveOrder(p1, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 6);
+        assertNotNull(checker.checkMyRule(map, m4));
     }
     
 }

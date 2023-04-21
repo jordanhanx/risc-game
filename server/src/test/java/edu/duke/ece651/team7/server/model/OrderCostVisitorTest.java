@@ -1,11 +1,6 @@
 package edu.duke.ece651.team7.server.model;
 import org.junit.jupiter.api.Test;
 
-import edu.duke.ece651.team7.server.model.AttackOrder;
-import edu.duke.ece651.team7.server.model.MoveOrder;
-import edu.duke.ece651.team7.server.model.OrderCostVisitor;
-import edu.duke.ece651.team7.server.model.ResearchOrder;
-import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
@@ -149,4 +144,17 @@ public class OrderCostVisitorTest {
         ResearchOrder r4 = new ResearchOrder(playerD);
         assertThrows(IllegalArgumentException.class, ()->costVisitor.visit(r4));
     }
+
+    @Test
+    public void test_AllianceOrder(){
+        GameMap map = makeGameMap();
+        OrderCostVisitor costVisitor = new OrderCostVisitor(map);
+        Player playerA = new Player("GroupA", Level.INFANTRY);
+        Player playerB = new Player("GroupB", Level.AIRBORNE);
+        AllianceOrder o1 = new AllianceOrder(playerA, playerB);
+        assertNull(costVisitor.visit(o1));
+
+
+    }
+
 }

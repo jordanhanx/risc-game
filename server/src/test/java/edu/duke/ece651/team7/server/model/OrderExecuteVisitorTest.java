@@ -205,34 +205,6 @@ public class OrderExecuteVisitorTest {
 
     };
 
-
-
-    // @Test
-    // public void test_PushCombat(){
-    //     GameMap map = makeGameMap();
-    //     OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
-    //     Player p1 = map.getTerritoryByName("Narnia").getOwner();
-    //     Player p2 = map.getTerritoryByName("Elantris").getOwner();
-    //     Player p3 = map.getTerritoryByName("Gondor").getOwner();
-
-    //     AttackOrder a1 = new AttackOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), 10);
-    //     ox.pushCombat(a1);
-    //     assertNotNull(ox.isInCombatPool(a1.dest));
-
-    //     AttackOrder a2 = new AttackOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Gondor"), 10);
-    //     assertThrows(IllegalArgumentException.class, () -> ox.pushCombat(a2));
-    //     assertNull(ox.isInCombatPool(map.getTerritoryByName("Gondor")));
-
-    //     AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 0);
-    //     assertThrows(IllegalArgumentException.class, () -> ox.pushCombat(a3));
-
-    //     AttackOrder a4 = new AttackOrder(p1,  map.getTerritoryByName("Midkemia"),  map.getTerritoryByName("Elantris"), 4);
-    //     ox.pushCombat(a4);
-    //     Combat targetCombat = ox.isInCombatPool(a4.dest);
-    //     assertEquals(14,targetCombat.getAttackUnitofPlayer(p1));
-
-    // }
-
     @Test
     public void test_visitAttackOrder(){
         GameMap map = makeGameMap();
@@ -269,6 +241,21 @@ public class OrderExecuteVisitorTest {
         Combat targetCombat = ox.isInCombatPool(a4.dest);
         assertEquals(14,targetCombat.getAttackUnitofPlayer(p1));
 
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+
+        map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
+        map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
+
+        map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
+        map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        AttackOrder a5 = new AttackOrder(p1,map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"),2);
+        ox.visit(a5);
+        assertFalse(p1.isAlliance(p3));
+        assertEquals(1, ox.isInCombatPool(map.getTerritoryByName("Gondor")).getAttackUnitofPlayer(p1));
+        assertEquals(6, ox.isInCombatPool(map.getTerritoryByName("Mordor")).getAttackUnitofPlayer(p1));
+        assertEquals(17,  map.getTerritoryByName("Gondor").getUnitsNumber(p3));
     }
 
     @Test
@@ -318,6 +305,37 @@ public class OrderExecuteVisitorTest {
         a8.accept(ox);
         AllianceOrder a9 = new AllianceOrder(p1, p3);
         assertThrows(IllegalArgumentException.class, ()->a9.accept(ox));
+    }
+
+    @Test
+    public void test_AllianceMoveOrder(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        int food1 = 1000;
+        int food2 = 1000;
+        int food3 = 1000;
+        p1.getFood().addResource(food1);
+        p2.getFood().addResource(food2);
+        p3.getFood().addResource(food3);
+        AllianceOrder a1 = new AllianceOrder(p1, p2);
+        a1.accept(ox);
+        AllianceOrder a2 = new AllianceOrder(p2, p1);
+        a2.accept(ox);
+        ox.resolveAllAlliance();
+
+        MoveOrder m1 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Scadrial"), 5);
+        m1.accept(ox);
+        food1-= m1.accept(oc).getAmount();
+        assertEquals(5, map.getTerritoryByName("Narnia").getUnitsNumber());
+        assertEquals(15, map.getTerritoryByName("Scadrial").getUnitsNumber());
+        assertEquals(food1, p1.getFood().getAmount());
+
+        MoveOrder m2 = new MoveOrder(p2, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Gondor"), 4);
+        assertThrows(IllegalArgumentException.class, () -> m2.accept(ox));
     }
 
     @Test

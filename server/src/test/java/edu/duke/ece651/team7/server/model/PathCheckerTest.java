@@ -10,11 +10,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import edu.duke.ece651.team7.server.model.AttackOrder;
-import edu.duke.ece651.team7.server.model.MoveOrder;
-import edu.duke.ece651.team7.server.model.OrderRuleChecker;
-import edu.duke.ece651.team7.server.model.PathChecker;
-import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.*;
 
 
@@ -77,7 +72,6 @@ public class PathCheckerTest {
 
         map.getTerritoryByName("Roshar").setOwner(p2);
 
-
         p1.addAlliance(p3);
         p3.addAlliance(p1);
         MoveOrder m5 = new MoveOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
@@ -86,6 +80,14 @@ public class PathCheckerTest {
         MoveOrder m6 = new MoveOrder(p3, map.getTerritoryByName("Oz"), map.getTerritoryByName("Narnia"), 3);
         assertNull(checker.checkOrderValidity(map, m6));
 
+        map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
+        map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
+
+        map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
+        map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        MoveOrder m7 = new MoveOrder(p1, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 3);
+        assertNull(checker.checkOrderValidity(map, m7));
     }
 
     @Test
