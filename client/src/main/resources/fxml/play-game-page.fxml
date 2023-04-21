@@ -77,222 +77,170 @@
                 </Pane>
                 <Pane prefHeight="494.0" prefWidth="848.0">
                     <children>
-                        <Line endX="-13.0" endY="-15.971694946289062" layoutX="443.0" layoutY="105.0" startX="-82.29290771484375" startY="74.70710754394531" />
-                        <Line endX="33.5" endY="40.0" layoutX="406.0" layoutY="43.0" rotate="-5.0" startX="-137.0" startY="40.0" />
-                        <Line endX="45.0" endY="60.0" layoutX="572.0" layoutY="85.0" startX="-120.28271484375" startY="1.0" />
-                        <Line endX="65.0" endY="18.0" layoutX="581.0" layoutY="71.0" rotate="-2.0" startX="-130.0" startY="3.0" />
-                        <Line endX="-2.0" endY="46.0" layoutX="521.0" layoutY="98.0" startX="-106.0" startY="-7.0283050537109375" />
-                        <Line endX="-249.0" endY="92.0" layoutX="351.0" layoutY="57.0" startX="-116.0" startY="46.0" />
-                        <Line endX="-143.5" endY="50.0" layoutX="393.0" layoutY="129.0" startX="-33.0" startY="39.0" />
-                        <Line endX="-264.0" endY="-42.0" layoutX="523.0" layoutY="149.0" startX="-163.0" startY="19.0" />
-                        <Line endX="25.08837890625" endY="8.37945556640625" layoutX="550.0" layoutY="259.0" rotate="-10.0" startX="-69.0" startY="-66.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="546.0" layoutY="301.0" rotate="-10.0" startX="-29.0" startY="-30.0" />
-                        <Line endX="70.0" endY="158.0" layoutX="629.0" layoutY="259.0" startX="-39.0" startY="-3.0" />
-                        <Line endX="129.5" endY="91.29290771484375" layoutX="649.0" layoutY="252.0" startX="-45.0" startY="13.0" />
-                        <Line endX="11.0" endY="-18.0" layoutX="757.0" layoutY="255.0" startX="55.7071533203125" startY="105.29290771484375" />
-                        <Line endX="65.2928466796875" endY="-20.0" layoutX="676.0" layoutY="259.0" startX="-59.0" startY="2.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="767.0" layoutY="166.0" startX="-4.0" startY="54.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="666.0" layoutY="113.0" startX="89.0" startY="5.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="609.0" layoutY="193.0" startX="-5.7071533203125" startY="71.29290771484375" />
-                        <Line endX="38.0" endY="64.0" layoutX="698.0" layoutY="161.0" startX="-45.0" startY="13.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="728.0" layoutY="164.0" startX="-70.0" startY="-6.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="660.0" layoutY="115.0" startX="-23.0" startY="36.0" />
-                        <Line endX="19.0" endY="13.0" layoutX="599.0" layoutY="154.0" startX="-45.0" startY="13.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="532.0" layoutY="193.0" startX="68.5" startY="82.0" />
-                        <Line endX="-166.0" endY="12.0" layoutX="526.0" layoutY="222.0" startX="-57.0" startY="49.0" />
-                        <Line endX="-79.07948303222656" endY="114.75458526611328" layoutX="526.0" layoutY="239.0" rotate="40.0" startX="-44.0" startY="12.0" />
-                        <Line endX="-25.0" endY="182.0" layoutX="546.0" layoutY="239.0" startX="-44.0" startY="24.0" />
-                        <Line endX="-155.5" endY="99.0" layoutX="705.0" layoutY="334.0" rotate="10.0" startX="-24.993715286254883" startY="76.00289154052734" />
-                        <Line endX="-216.7071533203125" endY="-75.0" layoutX="718.0" layoutY="359.0" startX="-1.0" startY="89.0" />
-                        <Line endX="-151.0" endY="102.0" layoutX="861.0" layoutY="312.0" startX="-47.0" startY="48.0" />
-                        <Line endX="-279.5" endY="103.0" layoutX="728.0" layoutY="90.0" startX="-197.0" startY="74.0" />
-                        <Line endX="-24.7071533203125" endY="91.5858154296875" layoutX="502.0" layoutY="184.0" startX="-44.0" startY="12.0" />
-                        <Line endX="-86.0" endY="-21.0" layoutX="359.0" layoutY="211.0" startX="-45.0" startY="13.0" />
-                        <Line endX="13.70709228515625" endY="67.29290771484375" layoutX="387.0" layoutY="250.0" startX="-46.29290771484375" startY="-7.70709228515625" />
-                        <Line endX="27.0" endY="-22.0" layoutX="313.0" layoutY="265.0" startX="-4.0" startY="54.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="289.0" layoutY="265.0" startX="-83.0" startY="-7.0" />
-                        <Line endX="13.508056640625" endY="4.0" layoutX="387.0" layoutY="327.0" startX="-61.0" startY="14.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="398.0" layoutY="357.0" startX="123.7071533203125" startY="64.70709228515625" />
-                        <Line endX="69.5" endY="21.0" layoutX="469.0" layoutY="400.0" startX="-145.0" startY="-45.0" />
-                        <Line endX="43.5" endY="17.0" layoutX="459.0" layoutY="406.0" startX="-64.0" startY="46.0" />
-                        <Line endX="36.0" endY="6.0" layoutX="338.0" layoutY="431.0" startX="-45.0" startY="-74.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="244.0" layoutY="374.0" startX="-45.0" startY="13.0" />
-                        <Line endX="52.0" endY="77.0" layoutX="222.0" layoutY="255.0" startX="-21.0" startY="5.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="158.0" layoutY="285.0" startX="27.0" startY="92.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="148.0" layoutY="285.0" startX="-60.0" startY="52.0" />
-                        <Line endX="9.0" endY="67.0" layoutX="154.0" layoutY="172.0" startX="-45.0" startY="13.0" />
-                        <Line endX="-65.0" endY="-23.0" layoutX="281.0" layoutY="434.0" startX="-23.0" startY="26.0" />
-                        <Line endX="23.0" endY="56.0" layoutX="169.0" layoutY="331.0" startX="-79.0" startY="15.0" />
-                        <Line endX="27.0" endY="-22.0" layoutX="214.0" layoutY="213.0" startX="-8.70709228515625" startY="29.29290771484375" />
-                        <Line endX="23.0" endY="56.0" layoutX="70.0" layoutY="263.0" rotate="5.0" startX="9.0" startY="-88.2578125" />
-                        <Label layoutX="175.0" layoutY="111.0" style="-fx-background-color: white;" text="8" />
-                        <Label layoutX="653.0" layoutY="120.0" style="-fx-background-color: white;" text="5" />
-                        <Label layoutX="478.0" layoutY="116.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="554.0" layoutY="110.0" style="-fx-background-color: white;" text="9" />
-                        <Label layoutX="565.0" layoutY="72.0" style="-fx-background-color: white;" text="8" />
-                        <Label layoutX="396.0" layoutY="116.0" style="-fx-background-color: white;" text="3" />
-                        <Label layoutX="361.0" layoutY="72.0" style="-fx-background-color: white;" text="3" />
-                        <Label layoutX="296.0" layoutY="121.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="648.0" layoutY="336.0" style="-fx-background-color: white;" text="5" />
-                        <Label layoutX="697.0" layoutY="295.0" style="-fx-background-color: white;" text="15" />
-                        <Label layoutX="777.0" layoutY="277.0" style="-fx-background-color: white;" text="12" />
-                        <Label layoutX="666.0" layoutY="237.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="693.0" layoutY="192.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="775.0" layoutY="174.0" style="-fx-background-color: white;" text="7" />
-                        <Label layoutX="706.0" layoutY="144.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="721.0" layoutY="101.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="541.0" layoutY="267.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="447.0" layoutY="300.0" style="-fx-background-color: white;" text="9" />
-                        <Label layoutX="408.0" layoutY="243.0" style="-fx-background-color: white;" text="11" />
-                        <Label layoutX="475.0" layoutY="228.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="455.0" layoutY="429.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="330.0" layoutY="384.0" style="-fx-background-color: white;" text="6" />
-                        <Label layoutX="406.0" layoutY="369.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="458.0" layoutY="362.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="599.0" layoutY="404.0" style="-fx-background-color: white;" text="7" />
-                        <Label layoutX="505.0" layoutY="347.0" style="-fx-background-color: white;" text="14" />
-                        <Label layoutX="575.0" layoutY="326.0" style="-fx-background-color: white;" text="3" />
-                        <Label layoutX="752.0" layoutY="380.0" style="-fx-background-color: white;" text="7" />
-                        <Label layoutX="132.0" layoutY="207.0" style="-fx-background-color: white;" text="7" />
-                        <Label layoutX="141.0" layoutY="286.0" style="-fx-background-color: white;" text="10" />
-                        <Label layoutX="181.0" layoutY="307.0" style="-fx-background-color: white;" text="6" />
-                        <Label layoutX="233.0" layoutY="288.0" style="-fx-background-color: white;" text="8" />
-                        <Label layoutX="217.0" layoutY="205.0" style="-fx-background-color: white;" text="5" />
-                        <Label layoutX="365.0" layoutY="268.0" style="-fx-background-color: white;" text="5" />
-                        <Label layoutX="319.0" layoutY="277.0" style="-fx-background-color: white;" text="3" />
-                        <Label layoutX="268.0" layoutY="240.0" style="-fx-background-color: white;" text="6" />
-                        <Label layoutX="290.0" layoutY="195.0" style="-fx-background-color: white;" text="3" />
-                        <Label layoutX="135.0" layoutY="356.0" style="-fx-background-color: white;" text="6" />
-                        <Label layoutX="82.0" layoutY="225.0" style="-fx-background-color: white;" text="5" />
-                        <Label layoutX="235.0" layoutY="358.0" style="-fx-background-color: white;" text="1" />
-                        <Label layoutX="229.0" layoutY="422.0" style="-fx-background-color: white;" text="2" />
-                        <Label layoutX="520.0" layoutY="220.0" style="-fx-background-color: white;" text="8" />
-                        <Label layoutX="565.0" layoutY="192.0" style="-fx-background-color: white;" text="6" />
-                        <Label layoutX="615.0" layoutY="192.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="585.0" layoutY="161.0" style="-fx-background-color: white;" text="1" />
-                        <Label layoutX="488.0" layoutY="165.0" style="-fx-background-color: white;" text="1" />
-                        <Label layoutX="300.0" layoutY="162.0" style="-fx-background-color: white;" text="4" />
-                        <Label layoutX="350.0" layoutY="326.0" style="-fx-background-color: white;" text="3" />
-                        <Button fx:id="Volantis" layoutX="62.0" layoutY="149.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Volantis">
+                        <Polygon fx:id="Midkemia" fill="#ff6d6d" layoutX="137.0" layoutY="194.0" onMouseClicked="#mouseClickedTerritory" points="142.69683837890625, -30.285476684570312, 149.44024658203125, 31.053695678710938, 235.98541259765625, -21.378799438476562, 246.0928955078125, -46.64747619628906" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Elantris" fill="#ff6d6d" layoutX="465.0" layoutY="254.0" onMouseClicked="#mouseClickedTerritory" points="35.142791748046875, 8.593235969543457, 141.10928344726562, -3.9484212398529053, 185.3309783935547, -101.79886627197266, 41.816139221191406, -92.87068939208984" rotate="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Narnia" fill="#ff6d6d" layoutX="389.0" layoutY="280.0" onMouseClicked="#mouseClickedTerritory" points="-118.3526611328125, -1.250396728515625, -63.756866455078125, -24.283416748046875, 0.1492919921875, -117.11799621582031, -101.29632568359375, -59.05247497558594" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Oz" fill="#ff6d6d" layoutX="369.0" layoutY="210.0" onMouseClicked="#mouseClickedTerritory" points="-11.8074951171875, -2.6343841552734375, 116.74688720703125, 15.685409545898438, 184.290771484375, -106.87026977539062, 9.6708984375, -62.64747619628906" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Gondor" fill="#ff6d6d" layoutX="530.0" layoutY="159.0" onMouseClicked="#mouseClickedTerritory" points="-140.51211547851562, 87.20405578613281, 7.90899658203125, 122.31604766845703, 27.91875648498535, 55.48972702026367, -55.97021484375, 63.90352249145508" rotate="23.2" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Scadrial" fill="#ff6d6d" layoutX="290.0" layoutY="228.0" onMouseClicked="#mouseClickedTerritory" points="240.91461181640625, -87.59635925292969, 436.1151123046875, -15.580642700195312, 351.0, -123.80000305175781, 263.290771484375, -124.87027740478516" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="413.0" layoutY="172.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Oz">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Pentos" layoutX="49.0" layoutY="314.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pentos">
+                        </Text>
+                        <Text layoutX="426.0" layoutY="706.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Norvos">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="30.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Braavos" layoutX="154.0" layoutY="372.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Braavos">
+                        </Text>
+                        <Text layoutX="853.0" layoutY="322.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Astapor">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="30.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Oldtown" layoutX="241.0" layoutY="445.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="63.0" styleClass="expandable" text="Oldtown">
+                        </Text>
+                        <Text layoutX="756.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Meereen">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="30.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Pyke" layoutX="153.0" layoutY="231.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Pyke">
+                        </Text>
+                        <Text layoutX="297.0" layoutY="227.0" rotate="-30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Narnia" wrappingWidth="48.41319550342928">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Dragonstone" layoutX="190.0" layoutY="158.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="87.0" styleClass="expandable" text="Dragonstone">
+                        </Text>
+                        <Text layoutX="697.0" layoutY="768.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pentos">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="30.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Helvoria" layoutX="264.0" layoutY="319.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Helvoria">
+                        </Text>
+                        <Text layoutX="294.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Midkemia" wrappingWidth="63.25643536910866">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Winterfell" layoutX="343.0" layoutY="433.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="70.0" styleClass="expandable" text="Winterfell">
+                        </Text>
+                        <Text layoutX="485.0" layoutY="264.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Gondor">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Highgarden" layoutX="480.0" layoutY="401.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="82.0" styleClass="expandable" text="Highgarden">
+                        </Text>
+                        <Text layoutX="540.0" layoutY="203.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Elantris">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Galadria" layoutX="377.0" layoutY="313.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Galadria">
+                        </Text>
+                        <Text layoutX="583.0" layoutY="140.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Scadrial">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Drakoria" layoutX="307.0" layoutY="211.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Drakoria">
+                        </Text>
+                        <Polygon fx:id="Mordor" fill="#ff6d6d" layoutX="594.0" layoutY="300.0" onMouseClicked="#mouseClickedTerritory" points="-11.28460693359375, -38.938446044921875, 24.40740966796875, 9.7037353515625, 104.63543701171875, -11.142913818359375, 24.40740966796875, -69.892578125" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Roshar" fill="#ff6d6d" layoutX="633.0" layoutY="261.0" onMouseClicked="#mouseClickedTerritory" points="-16.171875, -28.997421264648438, 64.6878662109375, 27.857086181640625, 93.1151123046875, -49.844085693359375, 22.99456787109375, -74.48103332519531" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Volantis" fill="#70d1ff" layoutX="97.0" layoutY="272.0" onMouseClicked="#mouseClickedTerritory" points="127.99093627929688, 46.709503173828125, 189.44024658203125, -63.281829833984375, 182.69683837890625, -109.11799621582031, -20.166229248046875, -72.51756286621094" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Hogwarts" fill="#ff6d6d" layoutX="416.0" layoutY="458.0" onMouseClicked="#mouseClickedTerritory" points="227.991943359375, -107.86639404296875, 169.876953125, -200.728759765625, 143.3419189453125, -208.94107055664062, 90.909423828125, -145.13766479492188" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="650.0" layoutY="238.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Roshar">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Aranthia" layoutX="458.0" layoutY="261.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="65.0" styleClass="expandable" text="Aranthia">
+                        </Text>
+                        <Text layoutX="614.0" layoutY="278.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Mordor">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Dorne" layoutX="661.0" layoutY="409.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Dorne">
+                        </Text>
+                        <Text layoutX="544.0" layoutY="308.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Hogwarts">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Essos" layoutX="768.0" layoutY="324.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Essos">
+                        </Text>
+                        <Polygon fx:id="Galadria" fill="#70d1ff" layoutX="296.0" layoutY="453.0" onMouseClicked="#mouseClickedTerritory" points="92.0, -81.38800048828125, 167.00506591796875, -90.2320556640625, 160.3720703125, -105.39324951171875, 92.0, -124.97647094726562" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Drakoria" fill="#70d1ff" layoutX="336.0" layoutY="356.0" onMouseClicked="#mouseClickedTerritory" points="-43.24261474609375, -54.508575439453125, 122.2672119140625, -7.2293701171875, 101.4205322265625, -58.93060302734375, -3.4444580078125, -73.4600830078125" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Aranthia" fill="#70d1ff" layoutX="364.0" layoutY="419.0" onMouseClicked="#mouseClickedTerritory" points="98.0574951171875, -56.86376953125, 191.55157470703125, -41.70257568359375, 174.4952392578125, -99.18878173828125, 68.99853515625, -129.51119995117188" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Westeros" fill="#ff6d6d" layoutX="321.0" layoutY="382.0" onMouseClicked="#mouseClickedTerritory" points="62.13507080078125, -103.25039672851562, 187.1728515625, -69.13766479492188, 196.016845703125, -81.14028930664062, 118.31573486328125, -137.99481201171875" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Dorne" fill="#ff6d6d" layoutX="462.0" layoutY="442.0" onMouseClicked="#mouseClickedTerritory" points="92.91986083984375, -64.70257568359375, 219.26324462890625, -23.009246826171875, 179.465087890625, -94.39324951171875, 73.9683837890625, -122.18878173828125" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Essos" fill="#ff6d6d" layoutX="699.0" layoutY="380.0" onMouseClicked="#mouseClickedTerritory" points="-34.7930908203125, 10.3157958984375, 10.05877685546875, -13.441741943359375, -10.15618896484375, -89.24777221679688, -81.5401611328125, -70.2962646484375" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="646.0" layoutY="347.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Essos">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Westeros" layoutX="411.0" layoutY="180.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Westeros">
+                        </Text>
+                        <Text layoutX="594.0" layoutY="374.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Dorne">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Hogwarts" layoutX="566.0" layoutY="255.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Hogwarts">
+                        </Text>
+                        <Text layoutX="427.0" layoutY="285.0" onMouseClicked="#mouseClickedTerritory" rotate="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Westeros">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Mordor" layoutX="717.0" layoutY="210.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Mordor">
+                        </Text>
+                        <Text layoutX="467.0" layoutY="347.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Aranthia">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Roshar" layoutX="754.0" layoutY="119.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Roshar">
+                        </Text>
+                        <Text layoutX="372.0" layoutY="320.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Drakoria">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Scadrial" layoutX="640.0" layoutY="63.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Scadrial">
+                        </Text>
+                        <Text layoutX="393.0" layoutY="360.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Galadria">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Elantris" layoutX="610.0" layoutY="139.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Elantris">
+                        </Text>
+                        <Polygon fx:id="Braavos" fill="#70d1ff" layoutX="82.0" layoutY="414.0" onMouseClicked="#mouseClickedTerritory" points="144.42715454101562, -5.748443603515625, 206.33538818359375, -46.810028076171875, 154.53460693359375, -85.97647094726562, 36.403564453125, -66.077392578125" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Pyke" fill="#70d1ff" layoutX="130.0" layoutY="444.0" onMouseClicked="#mouseClickedTerritory" points="175.07586669921875, -62.912261962890625, 188.02606201171875, -136.19140625, 167.179443359375, -145.0, 66.1856689453125, -136.19140625" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Dragonstone" fill="#70d1ff" layoutX="154.0" layoutY="381.0" onMouseClicked="#mouseClickedTerritory" points="214.326416015625, -90.34390258789062, 204.68310546875, -170.99752807617188, 117.89276123046875, -104.37063598632812, 102.11785888671875, -77.29757690429688" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Helvoria" fill="#70d1ff" layoutX="162.0" layoutY="437.0" onMouseClicked="#mouseClickedTerritory" points="143.07586669921875, -55.912261962890625, 226.0, -66.65145874023438, 226.0, -108.97647094726562, 156.3419189453125, -129.19140625" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Winterfell" fill="#70d1ff" layoutX="298.0" layoutY="506.0" onMouseClicked="#mouseClickedTerritory" points="7.07586669921875, -124.91226196289062, 99.3065185546875, -51.00140380859375, 171.9539794921875, -116.699951171875, 51.92779541015625, -132.49285888671875" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Highgarden" fill="#70d1ff" layoutX="425.0" layoutY="468.0" onMouseClicked="#mouseClickedTerritory" points="-75.07220458984375, -93.22943115234375, 256.26324462890625, -49.009246826171875, 132.76263427734375, -90.07083129882812, 38.00506591796875, -106.87026977539062" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="468.0" layoutY="387.0" onMouseClicked="#mouseClickedTerritory" rotate="8.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Highgarden" wrappingWidth="85.55681089056952">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Gondor" layoutX="511.0" layoutY="138.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Gondor">
+                        </Text>
+                        <Text layoutX="358.0" layoutY="413.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Winterfell">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Oz" layoutX="400.0" layoutY="61.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Oz">
+                        </Text>
+                        <Text layoutX="322.0" layoutY="353.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Helvoria">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Midkemia" layoutX="227.0" layoutY="81.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="69.0" styleClass="expandable" text="Midkemia">
+                        </Text>
+                        <Text layoutX="275.0" layoutY="277.0" onMouseClicked="#mouseClickedTerritory" rotate="-20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dragonstone">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
-                        <Button fx:id="Narnia" layoutX="330.0" layoutY="148.0" mnemonicParsing="false" onAction="#clickOnTerr" prefHeight="40.0" prefWidth="60.0" styleClass="expandable" text="Narnia">
+                        </Text>
+                        <Text layoutX="262.0" layoutY="337.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Pyke">
                             <font>
-                                <Font size="10.0" />
+                                <Font name="Wawati SC Regular" size="15.0" />
                             </font>
-                        </Button>
+                        </Text>
+                        <Polygon fx:id="Pentos" fill="#70d1ff" layoutX="98.0" layoutY="336.0" onMouseClicked="#mouseClickedTerritory" points="132.68930053710938, -5.893768310546875, 115.15591430664062, -29.563873291015625, -21.166229248046875, -137.3942413330078, 20.403564453125, 11.922607421875" stroke="BLACK" strokeType="INSIDE" />
+                        <Polygon fx:id="Oldtown" fill="#70d1ff" layoutX="163.0" layoutY="492.0" onMouseClicked="#mouseClickedTerritory" points="76.01766967773438, -30.393310546875, 156.6712646484375, -58.446746826171875, 118.38653564453125, -121.01974487304688, 62.795440673828125, -83.74844360351562" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="235.0" layoutY="413.0" onMouseClicked="#mouseClickedTerritory" rotate="-30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Oldtown">
+                            <font>
+                                <Font name="Wawati SC Regular" size="15.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="154.0" layoutY="326.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Pentos">
+                            <font>
+                                <Font name="Wawati SC Regular" size="15.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="190.0" layoutY="370.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Braavos">
+                            <font>
+                                <Font name="Wawati SC Regular" size="15.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="187.0" layoutY="266.0" onMouseClicked="#mouseClickedTerritory" strokeType="OUTSIDE" strokeWidth="0.0" text="Volantis">
+                            <font>
+                                <Font name="Wawati SC Regular" size="15.0" />
+                            </font>
+                        </Text>
                         <Button fx:id="attackButton" layoutX="90.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnAttack" prefHeight="20.0" prefWidth="70.0" text="Attack">
                             <styleClass>
                                 <String fx:value="numbtn" />
@@ -317,12 +265,6 @@
                                 <String fx:value="expandable" />
                             </styleClass>
                         </Button>
-                        <Text layoutX="92.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text layoutX="246.0" layoutY="171.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text layoutX="173.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text layoutX="173.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text layoutX="245.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text fx:id="a1" layoutX="92.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                         <Button fx:id="commitButton" layoutX="740.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickOnCommit" prefHeight="26.0" prefWidth="87.0" text="Commit">
                             <styleClass>
                                 <String fx:value="numbtn" />

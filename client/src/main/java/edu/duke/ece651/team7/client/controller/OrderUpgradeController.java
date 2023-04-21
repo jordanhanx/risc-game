@@ -98,6 +98,8 @@ public class OrderUpgradeController implements Initializable {
                 Integer.parseInt(destLevSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
         if (response != null) {
+            MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
+            actionFailedPlayer.play();
             throw new IllegalArgumentException(response);
         }
 

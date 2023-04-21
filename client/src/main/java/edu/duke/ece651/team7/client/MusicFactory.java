@@ -40,4 +40,11 @@ public class MusicFactory {
         return backgroundMediaPlayer;
     }
 
+    public static MediaPlayer createActionFailedPlayer(){
+        String mediaPath = "src/main/resources/music/actionFailed.wav";
+        MediaPlayer actionFailedPlayer = createMediaPlayer(mediaPath);
+        actionFailedPlayer.setVolume(1);
+        return actionFailedPlayer;
+    }
+
 }
