@@ -244,11 +244,18 @@ public class OrderExecuteVisitorTest {
         p1.addAlliance(p3);
         p3.addAlliance(p1);
 
+
         map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
         map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
 
         map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
         map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        AttackOrder a6 = new AttackOrder(p1,map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Scadrial"),2);
+        AttackOrder a7 = new AttackOrder(p3,map.getTerritoryByName("Hogwarts"), map.getTerritoryByName("Scadrial"),2);
+        ox.visit(a6);
+        ox.visit(a7);
+        assertEquals(4,ox.isInCombatPool(a6.dest).getAttackUnitofPlayer(p1));
 
         AttackOrder a5 = new AttackOrder(p1,map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"),2);
         ox.visit(a5);

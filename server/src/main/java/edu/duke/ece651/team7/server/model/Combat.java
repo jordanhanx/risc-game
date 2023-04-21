@@ -98,13 +98,16 @@ public class Combat {
     public void pushAttack(Player p, Collection<Unit> units){
         if(participants.contains(p)){
             attackPool.get(p).addAll(units);
+            Collections.sort(attackPool.get(p));
         }else if(p.getAlliance()!= null && participants.contains(p.getAlliance())){
             attackPool.get(p.getAlliance()).addAll(units);
+            Collections.sort(attackPool.get(p.getAlliance()));
         }else{
             participants.add(p);
             attackPool.put(p, new ArrayList<Unit>(units));
+            Collections.sort(attackPool.get(p));
         }
-        Collections.sort(attackPool.get(p));
+        // Collections.sort(attackPool.get(p));
     }
 
     /**
