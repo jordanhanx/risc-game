@@ -144,6 +144,16 @@ public interface RemoteGame extends Remote {
          */
         public String tryResearchOrder(String username) throws RemoteException;
 
+
+        /**
+         * 
+         * @param username the username of the player attempting to alliance
+         * @param allianceName the player want want alliance with
+         * @return a message indicating success or failure of the alliance attempt
+         * @throws RemoteException
+         */
+        public String tryAllianceOrder(String username, String allianceName) throws RemoteException;
+
         /**
          * Instructs the server to commit the orders for the specified player.
          * Blocks until all players have submitted their orders or the timeout period

@@ -297,6 +297,22 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
+    public String tryAllianceOrder(String username, String allianceName) throws RemoteException {
+        String response = null;
+        try {
+            if (commitSet.contains(username)) {
+                response = "Please wait for other players to commit";
+            } else {
+               AllianceOrder ao = new AllianceOrder(playerMap.get(username), playerMap.get(allianceName));
+               ao.accept(ox);
+            }
+        } catch (RuntimeException e) {
+            response = e.getMessage();
+        }
+        return response;
+    }
+
+    @Override
     public synchronized String doCommitOrder(String username) throws RemoteException {
         String response = null;
         if (playerMap.get(username).isLose()) {
@@ -372,6 +388,8 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             }
         }
     }
+
+    
 }
 
 /* EOF */
