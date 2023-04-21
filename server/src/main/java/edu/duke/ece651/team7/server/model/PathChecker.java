@@ -16,8 +16,8 @@ public class PathChecker extends OrderRuleChecker {
     protected String checkMyRule(GameMap map, Order o) {
         if(o.getClass() == AttackOrder.class || o.getClass() == MoveOrder.class){
             BasicOrder order = (BasicOrder) o;
-            if(!order.src.getOwner().equals(order.issuer)){
-                return "Access Denied: source Territory does not belong to you";
+            if(!order.src.getOwner().equals(order.issuer) && !order.src.getOwner().isAlliance(order.issuer)){
+                return "Access Denied: source Territory does not belong to you/your alliance";
             }
             if(order.getClass() == AttackOrder.class){
                 return checkAttackRule(map, (AttackOrder)order);
@@ -26,8 +26,8 @@ public class PathChecker extends OrderRuleChecker {
             }
         }else if(o.getClass() == UpgradeOrder.class){
             UpgradeOrder order = (UpgradeOrder) o;
-            if(!order.target.getOwner().equals(order.issuer)){
-                return "Access Denied: target Territory does not belong to you";
+            if(!order.target.getOwner().equals(order.issuer) && !order.target.getOwner().isAlliance(order.issuer)){
+                return "Access Denied: target Territory does not belong to you/your alliance";
             }
             return null;
         }else{
@@ -46,8 +46,8 @@ public class PathChecker extends OrderRuleChecker {
     }
 
     private String checkMoveRule(GameMap map, MoveOrder order){
-        if(!order.dest.getOwner().equals(order.issuer)){
-            return "Access Denied: destination Territory does not belong to you";
+        if(!order.dest.getOwner().equals(order.issuer) && !order.dest.getOwner().isAlliance(order.issuer)){
+            return "Access Denied: destination Territory does not belong to you/your alliance";
         }
         //do not have a path
         if(!map.hasPath(order.src.getName(), order.dest.getName())){

@@ -55,7 +55,7 @@ public class PathCheckerTest {
         return map;
     }
     @Test
-    public void test_checkMyrule(){
+    public void test_checkMyruleMove(){
         OrderRuleChecker checker = new PathChecker(null);
         GameMap map = makeGameMap();
         Player p1 = map.getTerritoryByName("Narnia").getOwner();
@@ -63,13 +63,13 @@ public class PathCheckerTest {
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
 
         MoveOrder m1 = new MoveOrder(p2, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
-        assertEquals("Access Denied: source Territory does not belong to you", checker.checkOrderValidity(map, m1));
+        assertEquals("Access Denied: source Territory does not belong to you/your alliance", checker.checkOrderValidity(map, m1));
 
         MoveOrder m2 = new MoveOrder(p1, map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Narnia"), 3);
         assertNull(checker.checkOrderValidity(map, m2));
 
         MoveOrder m3 = new MoveOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
-        assertEquals("Access Denied: destination Territory does not belong to you", checker.checkOrderValidity(map, m3));
+        assertEquals("Access Denied: destination Territory does not belong to you/your alliance", checker.checkOrderValidity(map, m3));
 
         map.getTerritoryByName("Roshar").setOwner(p1);
         MoveOrder m4 = new MoveOrder(p1, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Narnia"), 3);
@@ -77,6 +77,24 @@ public class PathCheckerTest {
 
         map.getTerritoryByName("Roshar").setOwner(p2);
 
+
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+        MoveOrder m5 = new MoveOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
+        assertNull(checker.checkOrderValidity(map, m5));
+
+        MoveOrder m6 = new MoveOrder(p3, map.getTerritoryByName("Oz"), map.getTerritoryByName("Narnia"), 3);
+        assertNull(checker.checkOrderValidity(map, m6));
+
+    }
+
+    @Test
+    public void test_checkMyruleAttack(){
+        OrderRuleChecker checker = new PathChecker(null);
+        GameMap map = makeGameMap();
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
         AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Scadrial"), 10);
         assertEquals("Can only attack adjacent territory", checker.checkOrderValidity(map, a1));
 
@@ -85,16 +103,37 @@ public class PathCheckerTest {
 
         AttackOrder a3 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), 10);
         assertNull(checker.checkOrderValidity(map, a3));
+    }
 
+    @Test
+    public void test_checkMyruleUpgrade(){
+        OrderRuleChecker checker = new PathChecker(null);
+        GameMap map = makeGameMap();
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
         UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
         assertNull(checker.checkMyRule(map, u1));
 
         UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.CAVALRY, 5);
         assertNotNull(checker.checkMyRule(map, u2));
 
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+        UpgradeOrder u3 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.CAVALRY, 5);
+        assertNull(checker.checkMyRule(map, u3));
+
+    }
+
+    @Test
+    public void test_checkMyruleResearchandAlliance(){
+        OrderRuleChecker checker = new PathChecker(null);
+        GameMap map = makeGameMap();
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
         ResearchOrder r1 = new ResearchOrder(p3);
         assertNull(checker.checkMyRule(map, r1));
-
-
     }
 }

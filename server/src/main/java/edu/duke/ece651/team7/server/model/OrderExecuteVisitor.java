@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.boot.logging.LogLevel;
+
 import edu.duke.ece651.team7.shared.FoodResource;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
@@ -89,6 +91,30 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         }
     }
 
+    protected void breakAlliance(Player pAttack, Player pRetreat){
+        retreat(pAttack, pRetreat);
+
+        for(Territory t:pRetreat.getTerritories()){
+            if(t.getUnitsNumber(pAttack) > 0){
+                Map<Level, Integer> units = new HashMap<>();
+                for(Unit u : t.getUnits(pAttack)){
+                    units.put(u.getLevel(), units.getOrDefault(u.getLevel(), 0)+1);
+                }
+                pushCombat(new AttackOrder(pAttack, t, t, units));
+            }
+        }
+        pAttack.breakAllianceWith(pRetreat);
+    }
+
+    protected void retreat(Player pAttack, Player pRetreat){
+        for(Territory t: pAttack.getTerritories()){
+            if(t.getUnitsNumber(pRetreat) > 0){
+                Territory nearest = map.getNearestAllianceTerritory(t);
+                nearest.addUnits(t.removeAllUnitsOfPlayer(pRetreat));
+            }
+        }
+    }
+
     /**
      * check the validity of the move order then execute it
      * 
@@ -128,6 +154,10 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
             Resource food = order.accept(costVisitor);
             order.issuer.getFood().consumeResource((FoodResource) food);
             pushCombat(order);
+            //check if attack alliance's territory
+            if(order.issuer.isAlliance(order.dest.getOwner())){
+                breakAlliance(order.issuer, order.dest.getOwner());
+            }
             return null;
         }else{
             throw new IllegalArgumentException(err);

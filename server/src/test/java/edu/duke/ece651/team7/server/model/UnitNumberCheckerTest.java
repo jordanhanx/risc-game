@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-
-import edu.duke.ece651.team7.server.model.AttackOrder;
-import edu.duke.ece651.team7.server.model.MoveOrder;
-import edu.duke.ece651.team7.server.model.ResearchOrder;
-import edu.duke.ece651.team7.server.model.UnitNumberChecker;
-import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.*;
 
 public class UnitNumberCheckerTest {

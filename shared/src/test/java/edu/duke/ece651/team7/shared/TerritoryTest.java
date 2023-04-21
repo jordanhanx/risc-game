@@ -145,7 +145,8 @@ public class TerritoryTest {
 
   @Test
   public void test_upgradeUnits(){
-    Territory t = new Territory("test",10);
+    Player p = mock(Player.class);
+    Territory t = new Territory("test",p,10);
     t.upgradeUnits(Level.CIVILIAN, Level.INFANTRY, 4);
     assertEquals(4, t.getUnitsNumberByLevel(Level.INFANTRY));
     assertEquals(6, t.getUnitsNumberByLevel(Level.CIVILIAN));

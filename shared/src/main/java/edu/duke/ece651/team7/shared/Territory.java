@@ -26,10 +26,22 @@ public class Territory implements Serializable {
     this(name, 0, 1,1);
   }
 
+  /**
+   * Constructs a territory with inputted values
+   * @param name
+   * @param numUnits
+   */
   public Territory(String name, int numUnits){
     this(name, numUnits, 1, 1);
   }
 
+  /**
+   * Constructs a territory with inputted values
+   * @param name
+   * @param numUnits
+   * @param foodProductionRate
+   * @param techProductionRate
+   */
   public Territory(String name, int numUnits, int foodProductionRate, int techProductionRate){
     this.name = name;
     this.owner = null;
@@ -42,6 +54,7 @@ public class Territory implements Serializable {
     }
     this.foodProductionRate = foodProductionRate;
     this.techProductionRate = techProductionRate;
+
   }
   /**
    * Constructs a territory with inputted values
@@ -64,29 +77,81 @@ public class Territory implements Serializable {
     this.techProductionRate = 1;
   }
 
+
   public String getName() {
     return name;
   }
 
+  /**
+   * 
+   * @return the number of total units
+   */
   public int getUnitsNumber() {
     return units.size();
   }
 
-
-  public int getUnitsNumberByLevel(Level l) {
+  /**
+   * get the number of units on the territory owner by P 
+   * @param p player who owns some units
+   * @return the number of units on the territory owner by P 
+   */
+  public int getUnitsNumber(Player p) {
     int num = 0;
     for(int i = 0; i < units.size(); i++){
-      if(units.get(i).getLevel() == l){
+      if(p.equals(units.get(i).getOwner())){
+        num ++;
+      }
+    }
+    return num;
+  }
+
+  /**
+   * 
+   * @param l
+   * @return the number of units with Level l on the territory owner by territory owner
+   */
+  public int getUnitsNumberByLevel(Level l) {
+    return getUnitsNumberByLevel(l, owner);
+  }
+
+  /**
+   * 
+   * @param l
+   * @param p
+   * @return the number of units with Level l on the territory owner by Player p
+   */
+  public int getUnitsNumberByLevel(Level l, Player p) {
+    int num = 0;
+    for(int i = 0; i < units.size(); i++){
+      if(units.get(i).getLevel() == l && p.equals(units.get(i).getOwner())){
         num ++;
       }
     }
     return num;
   }
   
+  /**
+   * 
+   * @return the list of whole units on the territory
+   */
   public Collection<Unit> getUnits(){
     return units;
   }
 
+  /**
+   * 
+   * @param p
+   * @return the list of units owned by p on the territory
+   */
+  public Collection<Unit> getUnits(Player p){
+    ArrayList<Unit> pUnits = new ArrayList<>();
+    for(Unit u : units){
+      if(p.equals(u.getOwner())){
+        pUnits.add(u);
+      }
+    }
+    return pUnits;
+  }
 
   public Player getOwner() {
     return owner;
@@ -222,25 +287,6 @@ public class Territory implements Serializable {
     }
   }
   
-  // public void increaseUnits(int num) {
-  //   if (num <= 0) {
-  //     throw new IllegalArgumentException("Increase Territory Units: input num must be greater than 0");
-  //   } else {
-  //     units += num;
-  //   }
-  // }
-
-
-  // public void decreaseUnits(int num) {
-  //   if (num <= 0) {
-  //     throw new IllegalArgumentException("Decrease Territory Units: input num must be greater than 0");
-  //   } else if (units < num) {
-  //     throw new ArithmeticException("Decrease Territory Units: units cannot be less than 0");
-  //   } else {
-  //     units -= num;
-  //   }
-  // }
-
   @Override
   public boolean equals(Object other) {
     if (other != null && other.getClass().equals(getClass())) {

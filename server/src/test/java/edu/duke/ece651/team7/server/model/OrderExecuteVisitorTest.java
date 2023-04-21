@@ -5,6 +5,7 @@ import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
 import edu.duke.ece651.team7.shared.Territory;
+import edu.duke.ece651.team7.shared.Unit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -139,8 +140,8 @@ public class OrderExecuteVisitorTest {
         u2.accept(ox);
         tech1 = tech1-u2.accept(oc).getAmount();
         assertEquals(tech1, p1.getTech().getAmount());
-        assertEquals(6, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CIVILIAN));
-        assertEquals(4, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.INFANTRY));
+        assertEquals(6, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CIVILIAN,p1));
+        assertEquals(4, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.INFANTRY,p1));
 
         System.out.println(p1.getTech().getAmount());
         UpgradeOrder u3 = new UpgradeOrder(p1, map.getTerritoryByName("Narnia"), Level.INFANTRY, Level.CAVALRY, 4);
@@ -156,9 +157,9 @@ public class OrderExecuteVisitorTest {
         u3.accept(ox);
         tech1 = tech1 - u3.accept(oc).getAmount();
         assertEquals(tech1, p1.getTech().getAmount());
-        assertEquals(6, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CIVILIAN));
-        assertEquals(0, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.INFANTRY));
-        assertEquals(4, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CAVALRY));
+        assertEquals(6, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CIVILIAN, p1));
+        assertEquals(0, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.INFANTRY, p1));
+        assertEquals(4, map.getTerritoryByName("Narnia").getUnitsNumberByLevel(Level.CAVALRY, p1));
     }
 
     @Test
@@ -382,6 +383,59 @@ public class OrderExecuteVisitorTest {
 
     }
 
+    @Test
+    public void test_retreat(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+        map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
+        map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
+
+        map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
+        map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        assertEquals(3, map.getTerritoryByName("Narnia").getUnitsNumber(p3));
+        assertEquals(4, map.getTerritoryByName("Oz").getUnitsNumber(p3));
+
+        ox.retreat(p1, p3);
+        assertEquals(0, map.getTerritoryByName("Narnia").getUnitsNumber(p3));
+        assertEquals(10, map.getTerritoryByName("Narnia").getUnitsNumber(p1));
+        assertEquals(0, map.getTerritoryByName("Oz").getUnitsNumber(p3));
+
+        assertEquals(17, map.getTerritoryByName("Gondor").getUnitsNumber(p3));
+        assertEquals(3, map.getTerritoryByName("Gondor").getUnitsNumber(p1));
+    }
+
+    @Test
+    public void test_breakAlliance(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        p1.addAlliance(p3);
+        p3.addAlliance(p1);
+        map.getTerritoryByName("Narnia").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3))));
+        map.getTerritoryByName("Oz").addUnits(new ArrayList<>(Arrays.asList(new Unit(p3), new Unit(p3), new Unit(p3), new Unit(p3))));
+
+        map.getTerritoryByName("Gondor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1))));
+        map.getTerritoryByName("Mordor").addUnits(new ArrayList<>(Arrays.asList(new Unit(p1), new Unit(p1), new Unit(p1), new Unit(p1))));
+
+        ox.breakAlliance(p1, p3);
+        assertEquals(0, map.getTerritoryByName("Narnia").getUnitsNumber(p3));
+        assertEquals(10, map.getTerritoryByName("Narnia").getUnitsNumber(p1));
+        assertEquals(0, map.getTerritoryByName("Oz").getUnitsNumber(p3));
+
+        assertEquals(17, map.getTerritoryByName("Gondor").getUnitsNumber(p3));
+        assertEquals(0, map.getTerritoryByName("Gondor").getUnitsNumber(p1));
+
+        assertEquals(3,ox.isInCombatPool(map.getTerritoryByName("Gondor")).getAttackUnitofPlayer(p1));
+        assertEquals(4,ox.isInCombatPool(map.getTerritoryByName("Mordor")).getAttackUnitofPlayer(p1));
+    }
 //     @Test
 //     public void test_doAllCombat(){
 

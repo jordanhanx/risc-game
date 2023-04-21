@@ -298,7 +298,7 @@ public class GameMapTest {
   public void test_findShortestPath(){
     MapFactory mf = new GUIMapFactory();
     GameMap map = mf.createPlayerMap(2);
-
+    
     // Map<Territory, Integer> shortestPath = map.findShortestPath(map.getTerritoryByName("Midkemia");
 
     assertEquals(7,map.findShortestPath(map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Gondor")));
@@ -320,6 +320,7 @@ public class GameMapTest {
     assertEquals(7 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Mordor")));
     assertEquals(11 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Roshar")));
     assertEquals(14 ,map.findShortestPath(map.getTerritoryByName("Dorne"),map.getTerritoryByName( "Scadrial")));
+
   }
 
   @Test
@@ -332,7 +333,26 @@ public class GameMapTest {
   }
 
 
+  @Test
+  public void getNearestAllianceTerritory(){
+    MapFactory mf = new GUIMapFactory();
+    GameMap map = mf.createPlayerMap(3);
+    Player p1 = map.getTerritoryByName("Volantis").getOwner();
+    Player p2 = map.getTerritoryByName("Drakoria").getOwner();
+    Player p3 = map.getTerritoryByName("Narnia").getOwner();
+    p1.addAlliance(p2);
+    p2.addAlliance(p1);
 
+    assertEquals(10 ,map.findShortestPath(map.getTerritoryByName("Pyke"),map.getTerritoryByName( "Galadria")));
+    
+    assertEquals(map.getTerritoryByName("Drakoria"), map.getNearestAllianceTerritory(map.getTerritoryByName("Pyke")));
+
+    assertEquals(map.getTerritoryByName("Drakoria"), map.getNearestAllianceTerritory(map.getTerritoryByName("Dragonstone")));
+
+    assertEquals(map.getTerritoryByName("Winterfell"), map.getNearestAllianceTerritory(map.getTerritoryByName("Hogwarts")));
+
+    assertThrows(IllegalArgumentException.class, ()->map.getNearestAllianceTerritory(map.getTerritoryByName("Narnia")));
+  }
 
 
 }

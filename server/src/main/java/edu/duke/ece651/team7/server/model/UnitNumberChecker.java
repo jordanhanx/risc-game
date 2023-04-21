@@ -22,7 +22,7 @@ public class UnitNumberChecker extends OrderRuleChecker{
                 if(order.units.get(l) <= 0){
                     return "Number of Units must be > 0";
                 }
-                if(order.units.get(l) > order.src.getUnitsNumberByLevel(l)){
+                if(order.units.get(l) > order.src.getUnitsNumberByLevel(l, order.issuer)){
                     return "No enough units in the source Territory";
                 }
             }
@@ -31,7 +31,7 @@ public class UnitNumberChecker extends OrderRuleChecker{
 
         if(o.getClass() == UpgradeOrder.class){
             UpgradeOrder order = (UpgradeOrder) o;
-            if(order.units > order.target.getUnitsNumberByLevel(order.from)){
+            if(order.units > order.target.getUnitsNumberByLevel(order.from, order.issuer)){
                 return "No enough units in the source Territory";
             }else{
                 return null;
