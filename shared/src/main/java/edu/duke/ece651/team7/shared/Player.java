@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -14,6 +15,7 @@ public class Player implements Serializable, Comparable<Player> {
     private TechResource tech;
     private FoodResource food;
     private Level maxTechLevel;
+    private Player alliance;
 
     /**
      * Constructs a Player with the name.
@@ -35,6 +37,7 @@ public class Player implements Serializable, Comparable<Player> {
         this.tech = new TechResource(0);
         this.food = new FoodResource(0);
         this.maxTechLevel = l;
+        this.alliance = null;
     }
 
     /**
@@ -106,6 +109,54 @@ public class Player implements Serializable, Comparable<Player> {
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * 
+     * @param p the alliance to be added
+     */
+    public void addAlliance(Player p){
+        if(isAlliance(p)){
+            throw new IllegalArgumentException("Player: " + name + " is already your Alliance");
+        }
+        if(this.alliance != null){
+            throw new IllegalArgumentException("Player: " + name + " already alliant with another Player");
+        }
+        this.alliance = p;
+        // p.alliance = this;
+        // if (this.alliances.contains(p)){
+        //     throw new IllegalArgumentException("Player: " + name + " already is alliance of Player " + p.getName());
+        // }else{
+        //     this.alliances.add(p);
+        // }
+    }
+
+    /**
+     * See if the Player p is alliance of the current player.
+     * 
+     * @return true if the p is an alliance, false if not
+     */
+    public boolean isAlliance(Player p) {
+        // if (this.alliances.contains(p)){
+        //     return true;
+        // }else{
+        //     return false;
+        // }
+        return p.equals(this.alliance) && this.equals(p.alliance);
+    }
+
+    public Player getAlliance(){
+        return this.alliance;
+    }
+
+    public void breakAllianceWith(Player p){
+        if(!isAlliance(p)){
+            throw new IllegalArgumentException("Player: " + name + " and Player " + p.getName() + " are not alliances ");
+        }
+        this.alliance = null;
+        p.alliance = null;
+        // this.alliances.remove(p);
     }
 
     /**

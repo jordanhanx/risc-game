@@ -9,7 +9,7 @@ public enum Level {
     CAVALRY(2),
     TROOPER(3),
     ARTILLERY(4),
-    AIRFORCE(5),
+    AIRBORNE(5),
     ULTRON(6);
 
     public final int label;

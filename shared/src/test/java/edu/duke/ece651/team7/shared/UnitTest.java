@@ -1,6 +1,6 @@
 package edu.duke.ece651.team7.shared;
 import static org.junit.jupiter.api.Assertions.*;
-
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 
 public class UnitTest {
@@ -29,9 +29,10 @@ public class UnitTest {
 
     @Test
     public void test_compare(){
+        Player p = mock(Player.class);
         Unit u1 = new Unit();
         Unit u2 = new Unit();
-        Unit u3 = new Unit(Level.AIRFORCE);
+        Unit u3 = new Unit(Level.AIRBORNE, p);
         assertFalse(u1 == u2);
         assertFalse(u1.equals(u2));
         assertTrue(u1.compareTo(u3) < 0);

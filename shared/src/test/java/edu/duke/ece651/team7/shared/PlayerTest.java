@@ -74,8 +74,8 @@ public class PlayerTest {
 
     @Test
     public void test_getCurrentMaxLevel(){
-        Player p = new Player("test", Level.AIRFORCE);
-        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+        Player p = new Player("test", Level.AIRBORNE);
+        assertEquals(Level.AIRBORNE, p.getCurrentMaxLevel());
 
         Player p1 = new Player("test");
         assertEquals(Level.INFANTRY, p1.getCurrentMaxLevel());
@@ -93,8 +93,8 @@ public class PlayerTest {
 
     @Test
     public void test_upgradeMaxLevel(){
-        Player p = new Player("test", Level.AIRFORCE);
-        assertEquals(Level.AIRFORCE, p.getCurrentMaxLevel());
+        Player p = new Player("test", Level.AIRBORNE);
+        assertEquals(Level.AIRBORNE, p.getCurrentMaxLevel());
         p.upgradeMaxLevel();
         assertEquals(Level.ULTRON, p.getCurrentMaxLevel());
 
@@ -103,7 +103,7 @@ public class PlayerTest {
 
     @Test
     public void test_getResource(){
-        Player p = new Player("test", Level.AIRFORCE);
+        Player p = new Player("test", Level.AIRBORNE);
         assertEquals(0,p.getFood().getAmount());
         assertEquals(0,p.getTech().getAmount());
         p.getFood().addResource(10);
@@ -125,7 +125,7 @@ public class PlayerTest {
         when(t2.produceTech()).thenReturn(new TechResource(4));
         when(t3.produceTech()).thenReturn(new TechResource(5));
 
-        Player p = new Player("test", Level.AIRFORCE);
+        Player p = new Player("test", Level.AIRBORNE);
         p.addTerritory(t1);
         p.addTerritory(t2);
         p.addTerritory(t3);
@@ -139,7 +139,38 @@ public class PlayerTest {
 
 
     @Test
-    public void test_getTech(){
+    public void test_addAlliance(){
+        Player p = new Player("test");
+        Player p1 = new Player("test2");
+        Player p3 = new Player("test 3");
+
+        p.addAlliance(p1);
+        p1.addAlliance(p);
+
+        assertThrows(IllegalArgumentException.class, ()->p1.addAlliance(p));
+        assertTrue(p.isAlliance(p1));
+        assertTrue(p1.isAlliance(p));
+        assertFalse(p.isAlliance(p3));
+        assertThrows(IllegalArgumentException.class, ()->p.addAlliance(p3));
+    }
+
+    @Test
+    public void test_breakAlliance(){
+        Player p = new Player("test");
+        Player p1 = new Player("test2");
+        Player p3 = new Player("test3");
+
+        p.addAlliance(p1);
+        p1.addAlliance(p);
+        
+        assertTrue(p.isAlliance(p1));
+        assertTrue(p1.isAlliance(p));
+        assertFalse(p.isAlliance(p3));
+
+        p.breakAllianceWith(p1);
+        assertFalse(p.isAlliance(p1));
+        assertFalse(p1.isAlliance(p));
+        assertThrows(IllegalArgumentException.class, ()->p1.breakAllianceWith(p));
     }
 
     @Test

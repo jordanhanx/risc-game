@@ -107,7 +107,7 @@ public class CombatTest {
         
         Combat combat1 = new Combat(tScadrial);
 
-        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.CAVALRY), new Unit(Level.ULTRON), new Unit(Level.INFANTRY), new Unit(Level.TROOPER)));
+        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(Level.CAVALRY,groupA), new Unit(Level.ULTRON,groupA), new Unit(Level.INFANTRY,groupA), new Unit(Level.TROOPER,groupA)));
         combat1.pushAttack(groupA, unitstoAdd);
         assertEquals(5, combat1.getAttackUnitofPlayer(groupA));
         assertEquals(1, combat1.getParticipantsSize());
@@ -117,7 +117,7 @@ public class CombatTest {
         assertEquals(unitsA.get(1), unitstoAdd.get(3));
         assertEquals(unitsA.get(unitsA.size()-1), unitstoAdd.get(2));
 
-        combat1.pushAttack(groupA, new ArrayList<Unit>(Arrays.asList(new Unit(), new Unit(Level.AIRFORCE), new Unit(Level.ARTILLERY))));
+        combat1.pushAttack(groupA, new ArrayList<Unit>(Arrays.asList(new Unit(groupA), new Unit(Level.AIRBORNE,groupA), new Unit(Level.ARTILLERY,groupA))));
     
         assertEquals(8, combat1.getAttackUnitofPlayer(groupA));
         assertEquals(1, combat1.getParticipantsSize());
@@ -198,8 +198,8 @@ public class CombatTest {
         Territory tScadrial = mock(Territory.class);
 
         Combat combat = new Combat(tScadrial);
-        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(Level.INFANTRY,groupA), new Unit(Level.CAVALRY,groupA), new Unit(Level.TROOPER,groupA), new Unit(Level.ULTRON,groupA)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.TROOPER,groupB)));
         combat.pushAttack(groupA, unitstoAdd1);
         combat.pushAttack(groupB, unitstoAdd2);
 
@@ -232,11 +232,11 @@ public class CombatTest {
         // CAVALRY(2), 
         // TROOPER(3), 
         // ARTILLERY(4), 
-        // AIRFORCE(5), 
+        // AIRBORNE(5), 
         // ULTRON(6);
 
-        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER), new Unit(Level.AIRFORCE), new Unit(Level.AIRFORCE)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(Level.INFANTRY,groupA), new Unit(Level.CAVALRY,groupA), new Unit(Level.TROOPER,groupA), new Unit(Level.ULTRON,groupA)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.AIRBORNE,groupB), new Unit(Level.AIRBORNE,groupB)));
 
         Combat combat = new Combat(tScadrial);
         Combat spy = spy(combat);
@@ -280,11 +280,11 @@ public class CombatTest {
     //     // CAVALRY(2), 
     //     // TROOPER(3), 
     //     // ARTILLERY(4), 
-    //     // AIRFORCE(5), 
+    //     // AIRBORNE(5), 
     //     // ULTRON(6);
 
     //     ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-    //     ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER), new Unit(Level.AIRFORCE), new Unit(Level.AIRFORCE)));
+    //     ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.INFANTRY), new Unit(Level.TROOPER), new Unit(Level.TROOPER), new Unit(Level.AIRBORNE), new Unit(Level.AIRBORNE)));
 
 
     //     Combat combat = new Combat(tScadrial);
@@ -426,12 +426,12 @@ public class CombatTest {
 
         ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC, groupD, groupE, groupF));
 
-        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd3 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd4 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.INFANTRY), new Unit(Level.CAVALRY), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
-        ArrayList<Unit> unitstoAdd5 = new ArrayList<>(Arrays.asList(new Unit(), new Unit(Level.CAVALRY), new Unit(Level.TROOPER), new Unit(Level.ULTRON)));
+        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(groupA), new Unit(Level.INFANTRY, groupA), new Unit(Level.CAVALRY, groupA), new Unit(Level.TROOPER, groupA), new Unit(Level.ULTRON, groupA)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.ULTRON,groupB)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(groupC), new Unit(Level.CAVALRY, groupC), new Unit(Level.TROOPER, groupC), new Unit(Level.ULTRON, groupC)));
+        ArrayList<Unit> unitstoAdd3 = new ArrayList<>(Arrays.asList(new Unit(groupD), new Unit(groupD), new Unit(Level.INFANTRY, groupD), new Unit(Level.CAVALRY, groupD), new Unit(Level.TROOPER, groupD), new Unit(Level.ULTRON, groupD)));
+        ArrayList<Unit> unitstoAdd4 = new ArrayList<>(Arrays.asList(new Unit(groupE), new Unit(Level.INFANTRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.TROOPER, groupE), new Unit(Level.ULTRON, groupE)));
+        ArrayList<Unit> unitstoAdd5 = new ArrayList<>(Arrays.asList(new Unit(groupF), new Unit(Level.CAVALRY, groupF), new Unit(Level.TROOPER, groupF), new Unit(Level.ULTRON, groupF)));
        
         // Territory tScadrial = mock(Territory.class);
 
@@ -440,8 +440,8 @@ public class CombatTest {
         // when(tScadrial.removeAllUnits()).thenReturn(unitstoAdd);
         // when(tScadrial.getOwner()).thenReturn(groupA);
         Territory tScadrial = new Territory("Scadrial");
-        tScadrial.addUnits(unitstoAdd);
         tScadrial.setOwner(groupA);
+        tScadrial.addUnits(unitstoAdd);
 
 
         Combat combat = new Combat(tScadrial);

@@ -13,7 +13,7 @@ public class LevelTest {
         assertEquals(Level.CAVALRY, Level.valueOfLabel(2));
         assertEquals(Level.TROOPER, Level.valueOfLabel(3));
         assertEquals(Level.ARTILLERY, Level.valueOfLabel(4));
-        assertEquals(Level.AIRFORCE, Level.valueOfLabel(5));
+        assertEquals(Level.AIRBORNE, Level.valueOfLabel(5));
         assertEquals(Level.ULTRON, Level.valueOfLabel(6));
     }
     @Test
@@ -24,7 +24,7 @@ public class LevelTest {
         Level l4 = Level.CAVALRY;
         Level l5 = Level.TROOPER;
         Level l6 = Level.ARTILLERY;
-        Level l7 = Level.AIRFORCE;
+        Level l7 = Level.AIRBORNE;
         Level l8 = Level.ULTRON;
 
         assertEquals(l1, l2);
