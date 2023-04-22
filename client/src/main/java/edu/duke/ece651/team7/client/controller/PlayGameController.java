@@ -24,6 +24,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,6 +37,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
+import javafx.scene.Node;
 
 /**
  * The PlayGameController class is responsible for managing the game view, which
@@ -60,19 +64,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         URL xmlResource = PlayGameController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new PlayGameController(server));
-        return new Scene(loader.load(), 1325, 607);
+        return new Scene(loader.load(), 1065, 522);
     }
 
     @FXML
     private Label playerName, food, techResource, techLevel;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton;
-    @FXML
-    private Label terrName, ownerName;
-    @FXML
-    private Label levelValue0, levelValue1, levelValue2, levelValue3, levelValue4, levelValue5, levelValue6;
-    @FXML
-    private Label territoryTech, territoryFood;
 
     @FXML
     private Polygon Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
@@ -83,10 +81,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @FXML private ImageView playerImage;
 
+    @FXML
+    Pane paneGroup;
+
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
     private Map<String, Color> colorMap;
+
+    static HashMap<String, Tooltip> polygonToToolTip = new HashMap<>();
 
     /**
      * Constructs a new PlayGameController object with the specified remote game
@@ -113,6 +116,21 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         setPlayerInfo();
         setTerritoryColor();
         DisplayImage();
+        setToolTipMap();
+    }
+
+    private void setToolTipMap(){
+        for(Node node: paneGroup.getChildren()){
+            if(node instanceof Polygon){
+                Polygon pol = (Polygon) node;
+                Tooltip tooltip = new Tooltip();
+                tooltip.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: white;");
+                Font font = new Font("Wawati SC Regular",15);
+                tooltip.setFont(font);
+                Tooltip.install(pol, tooltip);
+                polygonToToolTip.put(pol.getId(), tooltip);
+            }
+        }
     }
 
     private void setImageForPlayer(int playerIndex, String territoryName) {
@@ -223,32 +241,61 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      * 
      * @param event the Mouse event triggered by the click
      */
+
     @FXML
-    public void mouseClickedTerritory(MouseEvent event) {
-        Object source = event.getSource();
+    public void mouseMovedTerritory(MouseEvent me){
+        Node source = (Node) me.getSource();
+        Territory selectedTerr = null;
+        Tooltip tooltip = null;
+        if(source instanceof Polygon){
+            Polygon pol = (Polygon) source;
+            selectedTerr = findTerritory(pol.getId());
+            tooltip = polygonToToolTip.get(pol.getId());
+        }else if(source instanceof Text){
+            Text text = (Text) source;
+            selectedTerr = findTerritory(text.getText());
+            tooltip = polygonToToolTip.get(text.getText());
+        }else{
+            throw new IllegalArgumentException("Invalid source " + source + " for MouseEvent");
+        }
+        showToolTip(selectedTerr, tooltip, source);
+
+    }
+
+    private void showToolTip(Territory selectedTerr, Tooltip tooltip, Node source) {
+        tooltip.setText("Territory name: "+ selectedTerr.getName()+"\n"+
+                "Owner: "+selectedTerr.getOwner().getName()+" \n"+
+                "Food: "+ String.valueOf(selectedTerr.produceFood().getAmount())+" \n"+
+                "Tech: "+ String.valueOf(selectedTerr.produceTech().getAmount())+" \n"+
+                "Units: \n"+
+                "CIVILIAN  (Level 0): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0)))+" \n"+
+                "INFANTRY  (Level 1): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1)))+" \n"+
+                "CAVALRY   (Level 2): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2)))+" \n"+
+                "TROOPER   (Level 3): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3)))+" \n"+
+                "ARTILLERY (Level 4): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4)))+" \n"+
+                "AIRFORCE  (Level 5): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5)))+" \n"+
+                "ULTRON    (Level 6): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6)))+" \n"
+        );
+        tooltip.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(), source.localToScreen(source.getBoundsInLocal()).getMaxY());
+    }
+
+
+
+    @FXML
+    public void mouseLeavedTerritory(MouseEvent me){
+        Object source = me.getSource();
         Territory selectedTerr = null;
         if(source instanceof Polygon){
             Polygon btn = (Polygon) source;
-            selectedTerr = findTerritory(btn.getId());
+            polygonToToolTip.get(btn.getId()).hide();
         }else if(source instanceof Text){
             Text btn = (Text) source;
-            selectedTerr = findTerritory(btn.getText());
+            polygonToToolTip.get(btn.getText()).hide();
         }else{
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
-        if (selectedTerr != null) {
-            terrName.setText(selectedTerr.getName());
-            ownerName.setText(selectedTerr.getOwner().getName());
-            terrName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
-            ownerName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
-            levelValue0.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0))));
-            levelValue1.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1))));
-            levelValue2.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2))));
-            levelValue3.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3))));
-            levelValue4.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4))));
-            levelValue5.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5))));
-            levelValue6.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6))));
-        }
+
+
     }
 
     /**
