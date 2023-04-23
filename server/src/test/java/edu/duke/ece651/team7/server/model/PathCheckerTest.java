@@ -72,6 +72,7 @@ public class PathCheckerTest {
 
         map.getTerritoryByName("Roshar").setOwner(p2);
 
+        //Test alliance path
         p1.addAlliance(p3);
         p3.addAlliance(p1);
         MoveOrder m5 = new MoveOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"), 3);
@@ -88,6 +89,39 @@ public class PathCheckerTest {
 
         MoveOrder m7 = new MoveOrder(p1, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 3);
         assertNull(checker.checkOrderValidity(map, m7));
+    }
+
+    @Test
+    public void test_BasicOrderwithAircraft(){
+        OrderRuleChecker checker = new PathChecker(null);
+        GameMap map = makeGameMap();
+
+
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        MoveOrder m1 = new MoveOrder(p2, true, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"),Level.CIVILIAN, 3);
+        assertEquals("Access Denied: source Territory does not belong to you/your alliance", checker.checkOrderValidity(map, m1));
+
+        MoveOrder m2 = new MoveOrder(p1,  true,map.getTerritoryByName("Midkemia"), map.getTerritoryByName("Narnia"),Level.CIVILIAN, 3);
+        assertNull(checker.checkOrderValidity(map, m2));
+
+        MoveOrder m3 = new MoveOrder(p3,  true,map.getTerritoryByName("Gondor"), map.getTerritoryByName("Narnia"),Level.CIVILIAN, 3);
+        assertEquals("Access Denied: destination Territory does not belong to you/your alliance", checker.checkOrderValidity(map, m3));
+
+
+        map.getTerritoryByName("Roshar").setOwner(p1);
+        MoveOrder m4 = new MoveOrder(p1, true, map.getTerritoryByName("Roshar"), map.getTerritoryByName("Narnia"), Level.CIVILIAN,3);
+        assertNull(checker.checkOrderValidity(map, m4));
+
+        map.getTerritoryByName("Roshar").setOwner(p2);
+
+        AttackOrder a1 = new AttackOrder(p1, false,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Scadrial"),Level.CIVILIAN,  10);
+        assertEquals("Can only attack adjacent territory", checker.checkOrderValidity(map, a1));
+
+        AttackOrder a2 = new AttackOrder(p1, true,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Scadrial"),Level.CIVILIAN,  10);
+        assertNull(checker.checkOrderValidity(map, a2));
     }
 
     @Test

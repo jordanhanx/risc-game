@@ -5,25 +5,30 @@ import java.io.Serializable;
 public class Unit implements Comparable<Unit>, Serializable {
     private Level level;
     private final Player owner;
+    private boolean carryBomb;
 
     public Unit() {
         this.level = Level.CIVILIAN;
         this.owner = null;
+        this.carryBomb = false;
     }
 
     public Unit(Player p){
         this.level = Level.CIVILIAN;
         this.owner = p;
+        this.carryBomb = false;
     }
 
     public Unit(Level l, Player p) {
         this.level = l;
         this.owner = p;
+        this.carryBomb = false;
     }
 
     public Unit(Level l) {
         this.level = l;
         this.owner = null;
+        this.carryBomb = false;
     }
 
     public Level getLevel() {
@@ -50,6 +55,14 @@ public class Unit implements Comparable<Unit>, Serializable {
 
     public Player getOwner(){
         return this.owner;
+    }
+
+    public boolean hasBomb(){
+        return this.carryBomb;
+    }
+
+    public void equipBomb(){
+        this.carryBomb = true;
     }
 
     @Override

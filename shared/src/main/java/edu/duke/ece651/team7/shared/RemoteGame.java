@@ -99,7 +99,7 @@ public interface RemoteGame extends Remote {
          * @return an error message if the operation fails, null otherwise
          * @throws RemoteException if a remote communication error occurs
          */
-        public String tryMoveOrder(String username, String src, String dest, int level, int units)
+        public String tryMoveOrder(String username,Boolean ua, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**
@@ -117,7 +117,7 @@ public interface RemoteGame extends Remote {
          * @throws RemoteException if a remote communication error occurs during the
          *                         method call
          */
-        public String tryAttackOrder(String username, String src, String dest, int level, int units)
+        public String tryAttackOrder(String username, Boolean ua, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**
@@ -155,7 +155,7 @@ public interface RemoteGame extends Remote {
         public String tryAllianceOrder(String username, String allianceName) throws RemoteException;
 
 
-        public String tryManufactureOrder(String username, boolean isBomb) throws RemoteException;
+        public String tryManufactureOrder(String username, boolean isBomb, int amount) throws RemoteException;
         /**
          * Instructs the server to commit the orders for the specified player.
          * Blocks until all players have submitted their orders or the timeout period

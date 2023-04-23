@@ -174,6 +174,44 @@ public class PlayerTest {
     }
 
     @Test
+    public void test_bomb(){
+        Player p = new Player("test");
+        // Player p1 = new Player("test2");
+        // Player p3 = new Player("test3");
+        
+        assertEquals(0, p.getBomb());
+        p.modifyBombAmount(3);
+        assertEquals(3, p.getBomb());
+        assertThrows(IllegalArgumentException.class, ()->p.modifyBombAmount(-4));
+        p.modifyBombAmount(-2);
+        assertEquals(1, p.getBomb());
+    }
+
+    @Test
+    public void test_aircraft(){
+        Player p = new Player("test");
+        assertEquals(0, p.getAircraft().size());
+        p.addAircraft(3);
+        assertEquals(3, p.getAircraft().size());
+        assertEquals(3, p.getAircraft().get(0));
+        assertEquals(3, p.getAircraft().get(1));
+        assertEquals(3, p.getAircraft().get(2));
+
+        p.consumeAircraft(2);
+        assertEquals(2, p.getAircraft().get(0));
+        assertEquals(2, p.getAircraft().get(1));
+        assertEquals(3, p.getAircraft().get(2));
+        
+        assertThrows(IllegalArgumentException.class, ()->p.consumeAircraft(4));
+        assertThrows(IllegalArgumentException.class, ()->p.consumeAircraft(-1));
+
+        p.consumeAircraft(2);
+        p.consumeAircraft(2);
+        assertEquals(1, p.getAircraft().size());
+        assertEquals(3, p.getAircraft().get(0));
+    
+    }
+    @Test
     public void test_toString() {
         Player p = new Player("test");
         assertEquals("Player: test", p.toString());

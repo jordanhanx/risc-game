@@ -46,10 +46,10 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         this.alliancePool = new HashMap<>();
         this.costVisitor = new OrderCostVisitor(map);
         // this.out = out;
-        checker = new CostChecker(checker, costVisitor);
-        checker = new LevelChecker(checker);
+        checker = new CostChecker(null, costVisitor);
         checker = new UnitNumberChecker(checker);
         checker = new PathChecker(checker);
+        checker = new LevelChecker(checker);
     }
     /**
      * Check if the issued Attack order's destination has already formed a combat
@@ -76,6 +76,11 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         for(Level l: o.units.keySet()){
             departUnits.addAll(o.src.removeUnits(l, o.units.get(l), o.issuer));
         }
+        //equip Ultron units with bomb
+        if(o.numBomb > 0){
+            equipUnits(departUnits, o.numBomb);
+        }
+
         Combat targetCombat = isInCombatPool(o.dest);
         if(targetCombat != null){
             targetCombat.pushAttack(o.issuer, departUnits);
@@ -91,6 +96,15 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         }
     }
 
+    protected void equipUnits(ArrayList<Unit> units, int numBomb){
+        for(Unit u : units){
+            if (u.getLevel() == Level.ULTRON && numBomb > 0){
+                u.equipBomb();
+                numBomb--;
+            }
+        }
+    }
+
     protected void breakAlliance(Player pAttack, Player pRetreat){
         retreat(pAttack, pRetreat);
 
@@ -100,7 +114,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
                 for(Unit u : t.getUnits(pAttack)){
                     units.put(u.getLevel(), units.getOrDefault(u.getLevel(), 0)+1);
                 }
-                pushCombat(new AttackOrder(pAttack, t, t, units));
+                pushCombat(new AttackOrder(pAttack, false, t, t, units));
             }
         }
         pAttack.breakAllianceWith(pRetreat);
@@ -153,6 +167,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         if(err == null){
             Resource food = order.accept(costVisitor);
             order.issuer.getFood().consumeResource((FoodResource) food);
+
             pushCombat(order);
             //check if attack alliance's territory
             if(order.issuer.isAlliance(order.dest.getOwner())){
@@ -181,9 +196,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
             Resource tech = order.accept(costVisitor);
             order.issuer.getTech().consumeResource((TechResource) tech);
             researchPool.add(order.issuer);
-            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
-            // order.issuer.upgradeMaxLevel();
             return null;
         }else{
             throw new IllegalArgumentException(err);
@@ -205,8 +217,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         if(err == null){
             Resource tech = order.accept(costVisitor);
             order.issuer.getTech().consumeResource(tech.getAmount());
-            // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
-            // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             order.target.upgradeUnits(order.from, order.to, order.units);
             return null;
         }else{
@@ -217,9 +227,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
     @Override
     public String visit(AllianceOrder order) {
         //needs to be more than 3 player.
-        // if(map.getInitGroupOwners().size() < 3){
-        //     throw new IllegalArgumentException("Can only form alliance when game has more than 3 players");
-        // }
         if(order.alliance.equals(order.issuer)){
             throw new IllegalArgumentException("You cannot align with yourself.");
         }
@@ -236,7 +243,11 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         if(err == null){
             Resource tech = order.accept(costVisitor);
             order.issuer.getTech().consumeResource(tech.getAmount());
-            order.issuer.modifyWeaponAmount(1, order.bomb);
+            if(order.bomb){
+                order.issuer.modifyBombAmount(order.amount);
+            }else{
+                order.issuer.addAircraft(order.amount);
+            }
             return null;
         }else{
             throw new IllegalArgumentException(err);

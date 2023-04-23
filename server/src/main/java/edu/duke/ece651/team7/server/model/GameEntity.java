@@ -225,14 +225,14 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String tryMoveOrder(String username, String src, String dest, int level, int units)
+    public synchronized String tryMoveOrder(String username, Boolean ua, String src, String dest, int level, int units)
             throws RemoteException {
         String response = null;
         try {
             if (commitSet.contains(username)) {
                 response = "Please wait for other players to commit";
             } else {
-                MoveOrder mo = new MoveOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
+                MoveOrder mo = new MoveOrder(playerMap.get(username), ua, gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 mo.accept(ox);
                 sendPlayersToUsers(Arrays.asList(username));
@@ -244,14 +244,14 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String tryAttackOrder(String username, String src, String dest, int level, int units)
+    public synchronized String tryAttackOrder(String username, Boolean ua,String src, String dest, int level, int units)
             throws RemoteException {
         String response = null;
         try {
             if (commitSet.contains(username)) {
                 response = "Please wait for other players to commit";
             } else {
-                AttackOrder ao = new AttackOrder(playerMap.get(username), gameMap.getTerritoryByName(src),
+                AttackOrder ao = new AttackOrder(playerMap.get(username), ua, gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 ao.accept(ox);
                 sendPlayersToUsers(Arrays.asList(username));
@@ -315,13 +315,13 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public String tryManufactureOrder(String username, boolean isBomb) throws RemoteException{
+    public String tryManufactureOrder(String username, boolean isBomb, int amount) throws RemoteException{
         String response = null;
         try {
             if (commitSet.contains(username)) {
                 response = "Please wait for other players to commit";
             } else {
-                ManufactureOrder mo = new ManufactureOrder(playerMap.get(username), isBomb);
+                ManufactureOrder mo = new ManufactureOrder(playerMap.get(username), isBomb, amount);
                 mo.accept(ox);
             }
         } catch (RuntimeException e) {

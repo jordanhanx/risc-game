@@ -82,7 +82,7 @@ public class OrderMoveController implements Initializable {
      */
     @FXML
     public void clickOnMove(ActionEvent action) throws RemoteException {
-        String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),
+        String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),false, 
                 srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));

@@ -27,7 +27,22 @@ public class LevelChecker extends OrderRuleChecker{
                 return "LevelChecker error: Already the highest level.";
             }
             return null;
-        }else{
+        }else if(o.getClass() == AttackOrder.class || o.getClass() == MoveOrder.class){
+            System.out.print(1);
+            BasicOrder order = (BasicOrder) o;
+            if(order.useAircraft && order.units.get(Level.AIRBORNE) == null){ //only AIRBORNE units can carry navigate Aircraft
+                return "LevelChecker error: only AIRBORNE units can carry navigate Aircraft.";
+            }
+            if(order.getClass() == AttackOrder.class){ //only Ultron units can carry bomb
+                AttackOrder aorder = (AttackOrder) o;
+                if(aorder.units.get(Level.ULTRON) == null && aorder.numBomb > 0){
+                    return "LevelChecker error: only Ultron units can carry Bomb.";
+                }
+                return null;
+            }
+            return null;
+        }
+        else{
             return null;
         }
         

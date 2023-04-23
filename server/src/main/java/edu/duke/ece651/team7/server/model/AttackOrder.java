@@ -8,16 +8,22 @@ import java.util.Map;
 import edu.duke.ece651.team7.shared.Level;
 
 public class AttackOrder extends BasicOrder{
-    public AttackOrder(Player p, Territory s, Territory d, Map<Level, Integer> u){
-        super(p, s, d, u);
+    protected int numBomb;
+
+    public AttackOrder(Player p, boolean ua, Territory s, Territory d, Map<Level, Integer> u){
+        super(p,ua, s, d, u);
+    }
+
+    public AttackOrder(Player p, boolean ua, Territory s, Territory d, Object... u) {
+        super(p,ua,s,d,u);
     }
 
     public AttackOrder(Player p, Territory s, Territory d, Object... u) {
-        super(p,s,d,u);
+        super(p,false,s,d,u);
     }
 
     public AttackOrder(Player p, Territory s, Territory d, int units) {
-        super(p,s,d,Level.CIVILIAN, units);
+        super(p,false,s,d,Level.CIVILIAN, units);
     }
     
     @Override

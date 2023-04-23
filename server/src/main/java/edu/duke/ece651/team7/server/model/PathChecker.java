@@ -39,7 +39,7 @@ public class PathChecker extends OrderRuleChecker {
         if(order.dest.getOwner().equals(order.issuer)){
             return "Cannot attack your own territory";
         }
-        if(!map.isAdjacent(order.src.getName(), order.dest.getName())){
+        if(!map.isAdjacent(order.src.getName(), order.dest.getName()) && !order.useAircraft){
             return "Can only attack adjacent territory";
         }
         return null;
@@ -50,7 +50,7 @@ public class PathChecker extends OrderRuleChecker {
             return "Access Denied: destination Territory does not belong to you/your alliance";
         }
         //do not have a path
-        if(!map.hasPath(order.src.getName(), order.dest.getName())){
+        if(!map.hasPath(order.src.getName(), order.dest.getName()) && !order.useAircraft){
             return "Path does not exists between these two Territories";
         }
         return null;

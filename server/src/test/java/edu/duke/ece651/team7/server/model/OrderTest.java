@@ -43,7 +43,7 @@ public class OrderTest {
         assertEquals(20, m1.units.get(Level.INFANTRY));
         assertNull(m1.units.get(Level.AIRBORNE));
 
-        MoveOrder m2 = new MoveOrder(groupB, tOz, tRoshar, units);
+        MoveOrder m2 = new MoveOrder(groupB, false, tOz, tRoshar, units);
         assertEquals(10, m2.units.get(Level.CIVILIAN));
         assertEquals(8, m2.units.get(Level.INFANTRY));
         assertEquals(9, m2.units.get(Level.AIRBORNE));
@@ -53,7 +53,7 @@ public class OrderTest {
         assertEquals(20, m3.units.get(Level.INFANTRY));
         assertNull(m3.units.get(Level.AIRBORNE));
 
-        AttackOrder m4 = new AttackOrder(groupA, tScadrial, tGondor, units);
+        AttackOrder m4 = new AttackOrder(groupA, false,tScadrial, tGondor, units);
         assertEquals(10, m4.units.get(Level.CIVILIAN));
         assertEquals(8, m4.units.get(Level.INFANTRY));
         assertEquals(9, m4.units.get(Level.AIRBORNE));

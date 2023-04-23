@@ -96,9 +96,9 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
     @Override
     public Resource visit(ManufactureOrder order) {
         if (order.bomb){
-            return new TechResource(30);
+            return new TechResource(30 * order.amount);
         }else{
-            return new TechResource(100);
+            return new TechResource(1000 * order.amount);
         }
     }
     

@@ -6,10 +6,12 @@ public class ManufactureOrder implements Order{
 
     protected Player issuer;
     protected boolean bomb;
+    protected int amount;
 
-    public ManufactureOrder(Player p, boolean isBomb){
+    public ManufactureOrder(Player p, boolean isBomb, int num){
         this.issuer = p;
         bomb = isBomb;
+        amount = num;
     }
 
     @Override

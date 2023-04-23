@@ -57,19 +57,19 @@ public class UnitNumberCheckerTest {
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
 
         MoveOrder m1 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 30);
-        assertEquals("No enough units in the source Territory", checker.checkOrderValidity(map, m1));
+        assertEquals("UniNumber Checker: No enough units in the source Territory", checker.checkOrderValidity(map, m1));
 
         MoveOrder m2 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), 5);
         assertNull(checker.checkOrderValidity(map, m2));
 
         AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), -10);
-        assertEquals("Number of Units must be > 0", checker.checkOrderValidity(map, a1));
+        assertEquals("UniNumber Checker: Number of Units must be > 0", checker.checkOrderValidity(map, a1));
 
         UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 5);
         assertNull(checker.checkOrderValidity(map, u1));
 
         UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Gondor"), Level.CIVILIAN, Level.CAVALRY, 15);
-        assertEquals("No enough units in the source Territory", checker.checkOrderValidity(map, u2));
+        assertEquals("UniNumber Checker: No enough units in the source Territory", checker.checkOrderValidity(map, u2));
 
         ResearchOrder r1 = new ResearchOrder(p3);
         assertNull(checker.checkOrderValidity(map, r1));
@@ -87,6 +87,30 @@ public class UnitNumberCheckerTest {
 
         MoveOrder m4 = new MoveOrder(p1, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Mordor"), 6);
         assertNotNull(checker.checkMyRule(map, m4));
+    }
+
+    @Test
+    public void test_aircraftunit(){
+        UnitNumberChecker checker = new UnitNumberChecker(null);
+        GameMap map = makeGameMap();
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        map.getTerritoryByName("Narnia").addUnits(Arrays.asList(new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),
+                                                                     new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),
+                                                                     new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),
+                                                                     new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1),new Unit(Level.AIRBORNE, p1)));
+        MoveOrder m1 = new MoveOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), Level.AIRBORNE, 11);
+        assertEquals("UniNumber Checker: Aircraft can only take up to 10 AIRBORNE units", checker.checkOrderValidity(map, m1));
+
+        MoveOrder m2 = new MoveOrder(p1, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), Level.AIRBORNE, 8);
+        assertNull(checker.checkOrderValidity(map, m2));
+
+        AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), -10);
+        assertEquals("UniNumber Checker: Number of Units must be > 0", checker.checkOrderValidity(map, a1));
+
+
     }
     
 }

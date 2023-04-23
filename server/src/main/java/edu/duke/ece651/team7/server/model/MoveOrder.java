@@ -10,16 +10,20 @@ import edu.duke.ece651.team7.shared.Territory;
 public class MoveOrder extends BasicOrder {
     // private Territory src;
 
-    public MoveOrder(Player p, Territory s, Territory d, Map<Level, Integer> u){
-        super(p, s, d, u);
+    public MoveOrder(Player p, boolean ua,Territory s, Territory d, Map<Level, Integer> u){
+        super(p, ua, s, d, u);
     }
 
-    public MoveOrder(Player p, Territory s, Territory d, Object... u) {
-        super(p,s,d,u);
+    public MoveOrder(Player p, boolean ua,Territory s, Territory d, Object... u) {
+        super(p,ua,s,d,u);
+    }
+
+    public MoveOrder(Player p,Territory s, Territory d, Object... u) {
+        super(p,false,s,d,u);
     }
 
     public MoveOrder(Player p, Territory s, Territory d, int units) {
-        super(p,s,d,Level.CIVILIAN, units);
+        super(p, false,s,d,Level.CIVILIAN, units);
     }
 
     @Override
