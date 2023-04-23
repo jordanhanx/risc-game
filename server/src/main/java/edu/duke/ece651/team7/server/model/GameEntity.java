@@ -302,7 +302,9 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         try {
             if (commitSet.contains(username)) {
                 response = "Please wait for other players to commit";
-            } else {
+            } else if(countNotLostPlayers()< 3){
+                response = "The game currently has less than 3 players, you cannot form alliance";
+            }else {
                AllianceOrder ao = new AllianceOrder(playerMap.get(username), playerMap.get(allianceName));
                ao.accept(ox);
             }
@@ -312,6 +314,21 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
         return response;
     }
 
+    @Override
+    public String tryManufactureOrder(String username, boolean isBomb) throws RemoteException{
+        String response = null;
+        try {
+            if (commitSet.contains(username)) {
+                response = "Please wait for other players to commit";
+            } else {
+                ManufactureOrder mo = new ManufactureOrder(playerMap.get(username), isBomb);
+                mo.accept(ox);
+            }
+        } catch (RuntimeException e) {
+            response = e.getMessage();
+        }
+        return response;
+    }
     @Override
     public synchronized String doCommitOrder(String username) throws RemoteException {
         String response = null;

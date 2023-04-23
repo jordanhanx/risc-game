@@ -230,6 +230,19 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         return null;
     }
 
+    @Override
+    public String visit(ManufactureOrder order) {
+        String err = checker.checkOrderValidity(map, order);
+        if(err == null){
+            Resource tech = order.accept(costVisitor);
+            order.issuer.getTech().consumeResource(tech.getAmount());
+            order.issuer.modifyWeaponAmount(1, order.bomb);
+            return null;
+        }else{
+            throw new IllegalArgumentException(err);
+        }
+        
+    }
     /**
      * resolve all combats saved in combatPool
      */
@@ -288,5 +301,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         }
         collectAllResource();
     }
+    
    
 }

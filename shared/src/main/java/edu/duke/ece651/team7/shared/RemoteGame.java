@@ -154,6 +154,8 @@ public interface RemoteGame extends Remote {
          */
         public String tryAllianceOrder(String username, String allianceName) throws RemoteException;
 
+
+        public String tryManufactureOrder(String username, boolean isBomb) throws RemoteException;
         /**
          * Instructs the server to commit the orders for the specified player.
          * Blocks until all players have submitted their orders or the timeout period

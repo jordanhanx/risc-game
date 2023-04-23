@@ -92,5 +92,14 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
     public Resource visit(AllianceOrder order) {
         return null;
     }
+
+    @Override
+    public Resource visit(ManufactureOrder order) {
+        if (order.bomb){
+            return new TechResource(30);
+        }else{
+            return new TechResource(100);
+        }
+    }
     
 }

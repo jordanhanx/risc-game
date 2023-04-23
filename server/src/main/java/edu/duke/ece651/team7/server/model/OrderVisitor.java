@@ -6,5 +6,5 @@ public interface OrderVisitor<T> {
     public T visit(ResearchOrder order);
     public T visit(UpgradeOrder order);
     public T visit(AllianceOrder order);
-
+    public T visit(ManufactureOrder order);
 }

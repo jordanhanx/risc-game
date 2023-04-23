@@ -19,8 +19,10 @@ public class CostChecker extends OrderRuleChecker {
             return checkBasicOrder(map, (BasicOrder) o);
         }else if(o.getClass() == UpgradeOrder.class){
             return checkUpgradeOrder(map, (UpgradeOrder) o);
-        }else{
+        }else if(o.getClass() == ResearchOrder.class){
             return checkResearchOrder(map, (ResearchOrder) o);
+        }else{
+            return checkManufactureOrder(map, (ManufactureOrder) o);
         }
     }
 
@@ -45,6 +47,15 @@ public class CostChecker extends OrderRuleChecker {
     }
 
     private String checkResearchOrder(GameMap map, ResearchOrder o){
+        Resource tech = o.accept(costVisitor);
+        if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
+            return "CostCheker error: No enough Tech.";
+        }else{
+            return null;
+        }
+    }
+
+    private String checkManufactureOrder(GameMap map, ManufactureOrder o){
         Resource tech = o.accept(costVisitor);
         if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
             return "CostCheker error: No enough Tech.";

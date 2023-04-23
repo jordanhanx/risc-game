@@ -16,6 +16,8 @@ public class Player implements Serializable, Comparable<Player> {
     private FoodResource food;
     private Level maxTechLevel;
     private Player alliance;
+    private int numAircraft;
+    private int numBomb;
 
     /**
      * Constructs a Player with the name.
@@ -38,6 +40,8 @@ public class Player implements Serializable, Comparable<Player> {
         this.food = new FoodResource(0);
         this.maxTechLevel = l;
         this.alliance = null;
+        this.numAircraft = 0;
+        this.numBomb = 0;
     }
 
     /**
@@ -184,6 +188,22 @@ public class Player implements Serializable, Comparable<Player> {
 
     public TechResource getTech(){
         return tech;
+    }
+
+    public void modifyWeaponAmount(int num, boolean isBomb){
+        if(isBomb){
+            if(this.numBomb + num < 0){
+                throw new IllegalArgumentException("Does not have enough Bomb");
+            }else{
+                numBomb += num;
+            }
+        }else{
+            if(this.numAircraft + num < 0){
+                throw new IllegalArgumentException("Does not have enough Aircraft");
+            }else{
+                numAircraft += num;
+            }
+        }
     }
 
     /**
