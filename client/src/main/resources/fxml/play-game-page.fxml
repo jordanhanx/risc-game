@@ -242,41 +242,95 @@
                                 <Font name="Wawati SC Regular" size="15.0" />
                             </font>
                         </Text>
-                        <Button fx:id="attackButton" layoutX="90.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnAttack" prefHeight="20.0" prefWidth="70.0" text="Attack">
+                        <Button fx:id="attackButton" layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnAttack" prefHeight="36.0" prefWidth="83.0" text="Attack">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513; /* brown */
+                                -fx-border-color: #000000; /* black */
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
-                        <Button fx:id="moveButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnMove" prefHeight="20.0" prefWidth="70.0" text="Move">
+                        <Button fx:id="moveButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnMove" prefHeight="36.0" prefWidth="83.0" text="Move">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
-                        <Button fx:id="upgradeButton" layoutX="166.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnUpgrade" prefHeight="20.0" prefWidth="70.0" text="Upgrade">
+                        <Button fx:id="upgradeButton" layoutX="206.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnUpgrade" prefHeight="36.0" prefWidth="83.0" text="Upgrade">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
-                        <Button fx:id="researchButton" layoutX="242.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnResearch" prefHeight="20.0" prefWidth="70.0" text="Research">
+                        <Button fx:id="researchButton" layoutX="302.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnResearch" prefHeight="36.0" prefWidth="83.0" text="Research">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
-                        <Button fx:id="shortCutButton" layoutX="14" layoutY="50.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="26.0" prefWidth="112.0" text="Enable ShortCut">
+                        <Button fx:id="shortCutButton" layoutX="14" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="36.0" prefWidth="137.0" text="Enable ShortCut">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
                         <Button fx:id="commitButton" layoutX="713.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnCommit" prefHeight="26.0" prefWidth="87.0" text="Commit">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
                             </styleClass>
+                            <style>
+                                -fx-background-color: #B22222;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
                         </Button>
                     </children>
                 </Pane>

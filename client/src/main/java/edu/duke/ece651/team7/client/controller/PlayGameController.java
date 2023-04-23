@@ -414,6 +414,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Color customBlue = Color.rgb(112, 209, 255);
         Color customOrange = Color.rgb(255, 159, 28);
         Color[] colorArr = { customRed, customGreen, customBlue, customOrange };
+
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
