@@ -24,6 +24,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -32,8 +35,6 @@ import javafx.stage.Stage;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -70,7 +71,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     @FXML
     private Label playerName, food, techResource, techLevel;
     @FXML
-    private Button moveButton, attackButton, upgradeButton, researchButton;
+    private Button moveButton, attackButton, upgradeButton, researchButton, shortCutButton;
 
     @FXML
     private Polygon Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
@@ -89,7 +90,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     private Property<Player> self;
     private Map<String, Color> colorMap;
 
-    static HashMap<String, Tooltip> polygonToToolTip = new HashMap<>();
+    static HashMap<String, Tooltip> toolTipMap = new HashMap<>();
 
     /**
      * Constructs a new PlayGameController object with the specified remote game
@@ -128,7 +129,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
                 Font font = new Font("Wawati SC Regular",15);
                 tooltip.setFont(font);
                 Tooltip.install(pol, tooltip);
-                polygonToToolTip.put(pol.getId(), tooltip);
+                toolTipMap.put(pol.getId(), tooltip);
             }
         }
     }
@@ -234,14 +235,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         return gameMap.getValue().getTerritoryByName(terrName);
     }
 
-    /**
-     * This method is called when a player clicks on a territory button. It sets the
-     * necessary information of the selected territory such as name, owner, unit
-     * levels, produced food and tech.
-     * 
-     * @param event the Mouse event triggered by the click
-     */
-
     @FXML
     public void mouseMovedTerritory(MouseEvent me){
         Node source = (Node) me.getSource();
@@ -250,11 +243,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         if(source instanceof Polygon){
             Polygon pol = (Polygon) source;
             selectedTerr = findTerritory(pol.getId());
-            tooltip = polygonToToolTip.get(pol.getId());
+            tooltip = toolTipMap.get(pol.getId());
         }else if(source instanceof Text){
             Text text = (Text) source;
             selectedTerr = findTerritory(text.getText());
-            tooltip = polygonToToolTip.get(text.getText());
+            tooltip = toolTipMap.get(text.getText());
         }else{
             throw new IllegalArgumentException("Invalid source " + source + " for MouseEvent");
         }
@@ -286,11 +279,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Object source = me.getSource();
         Territory selectedTerr = null;
         if(source instanceof Polygon){
-            Polygon btn = (Polygon) source;
-            polygonToToolTip.get(btn.getId()).hide();
+            Polygon pol = (Polygon) source;
+            toolTipMap.get(pol.getId()).hide();
         }else if(source instanceof Text){
-            Text btn = (Text) source;
-            polygonToToolTip.get(btn.getText()).hide();
+            Text text = (Text) source;
+            toolTipMap.get(text.getText()).hide();
         }else{
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
@@ -298,35 +291,76 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     }
 
-    /**
-     * This method is called when a player clicks on the move button. It opens the
-     * OrderMoveController scene to allow the player to make move orders.
-     * 
-     * @param event the action event triggered by the click
-     * @throws IOException if there is an error while opening the
-     *                     OrderMoveController scene
-     */
     @FXML
-    public void clickOnMove(ActionEvent event) throws IOException {
-        Scene newScene = OrderMoveController.getScene(server);
-        Stage popupStage = new Stage();
-        popupStage.setScene(newScene);
-        popupStage.initOwner(playerName.getScene().getWindow());
-        popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.showAndWait();
+    public void clickOnShortCut(ActionEvent event) throws IOException {
+        Scene scene = moveButton.getScene();
+        scene.setOnKeyPressed(e -> {
+            if (new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN).match(e)) {
+                // Command + M pressed
+                try {
+                    showPopup(OrderMoveController.getScene(server));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN).match(e)) {
+                // Command + A pressed
+                try {
+                    showPopup(OrderAttackController.getScene(server, gameMap.getValue()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (new KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN).match(e)) {
+                // Command + U pressed
+                try {
+                    showPopup(OrderUpgradeController.getScene(server));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
      * This method is called when a player clicks on the attack button. It opens the
      * OrderAttackController scene to allow the player to make attack orders.
-     * 
+     *
      * @param event the action event triggered by the click
      * @throws IOException if there is an error while opening the
      *                     OrderAttackController scene
      */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
+        showPopup(OrderAttackController.getScene(server, gameMap.getValue()));
+    }
+
+
+    /**
+     * Event handler for the "Upgrade" button. Opens a new window to upgrade the
+     * user's orders.
+     *
+     * @param event The ActionEvent triggered by clicking the "Upgrade" button.
+     * @throws IOException If an input/output error occurs while opening the new
+     *                     window.
+     */
+    @FXML
+    public void clickOnUpgrade(ActionEvent event) throws IOException {
+        showPopup(OrderUpgradeController.getScene(server));
+    }
+
+    /**
+     * This method is called when a player clicks on the move button. It opens the
+     * OrderMoveController scene to allow the player to make move orders.
+     *
+     * @param event the action event triggered by the click
+     * @throws IOException if there is an error while opening the
+     *                     OrderMoveController scene
+     */
+    @FXML
+    public void clickOnMove(ActionEvent event) throws IOException {
+        showPopup(OrderMoveController.getScene(server));
+    }
+
+    private void showPopup(Scene newScene) {
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
         popupStage.initOwner(playerName.getScene().getWindow());
@@ -334,23 +368,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         popupStage.showAndWait();
     }
 
-    /**
-     * Event handler for the "Upgrade" button. Opens a new window to upgrade the
-     * user's orders.
-     * 
-     * @param event The ActionEvent triggered by clicking the "Upgrade" button.
-     * @throws IOException If an input/output error occurs while opening the new
-     *                     window.
-     */
-    @FXML
-    public void clickOnUpgrade(ActionEvent event) throws IOException {
-        Scene newScene = OrderUpgradeController.getScene(server);
-        Stage popupStage = new Stage();
-        popupStage.setScene(newScene);
-        popupStage.initOwner(playerName.getScene().getWindow());
-        popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.showAndWait();
-    }
 
     /**
      * Event handler for the "Research" button.

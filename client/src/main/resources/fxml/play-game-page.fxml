@@ -13,6 +13,11 @@
             <items>
                 <Pane prefHeight="643.0" prefWidth="200.0">
                     <children>
+                        <ImageView fitHeight="627.0" fitWidth="227.0" layoutX="-7.0" layoutY="-30.0">
+                            <image>
+                                <Image url="@../image/playerInfoBackground.jpeg" />
+                            </image>
+                        </ImageView>
                         <Text layoutX="65.0" layoutY="70.0" stroke="BLACK" strokeType="OUTSIDE" text="PlayerInfo" GridPane.columnIndex="9" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS">
                             <font>
                                 <Font name="System Bold" size="24.0" />
@@ -59,7 +64,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                        <ImageView fx:id="playerImage" fitHeight="115.0" fitWidth="91.0" layoutX="85.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="14" GridPane.rowIndex="8">
+                        <ImageView fx:id="playerImage" fitHeight="115.0" fitWidth="91.0" layoutX="50.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="14" GridPane.rowIndex="8">
                             <image>
                                 <Image url="@../image/player0_lock.png" />
                             </image>
@@ -73,7 +78,12 @@
                 </Pane>
                 <Pane fx:id="paneGroup" prefHeight="522.0" prefWidth="1001.0">
                     <children>
-                        <Polygon fx:id="Midkemia" fill="#ff6d6d" layoutX="137.0" layoutY="194.0"  onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" points="142.69683837890625, -30.285476684570312, 149.44024658203125, 31.053695678710938, 235.98541259765625, -21.378799438476562, 246.0928955078125, -46.64747619628906" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fitHeight="524.0" fitWidth="860.0" layoutX="-7.0">
+                            <image>
+                                <Image url="@../image/mapBackground.jpeg" />
+                            </image>
+                        </ImageView>
+                        <Polygon fx:id="Midkemia" fill="#ff6d6d" layoutX="137.0" layoutY="194.0" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" points="142.69683837890625, -30.285476684570312, 149.44024658203125, 31.053695678710938, 235.98541259765625, -21.378799438476562, 246.0928955078125, -46.64747619628906" stroke="BLACK" strokeType="INSIDE" />
                         <Polygon fx:id="Elantris" fill="#ff6d6d" layoutX="465.0" layoutY="254.0" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" points="35.142791748046875, 8.593235969543457, 141.10928344726562, -3.9484212398529053, 185.3309783935547, -101.79886627197266, 41.816139221191406, -92.87068939208984" rotate="25.0" stroke="BLACK" strokeType="INSIDE" />
                         <Polygon fx:id="Narnia" fill="#ff6d6d" layoutX="389.0" layoutY="280.0" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" points="-118.3526611328125, -1.250396728515625, -63.756866455078125, -24.283416748046875, 0.1492919921875, -117.11799621582031, -101.29632568359375, -59.05247497558594" stroke="BLACK" strokeType="INSIDE" />
                         <Polygon fx:id="Oz" fill="#ff6d6d" layoutX="369.0" layoutY="210.0" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" points="-11.8074951171875, -2.6343841552734375, 116.74688720703125, 15.685409545898438, 184.290771484375, -106.87026977539062, 9.6708984375, -62.64747619628906" stroke="BLACK" strokeType="INSIDE" />
@@ -251,6 +261,12 @@
                             </styleClass>
                         </Button>
                         <Button fx:id="researchButton" layoutX="242.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnResearch" prefHeight="20.0" prefWidth="70.0" text="Research">
+                            <styleClass>
+                                <String fx:value="numbtn" />
+                                <String fx:value="expandable" />
+                            </styleClass>
+                        </Button>
+                        <Button fx:id="shortCutButton" layoutX="14" layoutY="50.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="26.0" prefWidth="112.0" text="Enable ShortCut">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
