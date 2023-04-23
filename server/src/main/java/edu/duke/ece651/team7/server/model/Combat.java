@@ -79,7 +79,7 @@ public class Combat {
 
 
     // /**
-    //  * Push an atttack into the order
+    //  * Push an attack into the order
     //  * @param p player that issues the attack
     //  * @param units number of units used to attack
     //  */
@@ -91,18 +91,23 @@ public class Combat {
     // }
 
     /**
-     * Push an atttack into the order
+     * Push an attack into the order
      * @param p     player that issues the attack
      * @param units collection of units used to attack
      */
     public void pushAttack(Player p, Collection<Unit> units){
-        if(!participants.contains(p)){
+        if(participants.contains(p)){
+            attackPool.get(p).addAll(units);
+            Collections.sort(attackPool.get(p));
+        }else if(p.getAlliance()!= null && participants.contains(p.getAlliance())){
+            attackPool.get(p.getAlliance()).addAll(units);
+            Collections.sort(attackPool.get(p.getAlliance()));
+        }else{
             participants.add(p);
             attackPool.put(p, new ArrayList<Unit>(units));
-        }else{
-            attackPool.get(p).addAll(units);
+            Collections.sort(attackPool.get(p));
         }
-        Collections.sort(attackPool.get(p));
+        // Collections.sort(attackPool.get(p));
     }
 
     /**
@@ -142,13 +147,6 @@ public class Combat {
      * @return false if defender succeeds
      */
     protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
-        //if the player does not have any units combating, return 
-        // if(attackPool.get(attacker).size() == 0 ){
-        //     return false;
-        // }
-        // if(attackPool.get(defender).size() == 0 ){
-        //     return true;
-        // }
         Dice attackD = new Dice(20);
         Dice defenseD = new Dice(20);
         if(attackD.throwDicewithBonus(attU.getLevel()) > defenseD.throwDicewithBonus(defU.getLevel())){
@@ -169,10 +167,6 @@ public class Combat {
      * 
      * @param attacker player that act as attacker
      * @param defender Player as defender
-     * @return 0 if attacker wins both units contest;
-     *         1 if attacker wins first and lose the second
-     *         2 if attacker loses first and wins the second
-     *         3 if attacker loses first and loses the second
      */
     protected void doOneTurnCombat(Player attacker, Player defender){
          //the original owner of the territory should always be defender

@@ -1,11 +1,6 @@
 package edu.duke.ece651.team7.server.model;
 import org.junit.jupiter.api.Test;
 
-import edu.duke.ece651.team7.server.model.AttackOrder;
-import edu.duke.ece651.team7.server.model.MoveOrder;
-import edu.duke.ece651.team7.server.model.OrderCostVisitor;
-import edu.duke.ece651.team7.server.model.ResearchOrder;
-import edu.duke.ece651.team7.server.model.UpgradeOrder;
 import edu.duke.ece651.team7.shared.GameMap;
 import edu.duke.ece651.team7.shared.Level;
 import edu.duke.ece651.team7.shared.Player;
@@ -117,7 +112,7 @@ public class OrderCostVisitorTest {
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
         OrderCostVisitor costVisitor = new OrderCostVisitor(map);
 
-        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.AIRFORCE, 3);
+        UpgradeOrder u1 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.CIVILIAN, Level.AIRBORNE, 3);
         assertEquals(270, costVisitor.visit(u1).getAmount());
 
         UpgradeOrder u2 = new UpgradeOrder(p3, map.getTerritoryByName("Narnia"), Level.INFANTRY, Level.ULTRON, 3);
@@ -133,7 +128,7 @@ public class OrderCostVisitorTest {
         OrderCostVisitor costVisitor = new OrderCostVisitor(map);
 
         Player playerA = new Player("GroupA", Level.INFANTRY);
-        Player playerB = new Player("GroupB", Level.AIRFORCE);
+        Player playerB = new Player("GroupB", Level.AIRBORNE);
         Player playerC = new Player("GroupC", Level.CAVALRY);
         Player playerD = new Player("GroupC", Level.ULTRON);
 
@@ -149,4 +144,17 @@ public class OrderCostVisitorTest {
         ResearchOrder r4 = new ResearchOrder(playerD);
         assertThrows(IllegalArgumentException.class, ()->costVisitor.visit(r4));
     }
+
+    @Test
+    public void test_AllianceOrder(){
+        GameMap map = makeGameMap();
+        OrderCostVisitor costVisitor = new OrderCostVisitor(map);
+        Player playerA = new Player("GroupA", Level.INFANTRY);
+        Player playerB = new Player("GroupB", Level.AIRBORNE);
+        AllianceOrder o1 = new AllianceOrder(playerA, playerB);
+        assertNull(costVisitor.visit(o1));
+
+
+    }
+
 }

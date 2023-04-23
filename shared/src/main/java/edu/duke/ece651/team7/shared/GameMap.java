@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicSliderUI.ScrollListener;
+
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 3L; // Java recommends to declare this explicitly.
     // private Map<Territory, List<Territory> > territoriesAdjacentList;
@@ -239,11 +241,11 @@ public class GameMap implements Serializable {
             Territory curTerritory = queue.removeFirst();
             for (Territory neighbourTerritory : territoriesAdjacentList.get(curTerritory).keySet()) {
                 if (neighbourTerritory.equals(destination)
-                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
+                        && (neighbourTerritory.getOwner().equals(source.getOwner()) || neighbourTerritory.getOwner().isAlliance(source.getOwner()))) {
                     return true;
                 }
                 if (!territoryVisited.contains(neighbourTerritory)
-                        && neighbourTerritory.getOwner().equals(source.getOwner())) {
+                        && (neighbourTerritory.getOwner().equals(source.getOwner()) || neighbourTerritory.getOwner().isAlliance(source.getOwner()))) {
                     territoryVisited.add(neighbourTerritory);
                     queue.add(neighbourTerritory);
                 }
@@ -252,18 +254,12 @@ public class GameMap implements Serializable {
         return false;
     }
 
-    /**
-     * Use Dijkstra’s Algorithm to find the shortest path from the source territory to every territory
-     * the player owns, if no path exists, the value is Integer.MAX_VALUE
-     * 
-     * @param from the name of the source territory
-     * @return the map of destination territory and the shortest distance to get there
-     */
-    public int findShortestPath(Territory source, Territory dest){
-        // Territory source = getTerritoryByName(from);
-
+    public Map<Territory, Integer> getShortestPaths(Territory source){
         Player p = source.getOwner();
         ArrayList<Territory> territories = new ArrayList<>(p.getTerritories());
+        if(p.getAlliance()!=null){
+            territories.addAll(p.getAlliance().getTerritories());
+        }
         Map<Territory, Integer> distances = new LinkedHashMap<>();
 
         for (Territory t: territories){
@@ -280,7 +276,7 @@ public class GameMap implements Serializable {
             Territory currentTerri= pq.poll().keySet().iterator().next();
             for (Territory next : territoriesAdjacentList.get(currentTerri).keySet()) {
                 // System.out.println("reach Territory: " + currentTerri.getName() + " Neighbor is: " + next.getName());
-                if(next.getOwner() != p){
+                if(next.getOwner() != p && !next.getOwner().isAlliance(p)){
                     continue;
                 }
                 // System.out.println("Current territory: " + next.getName());
@@ -290,8 +286,35 @@ public class GameMap implements Serializable {
                 }
             }
         }
+        return distances;
+    }
 
-        return distances.get(dest);
+    /**
+     * Use Dijkstra’s Algorithm to find the shortest path from the source territory to every territory
+     * the player owns, if no path exists, the value is Integer.MAX_VALUE
+     * 
+     * @param from the name of the source territory
+     * @return the map of destination territory and the shortest distance to get there
+     */
+    public int findShortestPath(Territory source, Territory dest){
+        return getShortestPaths(source).get(dest);
+    }
+
+    public Territory getNearestAllianceTerritory(Territory source){
+        Map<Territory, Integer> distances = getShortestPaths(source);
+        Player alliance = source.getOwner().getAlliance();
+        if(alliance == null){
+            throw new IllegalArgumentException("The Player does not have alliance");
+        }
+        int shortest = Integer.MAX_VALUE;
+        Territory nearest = null;
+        for(Territory t : alliance.getTerritories()){
+            if(distances.get(t) < shortest){
+                nearest = t;
+                shortest = distances.get(t);
+            }
+        }
+        return nearest;
     }
 
     @Override

@@ -68,7 +68,7 @@ public class CostCheckerTest {
         Player p3 = mock(Player.class);
         Territory t1 = mock(Territory.class);
 
-        UpgradeOrder m1 = new UpgradeOrder(p3,t1, Level.CIVILIAN,Level.AIRFORCE, 10);
+        UpgradeOrder m1 = new UpgradeOrder(p3,t1, Level.CIVILIAN,Level.AIRBORNE, 10);
 
         OrderCostVisitor costvisitor = mock(OrderCostVisitor.class);
 
