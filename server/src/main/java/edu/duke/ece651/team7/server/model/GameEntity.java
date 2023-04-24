@@ -251,7 +251,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
             if (commitSet.contains(username)) {
                 response = "Please wait for other players to commit";
             } else {
-                AttackOrder ao = new AttackOrder(playerMap.get(username), ua, gameMap.getTerritoryByName(src),
+                AttackOrder ao = new AttackOrder(playerMap.get(username), ua, numBomb, gameMap.getTerritoryByName(src),
                         gameMap.getTerritoryByName(dest), Level.valueOfLabel(level), units);
                 ao.accept(ox);
                 sendPlayersToUsers(Arrays.asList(username));
