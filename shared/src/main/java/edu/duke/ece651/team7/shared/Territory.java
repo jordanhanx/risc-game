@@ -159,6 +159,7 @@ public class Territory implements Serializable {
 
   public void setOwner(Player p) {
     // p.addTerritory(this);
+    
     owner = p;
   }
 

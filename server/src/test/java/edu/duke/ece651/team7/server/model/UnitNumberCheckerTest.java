@@ -109,8 +109,26 @@ public class UnitNumberCheckerTest {
 
         AttackOrder a1 = new AttackOrder(p1,  map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), -10);
         assertEquals("UniNumber Checker: Number of Units must be > 0", checker.checkOrderValidity(map, a1));
-
-
     }
+
+    @Test
+    public void test_Bombunit(){
+        UnitNumberChecker checker = new UnitNumberChecker(null);
+        GameMap map = makeGameMap();
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        map.getTerritoryByName("Narnia").addUnits(Arrays.asList(new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),
+                                                                     new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),
+                                                                     new Unit(Level.CAVALRY, p1),new Unit(Level.CAVALRY, p1)));
+        AttackOrder a1 = new AttackOrder(p1, false, 4, map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), Level.ULTRON, 2);
+        assertEquals("UniNumber Checker: More Bomb than Ultron units", checker.checkOrderValidity(map, a1));
+        AttackOrder a2 = new AttackOrder(p1, false, -1, map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), Level.ULTRON, 2);
+        assertEquals("UniNumber Checker: cannot issue negative amount of bomb", checker.checkOrderValidity(map, a2));
+
+        AttackOrder a3 = new AttackOrder(p1, false, 4, map.getTerritoryByName("Narnia"),  map.getTerritoryByName("Elantris"), Level.CAVALRY, 2);
+        assertEquals("UniNumber Checker: More Bomb than Ultron units", checker.checkOrderValidity(map, a3));
+}
     
 }

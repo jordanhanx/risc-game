@@ -31,6 +31,9 @@ public class UnitNumberChecker extends OrderRuleChecker{
             }
             if(order.getClass() == AttackOrder.class){ //only Ultron units can carry bomb
                 AttackOrder aorder = (AttackOrder) o;
+                if(aorder.numBomb < 0){
+                    return "UniNumber Checker: cannot issue negative amount of bomb";
+                }
                 if(aorder.numBomb > aorder.units.getOrDefault(Level.ULTRON, 0)){
                     return "UniNumber Checker: More Bomb than Ultron units";
                 }

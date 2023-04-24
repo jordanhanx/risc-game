@@ -30,15 +30,14 @@ public class LevelCheckerTest {
         assertEquals( "LevelChecker error: only AIRBORNE units can carry navigate Aircraft.", checker.checkMyRule(gameMap, m));
         assertNull(checker.checkMyRule(gameMap, m2));
 
-        // AttackOrder a1 = new AttackOrder(p3,true,t1, t2, Level.CAVALRY, 10);
-        // AttackOrder a2 = new AttackOrder(p3,true,t1, t2, Level.ULTRON, 10);
-        // AttackOrder a3 = new AttackOrder(p3,true,t1, t2, Level.CAVALRY, 10, Level.AIRBORNE, 10);
-        // assertEquals("LevelChecker error: only Ultron units can carry Bomb.", checker.checkMyRule(gameMap, a1));
-        // assertNull(checker.checkMyRule(gameMap, a2));
-        // assertEquals("LevelChecker error: only Ultron units can carry Bomb.", checker.checkMyRule(gameMap, a3));
-
+        AttackOrder a1 = new AttackOrder(p3,false,3, t1, t2, Level.CAVALRY, 10);
+        AttackOrder a2 = new AttackOrder(p3,false,3,t1, t2, Level.ULTRON, 10);
+        AttackOrder a3 = new AttackOrder(p3,false,3,t1, t2, Level.CAVALRY, 10, Level.AIRBORNE, 10);
+        assertEquals("LevelChecker error: only Ultron units can carry Bomb.", checker.checkMyRule(gameMap, a1));
+        assertNull(checker.checkMyRule(gameMap, a2));
+        assertEquals("LevelChecker error: only Ultron units can carry Bomb.", checker.checkMyRule(gameMap, a3));
     }
-
+    
     @Test
     public void test_ResearchOrder(){
         Player p3 = mock(Player.class);

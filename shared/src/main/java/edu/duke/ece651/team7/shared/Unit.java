@@ -62,6 +62,9 @@ public class Unit implements Comparable<Unit>, Serializable {
     }
 
     public void equipBomb(){
+        if(this.level != Level.ULTRON){
+            throw new IllegalArgumentException("Can only equip Ultron units, not " + this.level);
+        }
         this.carryBomb = true;
     }
 

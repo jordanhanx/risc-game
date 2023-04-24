@@ -117,7 +117,7 @@ public interface RemoteGame extends Remote {
          * @throws RemoteException if a remote communication error occurs during the
          *                         method call
          */
-        public String tryAttackOrder(String username, Boolean ua, String src, String dest, int level, int units)
+        public String tryAttackOrder(String username, Boolean ua, int numBomb, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**

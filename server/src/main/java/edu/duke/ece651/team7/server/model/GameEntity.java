@@ -244,7 +244,7 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public synchronized String tryAttackOrder(String username, Boolean ua,String src, String dest, int level, int units)
+    public synchronized String tryAttackOrder(String username, Boolean ua, int numBomb, String src, String dest, int level, int units)
             throws RemoteException {
         String response = null;
         try {

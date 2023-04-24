@@ -535,6 +535,58 @@ public class OrderExecuteVisitorTest {
         assertEquals(3,ox.isInCombatPool(map.getTerritoryByName("Gondor")).getAttackUnitofPlayer(p1));
         assertEquals(4,ox.isInCombatPool(map.getTerritoryByName("Mordor")).getAttackUnitofPlayer(p1));
     }
+
+    @Test
+    public void test_equipUnits(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+        ArrayList<Unit> units = new ArrayList<>(Arrays.asList(new Unit(Level.ULTRON, p3), new Unit(Level.ULTRON, p3), new Unit(Level.ULTRON, p3), new Unit(Level.ULTRON, p3)));
+
+        p3.modifyBombAmount(4);
+        ox.equipUnits(units, 3);
+        assertEquals(1, p3.getBomb());
+        assertTrue(units.get(0).hasBomb());
+        assertTrue(units.get(1).hasBomb());
+        assertTrue(units.get(2).hasBomb());
+        assertFalse(units.get(3).hasBomb());
+    }
+
+
+    @Test
+    public void test_visitAttackOrderWithBomb(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = spy(new OrderExecuteVisitor(map));
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        int food1 = 1000;
+        int food2 = 1000;
+        int food3 = 1000;
+        p1.getFood().addResource(food1);
+        p2.getFood().addResource(food2);
+        p3.getFood().addResource(food3);
+
+        map.getTerritoryByName("Narnia").addUnits(Arrays.asList(new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),
+                                                                     new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),new Unit(Level.ULTRON, p1),
+                                                                     new Unit(Level.CAVALRY, p1),new Unit(Level.CAVALRY, p1)));
+        AttackOrder a1 = new AttackOrder(p1, false, 3, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), Level.CAVALRY, 10);
+        assertThrows(IllegalArgumentException.class, () -> a1.accept(ox));
+
+
+        p1.modifyBombAmount(5);
+        AttackOrder a2 = new AttackOrder(p1, false, 3, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Elantris"), Level.ULTRON, 5);
+        a2.accept(ox);
+        food1 -= a2.accept(oc).getAmount();
+        assertNotNull(ox.isInCombatPool(a2.dest));
+        assertEquals(food1, p1.getFood().getAmount());
+        assertEquals(2, p1.getBomb());
+        assertEquals(13, map.getTerritoryByName("Narnia").getUnitsNumber());
+        assertEquals(10, map.getTerritoryByName("Elantris").getUnitsNumber());
+    }
+
 //     @Test
 //     public void test_doAllCombat(){
 

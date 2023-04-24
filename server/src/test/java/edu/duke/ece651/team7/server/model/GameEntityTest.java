@@ -214,10 +214,10 @@ public class GameEntityTest {
         clientMap.put("Blue", cBlue);
         commitSet.add("Red");
         // Test
-        assertEquals(null, testgame.tryAttackOrder("Blue", false,"Hogwarts", "Mordor", 0, 5));
-        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue", false,"Hogwarts", "Mordor", 0, 5));
+        assertEquals(null, testgame.tryAttackOrder("Blue", false,0, "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue",  false,0, "Hogwarts", "Mordor", 0, 5));
         assertEquals("Please wait for other players to commit",
-                testgame.tryAttackOrder("Red", false,"Hogwarts", "Mordor", 0, 1));
+                testgame.tryAttackOrder("Red", false,0,"Hogwarts", "Mordor", 0, 1));
         // Verify
         verify(gameMap, atLeastOnce()).getTerritoryByName("Hogwarts");
         verify(gameMap, atLeastOnce()).getTerritoryByName("Mordor");

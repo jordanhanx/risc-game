@@ -101,6 +101,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
             if (u.getLevel() == Level.ULTRON && numBomb > 0){
                 u.equipBomb();
                 numBomb--;
+                u.getOwner().modifyBombAmount(-1);
             }
         }
     }
@@ -173,7 +174,6 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
             if(order.useAircraft){
                 order.issuer.consumeAircraft(1);
             }
-            order.issuer.modifyBombAmount(order.numBomb);
             pushCombat(order);
             //check if attack alliance's territory
             if(order.issuer.isAlliance(order.dest.getOwner())){
