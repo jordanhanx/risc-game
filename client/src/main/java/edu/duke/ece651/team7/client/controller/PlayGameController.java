@@ -29,6 +29,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -72,13 +73,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     private Label playerName, food, techResource, techLevel;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton, shortCutButton;
-
     @FXML
-    private Polygon Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
+    private SVGPath Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
     @FXML
-    private Polygon Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
+    private SVGPath Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
     @FXML
-    private Polygon Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
+    private SVGPath Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
 
     @FXML private ImageView playerImage;
 
