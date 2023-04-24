@@ -29,7 +29,15 @@ public class UnitNumberChecker extends OrderRuleChecker{
             if(order.useAircraft && (order.units.get(Level.AIRBORNE) == null || order.units.get(Level.AIRBORNE) > 10)){
                 return "UniNumber Checker: Aircraft can only take up to 10 AIRBORNE units";
             }
+            if(order.getClass() == AttackOrder.class){ //only Ultron units can carry bomb
+                AttackOrder aorder = (AttackOrder) o;
+                if(aorder.numBomb > aorder.units.getOrDefault(Level.ULTRON, 0)){
+                    return "UniNumber Checker: More Bomb than Ultron units";
+                }
+                return null;
+            }
             return null;
+
         }
         if(o.getClass() == UpgradeOrder.class){
             UpgradeOrder order = (UpgradeOrder) o;

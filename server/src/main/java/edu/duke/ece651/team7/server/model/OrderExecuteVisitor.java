@@ -114,7 +114,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
                 for(Unit u : t.getUnits(pAttack)){
                     units.put(u.getLevel(), units.getOrDefault(u.getLevel(), 0)+1);
                 }
-                pushCombat(new AttackOrder(pAttack, false, t, t, units));
+                pushCombat(new AttackOrder(pAttack, false,0, t, t, units));
             }
         }
         pAttack.breakAllianceWith(pRetreat);
@@ -142,6 +142,9 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         if(err == null){
             Resource food = order.accept(costVisitor);
             order.issuer.getFood().consumeResource((FoodResource) food);
+            if(order.useAircraft){
+                order.issuer.consumeAircraft(1);
+            }
             // System.out.print( "Player " + o.getPlayer().getName() +  ": [M " + o.getSrc().getName() + " " + o.getDest().getName() + " "+o.getUnits() +"]: ");
             // System.out.println("Player " + o.getPlayer().getName()+ " moves " +o.getUnits() + " from "+ o.getSrc().getName() + " to "+ o.getDest().getName());
             for(Level l: order.units.keySet()){
@@ -167,7 +170,10 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         if(err == null){
             Resource food = order.accept(costVisitor);
             order.issuer.getFood().consumeResource((FoodResource) food);
-
+            if(order.useAircraft){
+                order.issuer.consumeAircraft(1);
+            }
+            order.issuer.modifyBombAmount(order.numBomb);
             pushCombat(order);
             //check if attack alliance's territory
             if(order.issuer.isAlliance(order.dest.getOwner())){

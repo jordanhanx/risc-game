@@ -66,6 +66,56 @@ public class OrderExecuteVisitorTest {
     }
 
     @Test
+    public void test_visitBasicOrderwithAircraft(){
+        GameMap map = makeGameMap();
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+        Player p2 = map.getTerritoryByName("Elantris").getOwner();
+        Player p3 = map.getTerritoryByName("Gondor").getOwner();
+
+        int food1 = 1000;
+        int food2 = 1000;
+        int food3 = 1000;
+        p1.getFood().addResource(food1);
+        p2.getFood().addResource(food2);
+        p3.getFood().addResource(food3);
+
+        MoveOrder m1 = new MoveOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Midkemia"), Level.CIVILIAN,5);
+        assertThrows(IllegalArgumentException.class, ()->m1.accept(ox));
+
+        map.getTerritoryByName("Narnia").addUnits(Arrays.asList(new Unit(Level.AIRBORNE, p1), new Unit(Level.AIRBORNE, p1), new Unit(Level.AIRBORNE, p1), 
+        new Unit(Level.AIRBORNE, p1), new Unit(Level.AIRBORNE, p1), new Unit(Level.AIRBORNE, p1)));
+
+        map.getTerritoryByName("Midkemia").setOwner(p3);
+        MoveOrder m2 = new MoveOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Oz"), Level.CIVILIAN,5);
+        assertThrows(IllegalArgumentException.class, ()->m2.accept(ox));
+
+        MoveOrder m3 = new MoveOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Oz"), Level.AIRBORNE,5);
+        assertThrows(IllegalArgumentException.class, ()->m3.accept(ox));
+
+        p1.addAircraft(1);
+        m3.accept(ox);
+        food1-= m3.accept(oc).getAmount();
+        assertEquals(11, map.getTerritoryByName("Narnia").getUnitsNumber());
+        assertEquals(15, map.getTerritoryByName("Oz").getUnitsNumber());
+        assertEquals(food1, p1.getFood().getAmount());
+
+        AttackOrder a1 = new AttackOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Gondor"), Level.CIVILIAN,5);
+        assertThrows(IllegalArgumentException.class, ()->a1.accept(ox));
+
+        AttackOrder a2 = new AttackOrder(p1, false, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Gondor"), Level.AIRBORNE,5);
+        assertThrows(IllegalArgumentException.class, ()->a2.accept(ox));
+
+        AttackOrder a3 = new AttackOrder(p1, true, map.getTerritoryByName("Narnia"), map.getTerritoryByName("Gondor"), Level.AIRBORNE,1);
+        a3.accept(ox);
+        food1-= a3.accept(oc).getAmount();
+        assertEquals(10, map.getTerritoryByName("Narnia").getUnitsNumber());
+        assertEquals(food1, p1.getFood().getAmount());
+        assertEquals(1, ox.isInCombatPool(map.getTerritoryByName("Gondor")).getAttackUnitofPlayer(p1));
+    }
+
+    @Test
     public void test_visitResearchOrder(){
         GameMap map = makeGameMap();
         OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
@@ -312,6 +362,30 @@ public class OrderExecuteVisitorTest {
         a8.accept(ox);
         AllianceOrder a9 = new AllianceOrder(p1, p3);
         assertThrows(IllegalArgumentException.class, ()->a9.accept(ox));
+    }
+
+    @Test
+    public void test_visitManufactureOrder(){
+        GameMap map = makeGameMap();
+        OrderExecuteVisitor ox = new OrderExecuteVisitor(map);
+        OrderCostVisitor oc = new OrderCostVisitor(map);
+        Player p1 = map.getTerritoryByName("Narnia").getOwner();
+
+        int tech1 = 10000;
+
+        p1.getTech().addResource(tech1);
+
+        ManufactureOrder o1 = new ManufactureOrder(p1, true, 3);
+        ManufactureOrder o2 = new ManufactureOrder(p1, false, 3);
+        o1.accept(ox);
+        assertEquals(3, p1.getBomb());
+        tech1 -= oc.visit(o1).getAmount();
+        assertEquals(tech1, p1.getTech().getAmount());
+
+        o2.accept(ox);
+        assertEquals(3, p1.getAircraft().size());
+        tech1 -= oc.visit(o2).getAmount();
+        assertEquals(tech1, p1.getTech().getAmount());
     }
 
     @Test

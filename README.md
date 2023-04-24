@@ -40,7 +40,7 @@ Each player has the option to move, attack, research, and upgrade.
 ## New feature specification
 --
 1. **Airborne:** Users can consume Technology resources to build aircraft on one territory. Therefore, when doing move orders on units with Airforce Level, they can move to any territory the owner owns no matter if there exists a path. When issuing attack orders on units with Airforce Level, they can attack any territory on the map. 
-   * One aircraft can only be used for 3 rounds. 
+   * One aircraft can only be used for 3 times. 
    * One aircraft can only take 10 units.
    * 
 2. **Ultron:** Ultron can be equipped with bombs. Bombs can also be built using technology resources. When a user attacks a territory with Ultron units without equipping them with bombs. Ultron units participate in combat with normal combat resolution. If Ultron units are equipped with bombs. They will drop the bomb and kill random 10 units participating in the combat excluding units of the same player. Can only has one Bomb per territory when attacking. 

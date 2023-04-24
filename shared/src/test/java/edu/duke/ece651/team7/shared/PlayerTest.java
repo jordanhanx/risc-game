@@ -204,6 +204,7 @@ public class PlayerTest {
         
         assertThrows(IllegalArgumentException.class, ()->p.consumeAircraft(4));
         assertThrows(IllegalArgumentException.class, ()->p.consumeAircraft(-1));
+        assertThrows(IllegalArgumentException.class, ()->p.addAircraft(-1));
 
         p.consumeAircraft(2);
         p.consumeAircraft(2);

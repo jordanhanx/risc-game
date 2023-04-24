@@ -30,9 +30,17 @@ public class CostChecker extends OrderRuleChecker {
         FoodResource food = (FoodResource)o.accept(costVisitor);
         if(o.issuer.getFood().compareTo(food) < 0){
             return "CostCheker error: No enough food.";
-        }else{
-            return null;
         }
+        if(o.useAircraft && o.issuer.getAircraft().size()==0){
+            return "CostCheker error: No enough aircraft.";
+        }
+        if(o.getClass() == AttackOrder.class){
+            AttackOrder order = (AttackOrder) o;
+            if (o.issuer.getBomb() < order.numBomb){
+                return "CostCheker error: No enough Bomb.";
+            }
+        }
+        return null;
 
     }
 

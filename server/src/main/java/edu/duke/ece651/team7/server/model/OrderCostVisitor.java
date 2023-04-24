@@ -45,7 +45,12 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
 
     @Override
     public Resource visit(MoveOrder order) {
-        int distance = map.findShortestPath(order.src, order.dest);
+        int distance = 0;
+        if(order.useAircraft){
+            distance = 8;
+        }else{
+            distance = map.findShortestPath(order.src, order.dest);
+        }
         int C = 2;
         int totalUnits = 0;
         for(Level l: order.units.keySet()){
@@ -61,8 +66,12 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
      */
     @Override
     public Resource visit(AttackOrder order) {
-        //NEED REFACTOR ON THE FUNCTION
-        int distance = map.getCostBetween(order.src, order.dest);
+        int distance = 0;
+        if(order.useAircraft){
+            distance = 8;
+        }else{
+            distance = map.getCostBetween(order.src, order.dest);
+        }
         int C = 3;
         int totalUnits = 0;
         for(Level l: order.units.keySet()){

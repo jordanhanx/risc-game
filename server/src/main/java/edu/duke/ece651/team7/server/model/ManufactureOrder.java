@@ -18,4 +18,15 @@ public class ManufactureOrder implements Order{
     public <T> T accept(OrderVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o.getClass().equals(getClass())){
+            ManufactureOrder other = (ManufactureOrder) o;
+            return issuer.equals(other.issuer) &&  bomb == other.bomb
+            && amount == other.amount;
+        }else{
+            return false;
+        }
+    }
 }
