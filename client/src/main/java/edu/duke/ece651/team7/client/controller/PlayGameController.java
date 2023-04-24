@@ -316,6 +316,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }else if(new KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN).match(e)){
+                //command + S pressed
+                try {
+                    showPopup(OrderAllyController.getScene(server, gameMap.getValue()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -384,6 +391,16 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+    }
+
+    @FXML
+    public void clickOnAlly(ActionEvent event) throws IOException {
+        showPopup(OrderAllyController.getScene(server, gameMap.getValue()));
+    }
+
+    @FXML
+    public void clickOnManfacture(ActionEvent event) throws IOException {
+//        showPopup(OrderManfactureController.getScene(server, gameMap.getValue()));
     }
 
     /**

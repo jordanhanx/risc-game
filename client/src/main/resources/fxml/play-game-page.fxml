@@ -383,7 +383,37 @@
                                 -fx-background-radius: 5px;
                             </style>
                         </Button>
-                        <Button fx:id="shortCutButton" layoutX="14" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="36.0" prefWidth="137.0" text="Enable ShortCut">
+                        <Button fx:id="shortCutButton" layoutX="14" layoutY="465.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="36.0" prefWidth="137.0" text="Enable ShortCut">
+                            <styleClass>
+                                <String fx:value="numbtn" />
+                                <String fx:value="expandable" />
+                            </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
+                        </Button>
+                        <Button fx:id="allyButton" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnAlly" prefHeight="36.0" prefWidth="83.0" text="Ally">
+                            <styleClass>
+                                <String fx:value="numbtn" />
+                                <String fx:value="expandable" />
+                            </styleClass>
+                            <style>
+                                -fx-background-color: #8B4513;
+                                -fx-border-color: #000000;
+                                -fx-border-width: 2px;
+                                -fx-font-size: 15px;
+                                -fx-font-family: "Wawati SC Regular";
+                                -fx-text-fill: #FFFFFF;
+                                -fx-background-radius: 5px;
+                            </style>
+                        </Button>
+                        <Button fx:id="manfactureButton" layoutX="110.0" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnManfacture" prefHeight="36.0" prefWidth="100.0" text="Manfacture">
                             <styleClass>
                                 <String fx:value="numbtn" />
                                 <String fx:value="expandable" />
