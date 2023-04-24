@@ -36,6 +36,7 @@ Each player has the option to move, attack, research, and upgrade.
 - ***Research***: an order to increase the "technology level" of the player. Each research costs resources. Upgrade will be effective in the next round.
 - ***Upgrade***: specify the level and number of armies to upgrade, the target territory. Upgrading a unit increases its combat bonuses in combat resolution. This order costs technology resources.
 - ***Manufacture***: specify what to build(bomb or aircraft). 
+- ***Alliance***: specify which player to form alliance with. 
 
 ## New feature specification
 1. **Airborne:** Users can consume 1000 Technology resources to build one aircraft. Therefore, when doing move orders on units with Airborne Level, they can move to any territory the owner owns no matter if there exists a path. When issuing attack orders on units with Airborne Level, they can attack any territory on the map. 
