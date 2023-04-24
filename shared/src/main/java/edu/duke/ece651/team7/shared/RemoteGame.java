@@ -92,6 +92,7 @@ public interface RemoteGame extends Remote {
          * level.
          * 
          * @param username the name of the user
+         * @param useAP    whether to use Aircraft 
          * @param src      the name of the source territory
          * @param dest     the name of the destination territory
          * @param level    the level of the unit
@@ -99,7 +100,7 @@ public interface RemoteGame extends Remote {
          * @return an error message if the operation fails, null otherwise
          * @throws RemoteException if a remote communication error occurs
          */
-        public String tryMoveOrder(String username,Boolean ua, String src, String dest, int level, int units)
+        public String tryMoveOrder(String username, Boolean useAP, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**
@@ -108,6 +109,8 @@ public interface RemoteGame extends Remote {
          * units of specified level.
          * 
          * @param username the username of the player who initiates the attack order
+         * @param useAP    whether to use Aircraft 
+         * @param numBomb  the number of bombs the attack order use
          * @param src      the name of the source territory
          * @param dest     the name of the destination territory
          * @param level    the attack level
@@ -117,7 +120,7 @@ public interface RemoteGame extends Remote {
          * @throws RemoteException if a remote communication error occurs during the
          *                         method call
          */
-        public String tryAttackOrder(String username, Boolean ua, int numBomb, String src, String dest, int level, int units)
+        public String tryAttackOrder(String username, Boolean useAP, int numBomb, String src, String dest, int level, int units)
                         throws RemoteException;
 
         /**
@@ -155,7 +158,16 @@ public interface RemoteGame extends Remote {
         public String tryAllianceOrder(String username, String allianceName) throws RemoteException;
 
 
+        /**
+         * 
+         * @param username the username of the player attempting to do ManufactureOrder
+         * @param isBomb   true if making bomb, false if making aircraft
+         * @param amount   number of weapon want to manufacture
+         * @return         a message indicating success or failure of the alliance attempt
+         * @throws RemoteException
+         */
         public String tryManufactureOrder(String username, boolean isBomb, int amount) throws RemoteException;
+
         /**
          * Instructs the server to commit the orders for the specified player.
          * Blocks until all players have submitted their orders or the timeout period
