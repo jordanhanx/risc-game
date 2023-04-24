@@ -46,10 +46,6 @@ public class ReqNewGameController {
         FXMLLoader loader = new FXMLLoader(xmlResource);
         return new Scene(loader.load(), 640, 480);
     }
-
-//    @FXML
-//    TextField capacity;
-
     @FXML
     ComboBox<String> capacity;
 
@@ -106,7 +102,6 @@ public class ReqNewGameController {
     public void clickOnCreate(ActionEvent event) {
         requestNewGame("http://" + UserSession.getInstance().getHost() + ":" + UserSession.getInstance().getPort()
                 + "/api/riscgame/new",
-//                Integer.parseInt(capacity.getText()),
                 Integer.parseInt(capacity.getValue()),
                 Integer.parseInt(initUnits.getText()));
         Stage currStage = (Stage) capacity.getScene().getWindow();

@@ -54,7 +54,7 @@ public class LevelCheckerTest {
         Territory t1 = mock(Territory.class);
         LevelChecker checker = new LevelChecker(null);
         
-        UpgradeOrder m1 = new UpgradeOrder(p3, t1, Level.AIRFORCE, Level.ULTRON, 1);
+        UpgradeOrder m1 = new UpgradeOrder(p3, t1, Level.AIRBORNE, Level.ULTRON, 1);
         when(p3.getCurrentMaxLevel()).thenReturn(Level.ULTRON);
         assertNull(checker.checkOrderValidity(gameMap, m1));
 

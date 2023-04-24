@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
@@ -60,77 +61,92 @@ public class TerritoryTest {
 
   @Test
   public void test_addunit(){
+    Player p = mock(Player.class);
+    Player p1 = mock(Player.class);
     Territory t = new Territory("test");
-    t.addUnits(new Unit());
-    Unit u1 = new Unit();
+    t.setOwner(p);
+    t.addUnits(new Unit(p));
+    Unit u1 = new Unit(p);
     u1.upgrade(1);
     t.addUnits(u1);
     ArrayList<Unit> units = new ArrayList<>();
-    units.add(new Unit());
-    units.add(new Unit());
-    units.add(new Unit());
+    units.add(new Unit(p));
+    units.add(new Unit(p));
+    units.add(new Unit(p));
     t.addUnits(units);
     assertEquals(5, t.getUnitsNumber());
     assertTrue(t.getUnits().contains(u1));
     assertThrows(IllegalArgumentException.class, ()->t.addUnits(u1));
     assertThrows(IllegalArgumentException.class, ()->t.addUnits(units));
+
+    Unit u2 = new Unit(p1);
+    assertThrows(IllegalArgumentException.class, ()->t.addUnits(u2));
+    when(p.isAlliance(p1)).thenReturn(true);
+    t.addUnits(u2);
+    assertTrue(t.getUnits().contains(u2));
+
   }
 
 
   @Test
   public void test_removeunit(){
     Territory t = new Territory("test");
-    t.addUnits(new Unit());
-    Unit u1 = new Unit();
-    u1.upgrade(1);
-    t.addUnits(u1);
-    ArrayList<Unit> units = new ArrayList<>();
-    units.add(new Unit());
-    units.add(new Unit());
-    units.add(new Unit());
+    Player p = mock(Player.class);
+    Player p1 = mock(Player.class);
+    when(p.isAlliance(p1)).thenReturn(true);
+    when(p1.isAlliance(p)).thenReturn(true);
+    t.setOwner(p);
+
+    ArrayList<Unit> units = new ArrayList<Unit>(Arrays.asList(new Unit(Level.CAVALRY,p), new Unit(Level.CAVALRY,p), new Unit(Level.CAVALRY,p), 
+                                                          new Unit(p), new Unit(p), new Unit(p),
+                                                          new Unit(p1), new Unit(p1),new Unit(p1),
+                                                          new Unit(Level.CAVALRY,p1), new Unit(Level.CAVALRY,p1)));
     t.addUnits(units);
 
     t.removeUnits(Level.CIVILIAN, 3);
-    assertEquals(2, t.getUnitsNumber());
-    assertTrue(t.getUnits().contains(u1));
+    assertEquals(8, t.getUnitsNumber());
     assertNull(t.removeUnits(Level.CIVILIAN, 3));
-    assertTrue(t.removeUnits(Level.INFANTRY, 1).contains(u1));
+    assertEquals(8, t.getUnitsNumber());
+    t.removeUnits(Level.CAVALRY, 2, p1);
+    assertEquals(6, t.getUnitsNumber());
+    t.removeUnits(Level.CAVALRY, 3);
+    assertEquals(3, t.getUnitsNumber());
   }
 
   @Test
   public void test_removeAllunit(){
     Territory t = new Territory("test");
-    t.addUnits(new Unit());
-    t.addUnits(new Unit());
-    t.addUnits(new Unit());
-    t.addUnits(new Unit());
-    t.addUnits(new Unit());
-    t.addUnits(new Unit());
-    Unit u1 = new Unit();
-    u1.upgrade(1);
-    t.addUnits(u1);
+    Player p = mock(Player.class);
+    t.setOwner(p);
+    Player p1 = mock(Player.class);
+    when(p.isAlliance(p1)).thenReturn(true);
+    when(p1.isAlliance(p)).thenReturn(true);
+    ArrayList<Unit> units = new ArrayList<Unit>(Arrays.asList(new Unit(Level.CAVALRY,p), new Unit(Level.CAVALRY,p), new Unit(Level.CAVALRY,p), 
+                                                              new Unit(p), new Unit(p), new Unit(p),
+                                                              new Unit(p1), new Unit(p1),new Unit(p1),
+                                                              new Unit(Level.CAVALRY,p1), new Unit(Level.CAVALRY,p1)));
+    t.addUnits(units);
 
-    Unit u2 = new Unit();
-    u2.upgrade(3);
-    t.addUnits(u2);
 
-    assertEquals(8, t.getUnitsNumber());
+    assertEquals(11, t.getUnitsNumber());
     Collection<Unit> tomove = t.removeAllUnits();
     assertEquals(0, t.getUnitsNumber());
-    assertEquals(8, tomove.size());
-    assertTrue(tomove.contains(u1));
-    assertTrue(tomove.contains(u2));
-
+    assertEquals(11, tomove.size());
+    
     t.addUnits(tomove);
-    assertTrue(tomove.contains(u1));
-    assertTrue(tomove.contains(u2));
-    assertEquals(tomove.size(), t.getUnitsNumber());
+    Collection<Unit> tomove2 = t.removeAllUnitsOfPlayer(p);
+    assertTrue(tomove2.contains(units.get(0)));
+    assertTrue(tomove2.contains(units.get(1)));
+    assertEquals(6, tomove2.size());
+    assertEquals(5, t.getUnitsNumber());
+
   }
 
 
   @Test
   public void test_upgradeUnits(){
-    Territory t = new Territory("test",10);
+    Player p = mock(Player.class);
+    Territory t = new Territory("test",p,10);
     t.upgradeUnits(Level.CIVILIAN, Level.INFANTRY, 4);
     assertEquals(4, t.getUnitsNumberByLevel(Level.INFANTRY));
     assertEquals(6, t.getUnitsNumberByLevel(Level.CIVILIAN));

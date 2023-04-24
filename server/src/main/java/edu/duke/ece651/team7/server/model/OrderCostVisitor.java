@@ -86,5 +86,11 @@ public class OrderCostVisitor implements OrderVisitor<Resource>{
         int percost = unitUpgradeCost.get(order.to) - unitUpgradeCost.get(order.from);
         return new TechResource(percost * order.units);
     }
+
+
+    @Override
+    public Resource visit(AllianceOrder order) {
+        return null;
+    }
     
 }
