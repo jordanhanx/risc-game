@@ -314,7 +314,7 @@ public class OrderExecuteVisitor implements OrderVisitor<String>{
         doAllResearch();
         resolveAllAlliance();
         for(Territory t: map.getTerritories()){
-            t.addUnits(new Unit());
+            t.addUnits(new Unit(t.getOwner()));
         }
         collectAllResource();
     }
