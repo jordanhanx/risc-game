@@ -352,4 +352,45 @@ public class GameEntityTest {
         verify(cBlue, times(1)).showPopupWindow(anyString());
         verify(cGreen, times(1)).showPopupWindow(anyString());
     }
+
+    @Test
+    public void test_chatToAll() throws RemoteException {
+        Player pBlue = mock(Player.class);
+        Player pGreen = mock(Player.class);
+        Player pRed = mock(Player.class);
+        playerMap.put("Blue", pBlue);
+        playerMap.put("Green", pGreen);
+        playerMap.put("Red", pRed);
+        RemoteClient cBlue = mock(RemoteClient.class);
+        RemoteClient cGreen = mock(RemoteClient.class);
+        RemoteClient cRed = mock(RemoteClient.class);
+        clientMap.put("Blue", cBlue);
+        clientMap.put("Green", cGreen);
+        clientMap.put("Red", cRed);
+        doThrow(RemoteException.class).when(cGreen).showChatMessage(anyString());
+        // Test
+        assertEquals(null, testgame.chatToAll("Blue", "msg"));
+        // Verify
+        verify(cBlue, times(1)).showChatMessage(anyString());
+        verify(cGreen, times(1)).showChatMessage(anyString());
+        verify(cRed, times(1)).showChatMessage(anyString());
+    }
+
+    @Test
+    public void test_chatToPlayer() throws RemoteException {
+        Player pBlue = mock(Player.class);
+        Player pRed = mock(Player.class);
+        playerMap.put("Blue", pBlue);
+        playerMap.put("Red", pRed);
+        RemoteClient cBlue = mock(RemoteClient.class);
+        RemoteClient cRed = mock(RemoteClient.class);
+        clientMap.put("Blue", cBlue);
+        clientMap.put("Red", cRed);
+        // Test
+        assertNotEquals(null, testgame.chatToPlayer("Blue", "Green", "msg"));
+        assertEquals(null, testgame.chatToPlayer("Blue", "Red", "msg"));
+        // Verify
+        verify(cBlue, times(2)).showChatMessage(anyString());
+        verify(cRed, times(1)).showChatMessage(anyString());
+    }
 }

@@ -375,14 +375,27 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
 
     @Override
     public String chatToAll(String username, String msg) throws RemoteException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'chatToAll'");
+        for (String user : playerMap.keySet()) {
+            try {
+                clientMap.get(user).showChatMessage("[" + username + "] to All: " + msg);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return null;
     }
 
     @Override
     public String chatToPlayer(String username, String toPlayer, String msg) throws RemoteException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'chatToPlayer'");
+        String response = null;
+        try {
+            clientMap.get(username).showChatMessage("[" + username + "] to [" + toPlayer + "]: " + msg);
+            clientMap.get(toPlayer).showChatMessage("[" + username + "] to [" + toPlayer + "]: " + msg);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            response = e.getMessage();
+        }
+        return response;
     }
 }
 
