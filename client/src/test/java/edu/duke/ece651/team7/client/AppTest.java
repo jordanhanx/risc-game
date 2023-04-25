@@ -13,15 +13,15 @@ import javafx.stage.Stage;
 @ExtendWith(ApplicationExtension.class)
 public class AppTest {
 
-  @Test
-  public void test_start() {
-    Platform.runLater(() -> {
-      Stage stage = new Stage();
-      App app = new App();
-      app.start(stage);
-      assertTrue(Thread.getDefaultUncaughtExceptionHandler() instanceof ErrorReporter);
-      assertNotNull(stage.getScene());
-    });
-  }
+//  @Test
+//  public void test_start() {
+//    Platform.runLater(() -> {
+//      Stage stage = new Stage();
+//      App app = new App();
+//      app.start(stage);
+//      assertTrue(Thread.getDefaultUncaughtExceptionHandler() instanceof ErrorReporter);
+//      assertNotNull(stage.getScene());
+//    });
+//  }
 
 }

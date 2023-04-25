@@ -36,10 +36,10 @@ public class OrderAttackController implements Initializable {
      * @throws IOException if the FXML file for the Attack Order UI layout cannot be
      *                     found
      */
-    public static Scene getScene(RemoteGame server, GameMap gameMap) throws IOException {
+    public static Scene getScene(RemoteGame server, GameMap gameMap, String srcName, String destName) throws IOException {
         URL xmlResource = OrderAttackController.class.getResource("/fxml/order-attack-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderAttackController(server, gameMap));
+        loader.setController(new OrderAttackController(server, gameMap,srcName,destName));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -53,6 +53,8 @@ public class OrderAttackController implements Initializable {
     private ObservableList<String> srcList;
     private ObservableList<String> destList;
     private ObservableList<String> levList;
+    private String srcName;
+    private String destName;
 
     /**
      * Constructs a new instance of OrderAttackController with the specified server
@@ -62,7 +64,7 @@ public class OrderAttackController implements Initializable {
      * @param gameMap the GameMap object representing the game map
      * @throws RemoteException if a remote method call fails
      */
-    public OrderAttackController(RemoteGame server, GameMap gameMap) throws RemoteException {
+    public OrderAttackController(RemoteGame server, GameMap gameMap, String srcName,String destName) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.srcList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
@@ -72,6 +74,8 @@ public class OrderAttackController implements Initializable {
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {
             levList.add(String.valueOf(lev));
         }
+        this.srcName=srcName;
+        this.destName=destName;
     }
 
     @Override
@@ -79,6 +83,8 @@ public class OrderAttackController implements Initializable {
         srcSelector.setItems(srcList);
         destSelector.setItems(destList);
         levelSelector.setItems(levList);
+        srcSelector.setValue(srcName);
+        destSelector.setValue(destName);
     }
 
     /**

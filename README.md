@@ -31,11 +31,11 @@ When all clients are connected, the server will start the game automatically. On
 Each territory produces a number of food and technology resources.
 
 Each player has the option to move, attack, research, and upgrade. 
-- ***Move***: specify the level and the number of armies to move, the source territory, and the destination territory. This order costs food resources.
-- ***Attack***: specify the level and the number of armies to attack, the source territory, and the destination territory. Each attack costs food resources as a function of the number of armies attacking and distance between the two territories.
+- ***Move***: specify the level and the number of armies to move, the source territory, and the destination territory. This order costs food resources. (command + M or click on two territories to make the Move)
+- ***Attack***: specify the level and the number of armies to attack, the source territory, and the destination territory. Each attack costs food resources as a function of the number of armies attacking and distance between the two territories. (command + A or click on two territories to make the Attack)
 - ***Research***: an order to increase the "technology level" of the player. Each research costs resources. Upgrade will be effective in the next round.
-- ***Upgrade***: specify the level and number of armies to upgrade, the target territory. Upgrading a unit increases its combat bonuses in combat resolution. This order costs technology resources.
-- ***Build***: specify what to build(bomb or )the target territory to build equipment on 
+- ***Upgrade***: specify the level and number of armies to upgrade, the target territory. Upgrading a unit increases its combat bonuses in combat resolution. This order costs technology resources. (command + U or click on one territory twice to make the Upgrade)
+- ***Build***: specify what to build(bomb or )the target territory to build equipment on. (command + K)
 
 ## New feature specification
 --

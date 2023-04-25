@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -22,23 +18,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
@@ -71,7 +62,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     }
 
     @FXML
-    private Label playerName, food, techResource, techLevel;
+    private Label playerName, food, techResource, techLevel, allyName;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton, shortCutButton;
     @FXML
@@ -85,13 +76,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @FXML
     Pane paneGroup;
-
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
     private Map<String, Color> colorMap;
-
     static HashMap<String, Tooltip> toolTipMap = new HashMap<>();
+    public static String[] terrSourceDest = new String[2];
+    private static int clickCount = 0;
 
     /**
      * Constructs a new PlayGameController object with the specified remote game
@@ -281,9 +272,42 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }else{
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
-
-
     }
+
+    //click the same territory twice pop up the upgrade page
+    @FXML
+    public void mouseClickedTerritory(MouseEvent me) throws IOException {
+        Object source = me.getSource();
+        if(source instanceof Text){
+            Text t = (Text) me.getSource();
+            String terrName = t.getText();
+            if(clickCount ==0){
+                terrSourceDest[0]=terrName;
+            }else{
+                terrSourceDest[1]=terrName;
+                Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
+                List<String> own = self.getTerritories().stream().map(a -> a.getName()).toList();
+                List<String> noOwn = gameMap.getValue().getTerritories().stream().map(b -> b.getName()).filter((b) -> !own.contains(t)).toList();
+                if(!terrSourceDest[0].equals(terrSourceDest[1])){
+                    //move or attack
+                    if(own.contains(terrSourceDest[0]) && own.contains(terrSourceDest[1])){
+                        showPopupStage(OrderMoveController.getScene(server, terrSourceDest[0],terrSourceDest[1]));
+                    }else if(own.contains(terrSourceDest[0]) && noOwn.contains(terrSourceDest[1])){
+                        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),terrSourceDest[0],terrSourceDest[1]));
+                    }
+                }else{
+                    if(own.contains(terrSourceDest[0])) {
+                        showPopupStage(OrderUpgradeController.getScene(server, terrName));
+                    }
+                }
+            }
+        }else{
+            throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
+        }
+        clickCount = (clickCount + 1) % 2;
+    }
+
+
 
     @FXML
     public void clickOnShortCut(ActionEvent event) throws IOException {
@@ -292,21 +316,21 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             if (new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN).match(e)) {
                 // Command + M pressed for move
                 try {
-                    showPopupStage(OrderMoveController.getScene(server));
+                    showPopupStage(OrderMoveController.getScene(server,null,null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN).match(e)) {
                 // Command + A pressed for attack
                 try {
-                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue()));
+                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN).match(e)) {
                 // Command + U pressed for upgrade
                 try {
-                    showPopupStage(OrderUpgradeController.getScene(server));
+                    showPopupStage(OrderUpgradeController.getScene(server,null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -338,7 +362,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue()));
+        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
     }
 
 
@@ -352,7 +376,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
-        showPopupStage(OrderUpgradeController.getScene(server));
+        showPopupStage(OrderUpgradeController.getScene(server,null));
     }
 
     /**
@@ -365,7 +389,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
-        showPopupStage(OrderMoveController.getScene(server));
+        showPopupStage(OrderMoveController.getScene(server,null,null));
     }
 
     private void showPopupStage(Scene newScene) {
@@ -455,10 +479,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
         techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
                 + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
-        playerName.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        food.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        techResource.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        techLevel.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
+        allyName.setText(String.valueOf(self.getValue().getAlliance()));
+
+        Color textColor = colorMap.get(UserSession.getInstance().getUsername());
+        playerName.setTextFill(textColor);
+        food.setTextFill(textColor);
+        techResource.setTextFill(textColor);
+        techLevel.setTextFill(textColor);
+        allyName.setTextFill(textColor);
+
     }
 
     /**

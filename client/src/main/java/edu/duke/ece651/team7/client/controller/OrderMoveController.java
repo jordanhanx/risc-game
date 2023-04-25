@@ -34,10 +34,10 @@ public class OrderMoveController implements Initializable {
      * @return The Scene object for the OrderMove page.
      * @throws IOException If there is an error loading the FXML file.
      */
-    public static Scene getScene(RemoteGame server) throws IOException {
+    public static Scene getScene(RemoteGame server, String srcName, String destName) throws IOException {
         URL xmlResource = OrderMoveController.class.getResource("/fxml/order-move-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderMoveController(server));
+        loader.setController(new OrderMoveController(server,srcName,destName));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -51,13 +51,16 @@ public class OrderMoveController implements Initializable {
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
 
+    private String srcName;
+    private String destName;
+
     /**
      * Constructs an OrderMoveController object.
      * 
      * @param server The RemoteGame object representing the game server.
      * @throws RemoteException If there is an error communicating with the server.
      */
-    public OrderMoveController(RemoteGame server) throws RemoteException {
+    public OrderMoveController(RemoteGame server, String srcName, String destName) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
@@ -65,6 +68,8 @@ public class OrderMoveController implements Initializable {
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {
             levList.add(String.valueOf(lev));
         }
+        this.srcName=srcName;
+        this.destName=destName;
     }
 
     @Override
@@ -72,6 +77,8 @@ public class OrderMoveController implements Initializable {
         srcSelector.setItems(terrList);
         destSelector.setItems(terrList);
         levelSelector.setItems(levList);
+        srcSelector.setValue(srcName);
+        destSelector.setValue(destName);
     }
 
     /**
