@@ -3,6 +3,7 @@
  */
 package edu.duke.ece651.team7.client;
 
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javafx.application.Application;
@@ -29,6 +30,9 @@ public class App extends Application {
       MediaPlayer backgroundPlayer = MusicFactory.createBackgroundPlayer();
       backgroundPlayer.setAutoPlay(true);
       backgroundPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+      backgroundPlayer.setOnEndOfMedia(() -> {
+        backgroundPlayer.seek(Duration.ZERO);
+      });
 
       Thread.setDefaultUncaughtExceptionHandler(new ErrorReporter());
       Scene scene = LoginSignupController.getScene();

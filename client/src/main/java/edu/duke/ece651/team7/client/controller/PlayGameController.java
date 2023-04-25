@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -30,13 +31,13 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
-import javafx.scene.shape.Polygon;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
@@ -122,14 +123,14 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     private void setToolTipMap(){
         for(Node node: paneGroup.getChildren()){
-            if(node instanceof Polygon){
-                Polygon pol = (Polygon) node;
+            if(node instanceof SVGPath){
+                SVGPath svg = (SVGPath) node;
                 Tooltip tooltip = new Tooltip();
                 tooltip.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: white;");
                 Font font = new Font("Wawati SC Regular",15);
                 tooltip.setFont(font);
-                Tooltip.install(pol, tooltip);
-                toolTipMap.put(pol.getId(), tooltip);
+                Tooltip.install(svg, tooltip);
+                toolTipMap.put(svg.getId(), tooltip);
             }
         }
     }
@@ -240,11 +241,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Node source = (Node) me.getSource();
         Territory selectedTerr = null;
         Tooltip tooltip = null;
-        if(source instanceof Polygon){
-            Polygon pol = (Polygon) source;
-            selectedTerr = findTerritory(pol.getId());
-            tooltip = toolTipMap.get(pol.getId());
-        }else if(source instanceof Text){
+        if(source instanceof Text){
             Text text = (Text) source;
             selectedTerr = findTerritory(text.getText());
             tooltip = toolTipMap.get(text.getText());
@@ -278,10 +275,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     public void mouseLeavedTerritory(MouseEvent me){
         Object source = me.getSource();
         Territory selectedTerr = null;
-        if(source instanceof Polygon){
-            Polygon pol = (Polygon) source;
-            toolTipMap.get(pol.getId()).hide();
-        }else if(source instanceof Text){
+         if(source instanceof Text){
             Text text = (Text) source;
             toolTipMap.get(text.getText()).hide();
         }else{
@@ -296,30 +290,37 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Scene scene = moveButton.getScene();
         scene.setOnKeyPressed(e -> {
             if (new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN).match(e)) {
-                // Command + M pressed
+                // Command + M pressed for move
                 try {
-                    showPopup(OrderMoveController.getScene(server));
+                    showPopupStage(OrderMoveController.getScene(server));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN).match(e)) {
-                // Command + A pressed
+                // Command + A pressed for attack
                 try {
-                    showPopup(OrderAttackController.getScene(server, gameMap.getValue()));
+                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN).match(e)) {
-                // Command + U pressed
+                // Command + U pressed for upgrade
                 try {
-                    showPopup(OrderUpgradeController.getScene(server));
+                    showPopupStage(OrderUpgradeController.getScene(server));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }else if(new KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN).match(e)){
-                //command + S pressed
+                //command + S pressed for ally
                 try {
-                    showPopup(OrderAllyController.getScene(server, gameMap.getValue()));
+                    showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }else if(new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN).match(e)){
+                //command + K pressed for manufacture
+                try {
+                    showPopupStage(OrderManufactureController.getScene(server));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -337,7 +338,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        showPopup(OrderAttackController.getScene(server, gameMap.getValue()));
+        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue()));
     }
 
 
@@ -351,7 +352,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
-        showPopup(OrderUpgradeController.getScene(server));
+        showPopupStage(OrderUpgradeController.getScene(server));
     }
 
     /**
@@ -364,10 +365,10 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
-        showPopup(OrderMoveController.getScene(server));
+        showPopupStage(OrderMoveController.getScene(server));
     }
 
-    private void showPopup(Scene newScene) {
+    private void showPopupStage(Scene newScene) {
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
         popupStage.initOwner(playerName.getScene().getWindow());
@@ -395,12 +396,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @FXML
     public void clickOnAlly(ActionEvent event) throws IOException {
-        showPopup(OrderAllyController.getScene(server, gameMap.getValue()));
+        showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
     }
 
     @FXML
     public void clickOnManfacture(ActionEvent event) throws IOException {
-//        showPopup(OrderManfactureController.getScene(server, gameMap.getValue()));
+        showPopupStage(OrderManufactureController.getScene(server));
     }
 
     /**
@@ -426,11 +427,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     public void initColorMap() {
         colorMap.clear();
-        Color customRed = Color.rgb(255, 109, 109);
-        Color customGreen = Color.rgb(64, 191, 64);
-        Color customBlue = Color.rgb(112, 209, 255);
-        Color customOrange = Color.rgb(255, 159, 28);
-        Color[] colorArr = { customRed, customGreen, customBlue, customOrange };
+        Color customGreen = Color.rgb(187, 204, 187);
+        Color customYellow = Color.rgb(204, 204, 153);
+        Color customBlue = Color.rgb(102, 136, 170);
+        Color customBrown = Color.rgb(136, 136, 102);
+        Color[] colorArr = { customGreen, customYellow, customBlue, customBrown };
+
 
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
@@ -453,7 +455,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
         techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
                 + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
-
         playerName.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
         food.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
         techResource.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
@@ -466,33 +467,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      * constructor.
      */
     public void setTerritoryColor() {
-        // Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
-        Midkemia.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getOwner().getName()));
-        Narnia.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Narnia").getOwner().getName()));
-        Oz.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oz").getOwner().getName()));
-        Westeros.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Westeros").getOwner().getName()));
-        Gondor.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Gondor").getOwner().getName()));
-        Elantris.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Elantris").getOwner().getName()));
-        Scadrial.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Scadrial").getOwner().getName()));
-        Roshar.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Roshar").getOwner().getName()));
-        // Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
-        Hogwarts.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Hogwarts").getOwner().getName()));
-        Mordor.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Mordor").getOwner().getName()));
-        Essos.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Essos").getOwner().getName()));
-        Dorne.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dorne").getOwner().getName()));
-        Highgarden.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Highgarden").getOwner().getName()));
-        Aranthia.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Aranthia").getOwner().getName()));
-        Galadria.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Galadria").getOwner().getName()));
-        Drakoria.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Drakoria").getOwner().getName()));
-        // Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
-        Dragonstone
-                .setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dragonstone").getOwner().getName()));
-        Winterfell.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Winterfell").getOwner().getName()));
-        Helvoria.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Helvoria").getOwner().getName()));
-        Pyke.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pyke").getOwner().getName()));
-        Volantis.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Volantis").getOwner().getName()));
-        Pentos.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pentos").getOwner().getName()));
-        Braavos.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Braavos").getOwner().getName()));
-        Oldtown.setFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oldtown").getOwner().getName()));
+        for(Node node:paneGroup.getChildren() ){
+            if(node instanceof SVGPath){
+                ((SVGPath) node).setFill(colorMap.get(gameMap.getValue().getTerritoryByName(node.getId()).getOwner().getName()));
+            }
+        }
     }
+
 }

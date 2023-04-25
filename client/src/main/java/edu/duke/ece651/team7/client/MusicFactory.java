@@ -47,4 +47,17 @@ public class MusicFactory {
         return actionFailedPlayer;
     }
 
+    public static MediaPlayer createAllyPlayer(){
+        String mediaPath = "src/main/resources/music/ally.wav";
+        MediaPlayer allyPlayer = createMediaPlayer(mediaPath);
+        allyPlayer.setVolume(1);
+        return allyPlayer;
+    }
+
+    public static MediaPlayer createManufacturePlayer(){
+        String mediaPath = "src/main/resources/music/manufacture.mp3";
+        MediaPlayer manufacturePlayer = createMediaPlayer(mediaPath);
+        manufacturePlayer.setVolume(1);
+        return manufacturePlayer;
+    }
 }
