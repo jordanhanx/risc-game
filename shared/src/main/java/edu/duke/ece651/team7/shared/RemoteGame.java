@@ -154,7 +154,7 @@ public interface RemoteGame extends Remote {
          */
         public String doCommitOrder(String username) throws RemoteException;
 
-        public String chatToAll(String msg) throws RemoteException;
+        public String chatToAll(String username, String msg) throws RemoteException;
 
-        public String chatToPlayer(String player, String msg) throws RemoteException;
+        public String chatToPlayer(String username, String toPlayer, String msg) throws RemoteException;
 }

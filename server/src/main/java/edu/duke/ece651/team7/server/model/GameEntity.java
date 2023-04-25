@@ -374,13 +374,13 @@ public class GameEntity extends UnicastRemoteObject implements RemoteGame {
     }
 
     @Override
-    public String chatToAll(String msg) throws RemoteException {
+    public String chatToAll(String username, String msg) throws RemoteException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'chatToAll'");
     }
 
     @Override
-    public String chatToPlayer(String player, String msg) throws RemoteException {
+    public String chatToPlayer(String username, String toPlayer, String msg) throws RemoteException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'chatToPlayer'");
     }
