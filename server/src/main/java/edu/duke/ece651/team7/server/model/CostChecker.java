@@ -19,8 +19,10 @@ public class CostChecker extends OrderRuleChecker {
             return checkBasicOrder(map, (BasicOrder) o);
         }else if(o.getClass() == UpgradeOrder.class){
             return checkUpgradeOrder(map, (UpgradeOrder) o);
-        }else{
+        }else if(o.getClass() == ResearchOrder.class){
             return checkResearchOrder(map, (ResearchOrder) o);
+        }else{
+            return checkManufactureOrder(map, (ManufactureOrder) o);
         }
     }
 
@@ -28,9 +30,17 @@ public class CostChecker extends OrderRuleChecker {
         FoodResource food = (FoodResource)o.accept(costVisitor);
         if(o.issuer.getFood().compareTo(food) < 0){
             return "CostCheker error: No enough food.";
-        }else{
-            return null;
         }
+        if(o.useAircraft && o.issuer.getAircraft().size()==0){
+            return "CostCheker error: No enough aircraft.";
+        }
+        if(o.getClass() == AttackOrder.class){
+            AttackOrder order = (AttackOrder) o;
+            if (o.issuer.getBomb() < order.numBomb){
+                return "CostCheker error: No enough Bomb.";
+            }
+        }
+        return null;
 
     }
 
@@ -45,6 +55,15 @@ public class CostChecker extends OrderRuleChecker {
     }
 
     private String checkResearchOrder(GameMap map, ResearchOrder o){
+        Resource tech = o.accept(costVisitor);
+        if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
+            return "CostCheker error: No enough Tech.";
+        }else{
+            return null;
+        }
+    }
+
+    private String checkManufactureOrder(GameMap map, ManufactureOrder o){
         Resource tech = o.accept(costVisitor);
         if(o.issuer.getTech().compareTo((TechResource)tech) < 0){
             return "CostCheker error: No enough Tech.";

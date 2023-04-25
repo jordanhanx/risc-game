@@ -1,6 +1,7 @@
 package edu.duke.ece651.team7.server.model;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
+import org.springframework.boot.autoconfigure.neo4j.ConfigBuilderCustomizer;
 
 import edu.duke.ece651.team7.server.model.Combat;
 import edu.duke.ece651.team7.shared.GameMap;
@@ -433,6 +434,147 @@ public class CombatTest {
         ArrayList<Unit> unitstoAdd4 = new ArrayList<>(Arrays.asList(new Unit(groupE), new Unit(Level.INFANTRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.TROOPER, groupE), new Unit(Level.ULTRON, groupE)));
         ArrayList<Unit> unitstoAdd5 = new ArrayList<>(Arrays.asList(new Unit(groupF), new Unit(Level.CAVALRY, groupF), new Unit(Level.TROOPER, groupF), new Unit(Level.ULTRON, groupF)));
        
+        // Territory tScadrial = mock(Territory.class);
+
+        // when(tScadrial.getName()).thenReturn("Scadrial");
+
+        // when(tScadrial.removeAllUnits()).thenReturn(unitstoAdd);
+        // when(tScadrial.getOwner()).thenReturn(groupA);
+        Territory tScadrial = new Territory("Scadrial");
+        tScadrial.setOwner(groupA);
+        tScadrial.addUnits(unitstoAdd);
+
+
+        Combat combat = new Combat(tScadrial);
+        assertNull(combat.resolveCombat());
+        combat.pushAttack(groupB, unitstoAdd1);
+        combat.pushAttack(groupC, unitstoAdd2);
+        combat.pushAttack(groupD, unitstoAdd3);
+        combat.pushAttack(groupE, unitstoAdd4);
+        combat.pushAttack(groupF, unitstoAdd5);
+
+        Player winner = combat.resolveCombat();
+        assertEquals(combat.getAttackPoolSize(), combat.getParticipantsSize());
+        assertEquals(1, combat.getAttackPoolSize());
+        assertEquals(winner, tScadrial.getOwner());
+        assertTrue(combat.getAttackUnitofPlayer(winner) >= 0);
+        parray.remove(winner);
+
+        for (Player p : parray) {
+            assertEquals(-1, combat.getAttackUnitofPlayer(p));
+        }
+
+        // verify(tScadrial).setOwner(winner);
+        // verify(winner).addTerritory(tScadrial);
+    }
+
+    @Test
+    public void test_explodeUnits(){
+        Player groupA = mock(Player.class);
+        Player groupB = mock(Player.class);
+        Player groupC = mock(Player.class);
+    
+
+        when(groupA.getName()).thenReturn("A");
+        when(groupB.getName()).thenReturn("B");
+        when(groupC.getName()).thenReturn("C");
+
+
+        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC));
+
+        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(groupA), new Unit(Level.INFANTRY, groupA), new Unit(Level.CAVALRY, groupA), new Unit(Level.TROOPER, groupA), new Unit(Level.ULTRON, groupA)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.ULTRON,groupB)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(groupC), new Unit(Level.CAVALRY, groupC), new Unit(Level.TROOPER, groupC), new Unit(Level.ULTRON, groupC)));
+
+        // Territory tScadrial = mock(Territory.class);
+
+        // when(tScadrial.getName()).thenReturn("Scadrial");
+
+        // when(tScadrial.removeAllUnits()).thenReturn(unitstoAdd);
+        // when(tScadrial.getOwner()).thenReturn(groupA);
+        Territory tScadrial = new Territory("Scadrial");
+        tScadrial.setOwner(groupA);
+        tScadrial.addUnits(unitstoAdd);
+
+        Combat combat = new Combat(tScadrial);
+        assertNull(combat.resolveCombat());
+        combat.pushAttack(groupB, unitstoAdd1);
+        combat.pushAttack(groupC, unitstoAdd2);
+        combat.explodeUnits(groupB, 3);
+        assertEquals(3, combat.getAttackUnitofPlayer(groupB));
+        assertFalse(combat.getAttackUnitsbyPlayer(groupB).contains(unitstoAdd1.get(0)));
+        assertFalse(combat.getAttackUnitsbyPlayer(groupB).contains(unitstoAdd1.get(1)));
+        assertFalse(combat.getAttackUnitsbyPlayer(groupB).contains(unitstoAdd1.get(2)));
+        assertTrue(combat.getAttackUnitsbyPlayer(groupB).contains(unitstoAdd1.get(3)));
+
+        combat.explodeUnits(groupB, 6);
+        assertEquals(0, combat.getAttackUnitofPlayer(groupB));
+    }
+
+    @Test
+    public void test_doOneUnitCombatwithBomb(){
+        Player groupA = mock(Player.class);
+        Player groupB = mock(Player.class);
+        // Player groupC = mock(Player.class);
+        Territory tScadrial = mock(Territory.class);
+
+        Combat combat = new Combat(tScadrial);
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(Level.INFANTRY,groupA), new Unit(Level.CAVALRY,groupA), new Unit(Level.TROOPER,groupA), new Unit(Level.ULTRON,groupA)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.TROOPER,groupB),new Unit(Level.ULTRON,groupB)));
+        unitstoAdd1.get(4).equipBomb();
+        unitstoAdd2.get(5).equipBomb();
+
+        combat.pushAttack(groupA, unitstoAdd1);
+        combat.pushAttack(groupB, unitstoAdd2);
+
+        combat.doOneUnitCombat(groupA, unitstoAdd1.get(4), groupB, unitstoAdd2.get(0));
+        assertEquals(5, combat.getAttackUnitofPlayer(groupA));
+        assertEquals(1, combat.getAttackUnitofPlayer(groupB));
+
+        combat.doOneUnitCombat(groupA, unitstoAdd1.get(3), groupB, unitstoAdd2.get(5));
+        assertEquals(0, combat.getAttackUnitofPlayer(groupA));
+        assertEquals(1, combat.getAttackUnitofPlayer(groupB));
+
+        Combat combat1 = new Combat(tScadrial);
+        combat1.pushAttack(groupA, unitstoAdd1);
+        combat1.pushAttack(groupB, unitstoAdd2);
+        assertTrue(unitstoAdd1.get(4).hasBomb());
+        combat1.doOneUnitCombat(groupA, unitstoAdd1.get(4), groupB, unitstoAdd2.get(5));
+        assertEquals(2, combat1.getAttackUnitofPlayer(groupA));
+        assertEquals(3, combat1.getAttackUnitofPlayer(groupB));
+    }
+
+
+    @Test
+    public void test_resolveCombatwithBomb() {
+        Player groupA = mock(Player.class);
+        Player groupB = mock(Player.class);
+        Player groupC = mock(Player.class);
+        Player groupD = mock(Player.class);
+        Player groupE = mock(Player.class);
+        Player groupF = mock(Player.class);
+
+        when(groupA.getName()).thenReturn("A");
+        when(groupB.getName()).thenReturn("B");
+        when(groupC.getName()).thenReturn("C");
+        when(groupD.getName()).thenReturn("D");
+        when(groupE.getName()).thenReturn("E");
+        when(groupF.getName()).thenReturn("F");
+
+        ArrayList<Player> parray = new ArrayList<>(Arrays.asList(groupA,groupB, groupC, groupD, groupE, groupF));
+
+        ArrayList<Unit> unitstoAdd = new ArrayList<>(Arrays.asList(new Unit(groupA), new Unit(groupA), new Unit(Level.INFANTRY, groupA), new Unit(Level.CAVALRY, groupA), new Unit(Level.TROOPER, groupA), new Unit(Level.ULTRON, groupA)));
+        ArrayList<Unit> unitstoAdd1 = new ArrayList<>(Arrays.asList(new Unit(groupB), new Unit(Level.INFANTRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.CAVALRY,groupB), new Unit(Level.TROOPER,groupB), new Unit(Level.ULTRON,groupB)));
+        ArrayList<Unit> unitstoAdd2 = new ArrayList<>(Arrays.asList(new Unit(groupC), new Unit(Level.CAVALRY, groupC), new Unit(Level.TROOPER, groupC), new Unit(Level.ULTRON, groupC)));
+        ArrayList<Unit> unitstoAdd3 = new ArrayList<>(Arrays.asList(new Unit(groupD), new Unit(groupD), new Unit(Level.INFANTRY, groupD), new Unit(Level.CAVALRY, groupD), new Unit(Level.TROOPER, groupD), new Unit(Level.ULTRON, groupD)));
+        ArrayList<Unit> unitstoAdd4 = new ArrayList<>(Arrays.asList(new Unit(groupE), new Unit(Level.INFANTRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.CAVALRY, groupE), new Unit(Level.TROOPER, groupE), new Unit(Level.ULTRON, groupE)));
+        ArrayList<Unit> unitstoAdd5 = new ArrayList<>(Arrays.asList(new Unit(groupF), new Unit(Level.CAVALRY, groupF), new Unit(Level.TROOPER, groupF), new Unit(Level.ULTRON, groupF)));
+       
+        unitstoAdd.get(unitstoAdd.size()-1).equipBomb();
+        unitstoAdd2.get(unitstoAdd2.size()-1).equipBomb();
+        unitstoAdd1.get(unitstoAdd1.size()-1).equipBomb();
+        unitstoAdd4.get(unitstoAdd4.size()-1).equipBomb();
+
         // Territory tScadrial = mock(Territory.class);
 
         // when(tScadrial.getName()).thenReturn("Scadrial");

@@ -35,6 +35,8 @@ public class TerritoryTest {
     assertEquals("test3", t3.getName());
     assertEquals(10, t3.getUnitsNumber());
     assertEquals(null, t3.getOwner());
+
+    assertThrows(IllegalArgumentException.class, ()->new Territory("test3", -10,1,1));
   }
 
   @Test
@@ -192,6 +194,19 @@ public class TerritoryTest {
   //   assertDoesNotThrow(() -> t.decreaseUnits(2));
   //   assertThrows(ArithmeticException.class, () -> t.decreaseUnits(1));
   // }
+
+  @Test
+  public void test_getUnits(){
+    Player p = mock(Player.class);
+    Player p1 = mock(Player.class);
+    Territory t = new Territory("test",p,10);
+    when(p.isAlliance(p1)).thenReturn(true);
+    when(p1.isAlliance(p)).thenReturn(true);
+
+    t.addUnits(new Unit(p1));
+    assertEquals(10,t.getUnits(p).size());
+    assertEquals(1,t.getUnitsNumber(p1));
+  }
 
   @Test
   public void test_toString() {

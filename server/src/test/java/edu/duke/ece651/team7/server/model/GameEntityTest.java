@@ -191,10 +191,10 @@ public class GameEntityTest {
         commitSet.add("Red");
 
         // Test
-        assertEquals(null, testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
-        assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", "Hogwarts", "Mordor", 0, 5));
+        assertEquals(null, testgame.tryMoveOrder("Blue", false, "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Invalid Input:", testgame.tryMoveOrder("Blue", false, "Hogwarts", "Mordor", 0, 5));
         assertEquals("Please wait for other players to commit",
-                testgame.tryMoveOrder("Red", "Hogwarts", "Mordor", 0, 1));
+                testgame.tryMoveOrder("Red", false,"Hogwarts", "Mordor", 0, 1));
         // Verify
         verify(gameMap, atLeastOnce()).getTerritoryByName("Hogwarts");
         verify(gameMap, atLeastOnce()).getTerritoryByName("Mordor");
@@ -214,10 +214,10 @@ public class GameEntityTest {
         clientMap.put("Blue", cBlue);
         commitSet.add("Red");
         // Test
-        assertEquals(null, testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
-        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue", "Hogwarts", "Mordor", 0, 5));
+        assertEquals(null, testgame.tryAttackOrder("Blue", false,0, "Hogwarts", "Mordor", 0, 5));
+        assertEquals("Invalid Input:", testgame.tryAttackOrder("Blue",  false,0, "Hogwarts", "Mordor", 0, 5));
         assertEquals("Please wait for other players to commit",
-                testgame.tryAttackOrder("Red", "Hogwarts", "Mordor", 0, 1));
+                testgame.tryAttackOrder("Red", false,0,"Hogwarts", "Mordor", 0, 1));
         // Verify
         verify(gameMap, atLeastOnce()).getTerritoryByName("Hogwarts");
         verify(gameMap, atLeastOnce()).getTerritoryByName("Mordor");
@@ -249,6 +249,41 @@ public class GameEntityTest {
         assertEquals("Please wait for other players to commit",
                 testgame.tryResearchOrder("Red"));
         verify(ox, times(2)).visit(any(ResearchOrder.class));
+    }
+
+    @Test
+    public void test_tryAllianceOrder() throws RemoteException {
+        when(ox.visit(any(AllianceOrder.class))).thenReturn(null)
+                .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        commitSet.add("Red");
+        Player pOrange = mock(Player.class);
+        Player pBlue = mock(Player.class);
+        Player pGreen = mock(Player.class);
+        playerMap.put("Blue", pBlue);
+        playerMap.put("Green", pGreen);
+        playerMap.put("Orange", pOrange);
+        when(pOrange.isLose()).thenReturn(false);
+        when(pBlue.isLose()).thenReturn(false);
+        when(pGreen.isLose()).thenReturn(false).thenReturn(true).thenReturn(false);
+        assertEquals(null, testgame.tryAllianceOrder("Blue","Red"));
+        assertEquals("The game currently has less than 3 players, you cannot form alliance", testgame.tryAllianceOrder("Blue","Red"));
+
+        assertEquals("Invalid Input:", testgame.tryAllianceOrder("Blue", "Red"));
+        assertEquals("Please wait for other players to commit",
+                testgame.tryAllianceOrder("Red", "Blue"));
+        verify(ox, times(2)).visit(any(AllianceOrder.class));
+    }
+
+    @Test
+    public void test_tryManufactureOrder() throws RemoteException {
+        when(ox.visit(any(ManufactureOrder.class))).thenReturn(null)
+                .thenThrow(new IllegalArgumentException("Invalid Input:"));
+        commitSet.add("Red");
+        assertEquals(null, testgame.tryManufactureOrder("Blue", false, 3));
+        assertEquals("Invalid Input:", testgame.tryManufactureOrder("Blue", false, 3));
+        assertEquals("Please wait for other players to commit",
+                testgame.tryManufactureOrder("Red", false, 2));
+        verify(ox, times(2)).visit(any(ManufactureOrder.class));
     }
 
     @Test
