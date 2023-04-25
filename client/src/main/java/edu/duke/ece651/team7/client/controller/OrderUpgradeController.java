@@ -15,7 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.media.MediaPlayer;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
@@ -33,10 +35,10 @@ public class OrderUpgradeController implements Initializable {
      * @return The JavaFX Scene for the order upgrade page.
      * @throws IOException if there is an error loading the FXML file.
      */
-    public static Scene getScene(RemoteGame server) throws IOException {
+    public static Scene getScene(RemoteGame server, String terrName) throws IOException {
         URL xmlResource = OrderUpgradeController.class.getResource("/fxml/order-upgrade-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
-        loader.setController(new OrderUpgradeController(server));
+        loader.setController(new OrderUpgradeController(server, terrName));
         return new Scene(loader.load(), 600, 400);
     }
 
@@ -47,6 +49,8 @@ public class OrderUpgradeController implements Initializable {
     private TextField numInputer;
 
     private RemoteGame server;
+
+    private String terrName;
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
 
@@ -59,7 +63,7 @@ public class OrderUpgradeController implements Initializable {
      * @param server The RemoteGame server to be used for the upgrade order.
      * @throws RemoteException if there is an error with the RemoteGame server.
      */
-    public OrderUpgradeController(RemoteGame server) throws RemoteException {
+    public OrderUpgradeController(RemoteGame server, String terrName) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
@@ -67,6 +71,7 @@ public class OrderUpgradeController implements Initializable {
         for (int lev = 0; lev < 7; ++lev) {
             levList.add(String.valueOf(lev));
         }
+        this.terrName=terrName;
     }
 
     @Override
@@ -74,6 +79,8 @@ public class OrderUpgradeController implements Initializable {
         terrSelector.setItems(terrList);
         srcLevSelector.setItems(levList);
         destLevSelector.setItems(levList);
+
+        terrSelector.setValue(terrName);
     }
 
     /**
@@ -96,8 +103,14 @@ public class OrderUpgradeController implements Initializable {
                 Integer.parseInt(destLevSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
         if (response != null) {
+            MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
+            actionFailedPlayer.play();
             throw new IllegalArgumentException(response);
         }
+
+        //set the upgrade music
+        MediaPlayer upgradePlayer = MusicFactory.createUpgradePlayer();
+        upgradePlayer.play();
     }
 
     /**

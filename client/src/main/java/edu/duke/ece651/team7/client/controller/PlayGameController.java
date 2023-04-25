@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -22,12 +18,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
+
+import javafx.scene.text.Text;
+import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
+import javafx.scene.Node;
 
 /**
  * The PlayGameController class is responsible for managing the game view, which
@@ -52,31 +58,31 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         URL xmlResource = PlayGameController.class.getResource("/fxml/play-game-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
         loader.setController(new PlayGameController(server));
-        return new Scene(loader.load(), 1325, 607);
+        return new Scene(loader.load(), 1065, 522);
     }
 
     @FXML
-    private Label playerName, food, techResource, techLevel;
+    private Label playerName, food, techResource, techLevel, allyName;
     @FXML
-    private Button moveButton, attackButton, upgradeButton, researchButton;
+    private Button moveButton, attackButton, upgradeButton, researchButton, shortCutButton;
     @FXML
-    private Label terrName, ownerName;
+    private SVGPath Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
     @FXML
-    private Label levelValue0, levelValue1, levelValue2, levelValue3, levelValue4, levelValue5, levelValue6;
+    private SVGPath Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
     @FXML
-    private Label territoryTech, territoryFood;
+    private SVGPath Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
+
+    @FXML private ImageView playerImage;
 
     @FXML
-    private Button Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
-    @FXML
-    private Button Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
-    @FXML
-    private Button Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
-
+    Pane paneGroup;
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
     private Map<String, Color> colorMap;
+    static HashMap<String, Tooltip> toolTipMap = new HashMap<>();
+    public static String[] terrSourceDest = new String[2];
+    private static int clickCount = 0;
 
     /**
      * Constructs a new PlayGameController object with the specified remote game
@@ -102,7 +108,60 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         initColorMap();
         setPlayerInfo();
         setTerritoryColor();
+        DisplayImage();
+        setToolTipMap();
     }
+
+    private void setToolTipMap(){
+        for(Node node: paneGroup.getChildren()){
+            if(node instanceof SVGPath){
+                SVGPath svg = (SVGPath) node;
+                Tooltip tooltip = new Tooltip();
+                tooltip.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: white;");
+                Font font = new Font("Wawati SC Regular",15);
+                tooltip.setFont(font);
+                Tooltip.install(svg, tooltip);
+                toolTipMap.put(svg.getId(), tooltip);
+            }
+        }
+    }
+
+    private void setImageForPlayer(int playerIndex, String territoryName) {
+        if (gameMap.getValue().getTerritoryByName(territoryName).getOwner().getName().equals(UserSession.getInstance().getUsername())) {
+            Image image = new Image(getClass().getResourceAsStream(PLAYER_IMAGE_NAMES[playerIndex]));
+            playerImage.setImage(image);
+        }
+    }
+
+    private static final String[] PLAYER_IMAGE_NAMES = {
+            "/image/player0.png",
+            "/image/player1.png",
+            "/image/player2.png",
+            "/image/player3.png"
+    };
+
+    public void DisplayImage(){
+        Set<String> playerSet = new TreeSet<>();
+        for (Territory t : gameMap.getValue().getTerritories()) {
+            playerSet.add(t.getOwner().getName());
+        }
+        int capacity = playerSet.size();
+
+        if(capacity==2) {
+            setImageForPlayer(0, "Narnia");
+            setImageForPlayer(1, "Aranthia");
+        }else if(capacity==3){
+            setImageForPlayer(0,"Narnia" );
+            setImageForPlayer(1,"Hogwarts" );
+            setImageForPlayer(2,"Winterfell");
+        }else{
+            setImageForPlayer(0,"Narnia" );
+            setImageForPlayer(1,"Hogwarts" );
+            setImageForPlayer(2,"Aranthia");
+            setImageForPlayer(3,"Dragonstone");
+        }
+    }
+
 
     /**
      * Updates the game map property.
@@ -168,67 +227,172 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         return gameMap.getValue().getTerritoryByName(terrName);
     }
 
-    /**
-     * This method is called when a player clicks on a territory button. It sets the
-     * necessary information of the selected territory such as name, owner, unit
-     * levels, produced food and tech.
-     * 
-     * @param event the action event triggered by the click
-     */
     @FXML
-    public void clickOnTerr(ActionEvent event) {
-        Object source = event.getSource();
-        if (source instanceof Button) {
-            Button btn = (Button) source;
-            Territory selectedTerr = findTerritory(btn.getText());
-            terrName.setText(selectedTerr.getName());
-            ownerName.setText(selectedTerr.getOwner().getName());
-            terrName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
-            ownerName.setTextFill(colorMap.get(selectedTerr.getOwner().getName()));
-            levelValue0.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0))));
-            levelValue1.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1))));
-            levelValue2.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2))));
-            levelValue3.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3))));
-            levelValue4.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4))));
-            levelValue5.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5))));
-            levelValue6.setText(String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6))));
-            territoryFood.setText(String.valueOf(selectedTerr.produceFood().getAmount()));
-            territoryTech.setText(String.valueOf(selectedTerr.produceTech().getAmount()));
+    public void mouseMovedTerritory(MouseEvent me){
+        Node source = (Node) me.getSource();
+        Territory selectedTerr = null;
+        Tooltip tooltip = null;
+        if(source instanceof Text){
+            Text text = (Text) source;
+            selectedTerr = findTerritory(text.getText());
+            tooltip = toolTipMap.get(text.getText());
+        }else{
+            throw new IllegalArgumentException("Invalid source " + source + " for MouseEvent");
+        }
+        showToolTip(selectedTerr, tooltip, source);
 
-        } else {
+    }
+
+    private void showToolTip(Territory selectedTerr, Tooltip tooltip, Node source) {
+        tooltip.setText("Territory name: "+ selectedTerr.getName()+"\n"+
+                "Owner: "+selectedTerr.getOwner().getName()+" \n"+
+                "Food: "+ String.valueOf(selectedTerr.produceFood().getAmount())+" \n"+
+                "Tech: "+ String.valueOf(selectedTerr.produceTech().getAmount())+" \n"+
+                "Units: \n"+
+                "CIVILIAN  (Level 0): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0)))+" \n"+
+                "INFANTRY  (Level 1): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1)))+" \n"+
+                "CAVALRY   (Level 2): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2)))+" \n"+
+                "TROOPER   (Level 3): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3)))+" \n"+
+                "ARTILLERY (Level 4): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4)))+" \n"+
+                "AIRFORCE  (Level 5): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5)))+" \n"+
+                "ULTRON    (Level 6): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6)))+" \n"
+        );
+        tooltip.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(), source.localToScreen(source.getBoundsInLocal()).getMaxY());
+    }
+
+
+
+    @FXML
+    public void mouseLeavedTerritory(MouseEvent me){
+        Object source = me.getSource();
+        Territory selectedTerr = null;
+         if(source instanceof Text){
+            Text text = (Text) source;
+            toolTipMap.get(text.getText()).hide();
+        }else{
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
     }
 
-    /**
-     * This method is called when a player clicks on the move button. It opens the
-     * OrderMoveController scene to allow the player to make move orders.
-     * 
-     * @param event the action event triggered by the click
-     * @throws IOException if there is an error while opening the
-     *                     OrderMoveController scene
-     */
+    //click the same territory twice pop up the upgrade page
     @FXML
-    public void clickOnMove(ActionEvent event) throws IOException {
-        Scene newScene = OrderMoveController.getScene(server);
-        Stage popupStage = new Stage();
-        popupStage.setScene(newScene);
-        popupStage.initOwner(playerName.getScene().getWindow());
-        popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.showAndWait();
+    public void mouseClickedTerritory(MouseEvent me) throws IOException {
+        Object source = me.getSource();
+        if(source instanceof Text){
+            Text t = (Text) me.getSource();
+            String terrName = t.getText();
+            if(clickCount ==0){
+                terrSourceDest[0]=terrName;
+            }else{
+                terrSourceDest[1]=terrName;
+                Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
+                List<String> own = self.getTerritories().stream().map(a -> a.getName()).toList();
+                List<String> noOwn = gameMap.getValue().getTerritories().stream().map(b -> b.getName()).filter((b) -> !own.contains(t)).toList();
+                if(!terrSourceDest[0].equals(terrSourceDest[1])){
+                    //move or attack
+                    if(own.contains(terrSourceDest[0]) && own.contains(terrSourceDest[1])){
+                        showPopupStage(OrderMoveController.getScene(server, terrSourceDest[0],terrSourceDest[1]));
+                    }else if(own.contains(terrSourceDest[0]) && noOwn.contains(terrSourceDest[1])){
+                        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),terrSourceDest[0],terrSourceDest[1]));
+                    }
+                }else{
+                    if(own.contains(terrSourceDest[0])) {
+                        showPopupStage(OrderUpgradeController.getScene(server, terrName));
+                    }
+                }
+            }
+        }else{
+            throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
+        }
+        clickCount = (clickCount + 1) % 2;
+    }
+
+
+
+    @FXML
+    public void clickOnShortCut(ActionEvent event) throws IOException {
+        Scene scene = moveButton.getScene();
+        scene.setOnKeyPressed(e -> {
+            if (new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN).match(e)) {
+                // Command + M pressed for move
+                try {
+                    showPopupStage(OrderMoveController.getScene(server,null,null));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN).match(e)) {
+                // Command + A pressed for attack
+                try {
+                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (new KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN).match(e)) {
+                // Command + U pressed for upgrade
+                try {
+                    showPopupStage(OrderUpgradeController.getScene(server,null));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }else if(new KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN).match(e)){
+                //command + S pressed for ally
+                try {
+                    showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }else if(new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN).match(e)){
+                //command + K pressed for manufacture
+                try {
+                    showPopupStage(OrderManufactureController.getScene(server));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
      * This method is called when a player clicks on the attack button. It opens the
      * OrderAttackController scene to allow the player to make attack orders.
-     * 
+     *
      * @param event the action event triggered by the click
      * @throws IOException if there is an error while opening the
      *                     OrderAttackController scene
      */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        Scene newScene = OrderAttackController.getScene(server, gameMap.getValue());
+        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
+    }
+
+
+    /**
+     * Event handler for the "Upgrade" button. Opens a new window to upgrade the
+     * user's orders.
+     *
+     * @param event The ActionEvent triggered by clicking the "Upgrade" button.
+     * @throws IOException If an input/output error occurs while opening the new
+     *                     window.
+     */
+    @FXML
+    public void clickOnUpgrade(ActionEvent event) throws IOException {
+        showPopupStage(OrderUpgradeController.getScene(server,null));
+    }
+
+    /**
+     * This method is called when a player clicks on the move button. It opens the
+     * OrderMoveController scene to allow the player to make move orders.
+     *
+     * @param event the action event triggered by the click
+     * @throws IOException if there is an error while opening the
+     *                     OrderMoveController scene
+     */
+    @FXML
+    public void clickOnMove(ActionEvent event) throws IOException {
+        showPopupStage(OrderMoveController.getScene(server,null,null));
+    }
+
+    private void showPopupStage(Scene newScene) {
         Stage popupStage = new Stage();
         popupStage.setScene(newScene);
         popupStage.initOwner(playerName.getScene().getWindow());
@@ -236,23 +400,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         popupStage.showAndWait();
     }
 
-    /**
-     * Event handler for the "Upgrade" button. Opens a new window to upgrade the
-     * user's orders.
-     * 
-     * @param event The ActionEvent triggered by clicking the "Upgrade" button.
-     * @throws IOException If an input/output error occurs while opening the new
-     *                     window.
-     */
-    @FXML
-    public void clickOnUpgrade(ActionEvent event) throws IOException {
-        Scene newScene = OrderUpgradeController.getScene(server);
-        Stage popupStage = new Stage();
-        popupStage.setScene(newScene);
-        popupStage.initOwner(playerName.getScene().getWindow());
-        popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.showAndWait();
-    }
 
     /**
      * Event handler for the "Research" button.
@@ -269,6 +416,16 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         if (response != null) {
             throw new IllegalArgumentException(response);
         }
+    }
+
+    @FXML
+    public void clickOnAlly(ActionEvent event) throws IOException {
+        showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
+    }
+
+    @FXML
+    public void clickOnManfacture(ActionEvent event) throws IOException {
+        showPopupStage(OrderManufactureController.getScene(server));
     }
 
     /**
@@ -294,7 +451,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     public void initColorMap() {
         colorMap.clear();
-        Color[] colorArr = { Color.MAGENTA, Color.GREEN, Color.BLUE, Color.ORANGERED };
+        Color customGreen = Color.rgb(187, 204, 187);
+        Color customYellow = Color.rgb(204, 204, 153);
+        Color customBlue = Color.rgb(102, 136, 170);
+        Color customBrown = Color.rgb(136, 136, 102);
+        Color[] colorArr = { customGreen, customYellow, customBlue, customBrown };
+
+
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
@@ -316,11 +479,15 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
         techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
                 + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
+        allyName.setText(String.valueOf(self.getValue().getAlliance()));
 
-        playerName.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        food.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        techResource.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
-        techLevel.setTextFill(colorMap.get(UserSession.getInstance().getUsername()));
+        Color textColor = colorMap.get(UserSession.getInstance().getUsername());
+        playerName.setTextFill(textColor);
+        food.setTextFill(textColor);
+        techResource.setTextFill(textColor);
+        techLevel.setTextFill(textColor);
+        allyName.setTextFill(textColor);
+
     }
 
     /**
@@ -329,33 +496,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      * constructor.
      */
     public void setTerritoryColor() {
-        // Midkemia, Narnia, Oz, Westeros, Gondor, Elantris, Scadrial, Roshar;
-        Midkemia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Midkemia").getOwner().getName()));
-        Narnia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Narnia").getOwner().getName()));
-        Oz.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oz").getOwner().getName()));
-        Westeros.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Westeros").getOwner().getName()));
-        Gondor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Gondor").getOwner().getName()));
-        Elantris.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Elantris").getOwner().getName()));
-        Scadrial.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Scadrial").getOwner().getName()));
-        Roshar.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Roshar").getOwner().getName()));
-        // Hogwarts, Mordor, Essos, Dorne, Highgarden, Aranthia, Galadria, Drakoria;
-        Hogwarts.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Hogwarts").getOwner().getName()));
-        Mordor.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Mordor").getOwner().getName()));
-        Essos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Essos").getOwner().getName()));
-        Dorne.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dorne").getOwner().getName()));
-        Highgarden.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Highgarden").getOwner().getName()));
-        Aranthia.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Aranthia").getOwner().getName()));
-        Galadria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Galadria").getOwner().getName()));
-        Drakoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Drakoria").getOwner().getName()));
-        // Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
-        Dragonstone
-                .setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Dragonstone").getOwner().getName()));
-        Winterfell.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Winterfell").getOwner().getName()));
-        Helvoria.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Helvoria").getOwner().getName()));
-        Pyke.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pyke").getOwner().getName()));
-        Volantis.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Volantis").getOwner().getName()));
-        Pentos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Pentos").getOwner().getName()));
-        Braavos.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Braavos").getOwner().getName()));
-        Oldtown.setTextFill(colorMap.get(gameMap.getValue().getTerritoryByName("Oldtown").getOwner().getName()));
+        for(Node node:paneGroup.getChildren() ){
+            if(node instanceof SVGPath){
+                ((SVGPath) node).setFill(colorMap.get(gameMap.getValue().getTerritoryByName(node.getId()).getOwner().getName()));
+            }
+        }
     }
+
 }
