@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.net.URL;
 
+import javafx.scene.control.ComboBox;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,7 +34,7 @@ public class ReqNewGameControllerTest {
     @Mock
     private RestTemplate restTemplate;
 
-    private TextField capacity;
+    private ComboBox capacity;
     private TextField initUnits;
     private ReqNewGameController reqNewGameController;
 
