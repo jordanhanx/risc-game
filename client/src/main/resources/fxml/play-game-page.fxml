@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <SplitPane dividerPositions="0.3015051740357479" layoutX="-5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="1065.0" GridPane.columnIndex="1" GridPane.rowIndex="24" GridPane.rowSpan="15">
             <items>
@@ -65,7 +65,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="techResource" layoutX="142.0" layoutY="150.0" prefHeight="23.0" prefWidth="12.0" text="/">
+                  <Label fx:id="techResource" layoutX="142.0" layoutY="150.0" prefHeight="23.0" prefWidth="35.0" text="/">
                      <font>
                         <Font size="15.0" />
                      </font>

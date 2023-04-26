@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
@@ -533,8 +535,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     public void clickOnCommit(ActionEvent event) throws RemoteException {
         String response = server.doCommitOrder(UserSession.getInstance().getUsername());
         if (response != null) {
+            MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
+            actionFailedPlayer.play();
             throw new IllegalArgumentException(response);
         }
+        MediaPlayer commitPlayer = MusicFactory.createCommitPlayer();
+        commitPlayer.play();
     }
 
     /**
@@ -570,7 +576,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
         techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
                 + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
-        ally.setText(String.valueOf(self.getValue().getAlliance()));
+        if(self.getValue().getAlliance() != null) {
+            ally.setText(String.valueOf(self.getValue().getAlliance().getName()));
+        }else{
+            ally.setText("No Ally");
+        }
+//        System.out.println(String.valueOf(self.getValue().getAlliance().getName()));
         airPlane.setText(String.valueOf(self.getValue().getAircraft().size()));
         bomb.setText(String.valueOf(self.getValue().getBomb()));
 
