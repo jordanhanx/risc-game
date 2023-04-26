@@ -5,23 +5,27 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import edu.duke.ece651.team7.client.MusicFactory;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
@@ -31,7 +35,6 @@ import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
 
@@ -77,6 +80,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     @FXML
     Pane paneGroup;
+    @FXML
+    private TextField input;
+    @FXML
+    private Button sendButton;
+    @FXML private ListView content;
+    @FXML ChoiceBox<String> playerList;
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
@@ -111,6 +120,21 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         setTerritoryColor();
         DisplayImage();
         setToolTipMap();
+        setComboBox();
+    }
+
+    private void setComboBox(){
+        ObservableList<String> players = FXCollections.observableArrayList(
+                gameMap.getValue().getTerritories().stream()
+                        .map(Territory::getOwner)
+                        .filter(player -> !player.getName().equals(UserSession.getInstance().getUsername()))
+                        .map(Player::getName)
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList()
+        ));
+        players.add("All");
+        playerList.setItems(players);
     }
 
     private void setToolTipMap() {
@@ -507,10 +531,32 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    @FXML
+    public void clickOnSend(ActionEvent event) throws RemoteException {
+        String response=null;
+        if(playerList.getValue().equals("All")) {
+            response = server.chatToAll(UserSession.getInstance().getUsername(),input.getText());
+        }else{
+            response= server.chatToPlayer(UserSession.getInstance().getUsername(),playerList.getSelectionModel().getSelectedItem(),input.getText());
+        }
+        if (response != null) {
+            throw new IllegalArgumentException(response);
+        }
+        input.clear();
+    }
     @Override
     public void showChatMessage(String msg) throws RemoteException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showChatMessage'");
+        Platform.runLater(() -> {
+            displayContent(msg);
+        });
+    }
+
+    private void displayContent(String text){
+        HBox box = new HBox();
+        Label msg = new Label(text);
+        box.getChildren().addAll(msg);
+        box.setStyle("-fx-background-color: #D2B48C; -fx-background-radius: 5px;-fx-border-color: #000000;  -fx-border-width: 2px;");
+        content.getItems().add(box);
     }
 
 }
