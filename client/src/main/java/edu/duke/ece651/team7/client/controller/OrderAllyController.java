@@ -24,8 +24,19 @@ import edu.duke.ece651.team7.client.MusicFactory;
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
+/**
+ * The OrderAllyController class controls the "ally order" page, which allows
+ * players to ally with other players
+ */
 public class OrderAllyController implements Initializable {
 
+    /**
+     * Returns the scene for the "Order Ally" page.
+     * @param server the RemoteGame instance representing the game server
+     * @param gameMap the GameMap instance representing the game map
+     * @return the Scene for the "Order Ally" page
+     * @throws IOException if an I/O error occurs while loading the FXML file
+     */
     public static Scene getScene(RemoteGame server, GameMap gameMap) throws IOException {
         URL xmlResource = OrderAllyController.class.getResource("/fxml/order-ally-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -42,6 +53,12 @@ public class OrderAllyController implements Initializable {
     private ObservableList<String> allyList;
     private RemoteGame server;
 
+    /**
+     * Constructs an instance of OrderAllyController.
+     * @param server the RemoteGame instance representing the game server
+     * @param gameMap the GameMap instance representing the game map
+     * @throws RemoteException if there is a remote communication error
+     */
     public OrderAllyController(RemoteGame server, GameMap gameMap) throws RemoteException{
         this.server=server;
         this.allyList = FXCollections.observableArrayList(gameMap.getTerritories().stream()
@@ -59,6 +76,9 @@ public class OrderAllyController implements Initializable {
         setImage();
     }
 
+    /**
+     * Sets up the images corresponding to each player, displaying their corresponding image if they are in the game, and a locked image otherwise.
+     */
     private void setImage(){
         Map<Integer, ImageView> ImageViewMap = new HashMap<>();
         ImageViewMap.put(0,player0);
@@ -77,6 +97,12 @@ public class OrderAllyController implements Initializable {
         }
 
     }
+
+    /**
+     * Handles the action of clicking on the "Ally" button, sending an alliance request to the chosen player.
+     * @param action the event triggered by clicking on the "Ally" button
+     * @throws RemoteException if there is a remote communication error
+     */
     @FXML
     public void clickOnAlly(ActionEvent action) throws RemoteException{
         String response = server.tryAllianceOrder(UserSession.getInstance().getUsername(),
@@ -92,6 +118,10 @@ public class OrderAllyController implements Initializable {
         allyPlayer.play();
     }
 
+    /**
+     * Handles the action of clicking on the "Finish" button, closing the "Order Ally" page.
+     * @param action the event triggered by clicking on the "Finish" button
+     */
     @FXML
     public void clickOnFinish(ActionEvent action){
         Stage currStage = (Stage) allySelector.getScene().getWindow();

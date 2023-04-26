@@ -17,7 +17,18 @@ import java.util.ResourceBundle;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
+/**
+ * The OrderManufactureController class controls the "manufacture order" page, which allows
+ * players to build bomb or air plane
+ */
 public class OrderManufactureController implements Initializable {
+
+    /**
+     * Returns a Scene object to display the order-manufacture page.
+     * @param server a RemoteGame object used to communicate with the server
+     * @return a Scene object representing the order-manufacture page
+     * @throws IOException if there is an error reading the FXML file
+     */
     public static Scene getScene(RemoteGame server) throws IOException {
         URL xmlResource = OrderManufactureController.class.getResource("/fxml/order-manufacture-page.fxml");
         FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -33,32 +44,13 @@ public class OrderManufactureController implements Initializable {
     private CheckBox isAirPlane;
     private RemoteGame server;
 
+    /**
+     * Constructs a new OrderManufactureController object.
+     * @param server a RemoteGame object used to communicate with the server
+     * @throws RemoteException if there is an error with the remote method invocation
+     */
     public OrderManufactureController(RemoteGame server) throws RemoteException {
         this.server=server;
-    }
-
-    @FXML
-    public void clickOnManufacture(ActionEvent action) throws RemoteException{
-        String response=server.tryManufactureOrder(UserSession.getInstance().getUsername(),
-                isBomb.isSelected(),
-                Integer.parseInt(amount.getText())
-        );
-
-        if (response != null) {
-            MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
-            actionFailedPlayer.play();
-            throw new IllegalArgumentException(response);
-        }
-
-        //set the manfacture sound
-        MediaPlayer manufacturePlayer = MusicFactory.createManufacturePlayer();
-        manufacturePlayer.play();
-    }
-
-    @FXML
-    public void clickOnFinish(ActionEvent action){
-        Stage currStage = (Stage) amount.getScene().getWindow();
-        currStage.close();
     }
 
     @Override
@@ -78,4 +70,39 @@ public class OrderManufactureController implements Initializable {
         // By default, select isBomb checkbox
         isBomb.setSelected(true);
     }
+
+    /**
+     * Sends a request to the server to manufacture an order based on the user's inputs.
+     * @param action an ActionEvent object representing the user's click on the manufacture button
+     * @throws RemoteException if there is an error with the remote method invocation
+     * @throws IllegalArgumentException if the response from the server is not null
+     */
+    @FXML
+    public void clickOnManufacture(ActionEvent action) throws RemoteException{
+        String response=server.tryManufactureOrder(UserSession.getInstance().getUsername(),
+                isBomb.isSelected(),
+                Integer.parseInt(amount.getText())
+        );
+
+        if (response != null) {
+            MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
+            actionFailedPlayer.play();
+            throw new IllegalArgumentException(response);
+        }
+
+        //set the manfacture sound
+        MediaPlayer manufacturePlayer = MusicFactory.createManufacturePlayer();
+        manufacturePlayer.play();
+    }
+
+    /**
+     * Closes the current stage.
+     * @param action an ActionEvent object representing the user's click on the finish button
+     */
+    @FXML
+    public void clickOnFinish(ActionEvent action){
+        Stage currStage = (Stage) amount.getScene().getWindow();
+        currStage.close();
+    }
+
 }

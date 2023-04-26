@@ -65,6 +65,8 @@ public class OrderAttackController implements Initializable {
      * 
      * @param server  the RemoteGame object representing the game server
      * @param gameMap the GameMap object representing the game map
+     * @param sourceTerr, if the source territory is specified when the attack page is open
+     * @param destinationTerr, if the destination territory is specified when the attack page is open
      * @throws RemoteException if a remote method call fails
      */
     public OrderAttackController(RemoteGame server, GameMap gameMap, String sourceTerr,String destinationTerr) throws RemoteException {

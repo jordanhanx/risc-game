@@ -58,6 +58,8 @@ public class OrderMoveController implements Initializable {
      * Constructs an OrderMoveController object.
      * 
      * @param server The RemoteGame object representing the game server.
+     * @param sourceTerr, if the source territory is specified when the move page is open
+     * @param destinationTerr, if the destination territory is specified when the move page is open
      * @throws RemoteException If there is an error communicating with the server.
      */
     public OrderMoveController(RemoteGame server, String sourceTerr, String destinationTerr) throws RemoteException {
