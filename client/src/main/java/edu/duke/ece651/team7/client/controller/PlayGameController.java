@@ -282,25 +282,24 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      * @param source the Node element over which the Tooltip will be shown
      */
     private void showToolTip(Territory selectedTerr, Tooltip tooltip, Node source) {
-        tooltip.setText("Territory name: " + selectedTerr.getName() + "\n" +
-                "Owner: " + selectedTerr.getOwner().getName() + " \n" +
-                "Food: " + String.valueOf(selectedTerr.produceFood().getAmount()) + " \n" +
-                "Tech: " + String.valueOf(selectedTerr.produceTech().getAmount()) + " \n" +
-                "Units: \n" +
-                "CIVILIAN  (Level 0): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0)))
-                + " \n" +
-                "INFANTRY  (Level 1): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1)))
-                + " \n" +
-                "CAVALRY   (Level 2): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2)))
-                + " \n" +
-                "TROOPER   (Level 3): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3)))
-                + " \n" +
-                "ARTILLERY (Level 4): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4)))
-                + " \n" +
-                "AIRFORCE  (Level 5): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5)))
-                + " \n" +
-                "ULTRON    (Level 6): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6)))
-                + " \n");
+        Player terrAlly= selectedTerr.getOwner().getAlliance();
+        StringBuilder tooltipBuilder = new StringBuilder();
+        tooltipBuilder.append("Territory name: ").append(selectedTerr.getName()).append("\n")
+                .append("Owner: ").append(selectedTerr.getOwner().getName()).append(" \n")
+                .append("Food: ").append(selectedTerr.produceFood().getAmount()).append(" \n")
+                .append("Tech: ").append(selectedTerr.produceTech().getAmount()).append(" \n")
+                .append("Units: \n");
+        String[] levelLabels = {"CIVILIAN", "INFANTRY", "CAVALRY", "TROOPER", "ARTILLERY", "AIRFORCE", "ULTRON"};
+        int[] unitCounts = new int[7];
+        for (int i = 0; i < 7; i++) {
+            unitCounts[i] = selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(i));
+            if (terrAlly != null) {
+                unitCounts[i] += selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(i), terrAlly);
+            }
+            tooltipBuilder.append(levelLabels[i]).append(" (Level ").append(i).append("): ")
+                    .append(unitCounts[i]).append(" \n");
+        }
+        tooltip.setText(tooltipBuilder.toString());
         tooltip.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(),
                 source.localToScreen(source.getBoundsInLocal()).getMaxY());
     }
@@ -581,14 +580,13 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }else{
             ally.setText("No Ally");
         }
-//        System.out.println(String.valueOf(self.getValue().getAlliance().getName()));
         airPlane.setText(String.valueOf(self.getValue().getAircraft().size()));
         bomb.setText(String.valueOf(self.getValue().getBomb()));
 
         Color textColor = colorMap.get(UserSession.getInstance().getUsername());
         for(Node node: playerInfoPane.getChildren()){
             if(node instanceof Label){
-                ((Label) node).setTextFill(textColor);
+                ((Label) node).setTextFill(Color.BLACK);
             }
         }
     }
