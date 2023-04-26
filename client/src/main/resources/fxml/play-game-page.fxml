@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -18,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <SplitPane dividerPositions="0.3015051740357479" layoutX="-5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="1065.0" GridPane.columnIndex="1" GridPane.rowIndex="24" GridPane.rowSpan="15">
             <items>
@@ -159,6 +160,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="NarniaText" layoutX="209.0" layoutY="337.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="50.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Narnia" wrappingWidth="48.41319550342928">
                             <font>
@@ -167,6 +171,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="MidkemiaText" layoutX="246.0" layoutY="267.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="50.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Midkemia" wrappingWidth="70.0">
                             <font>
@@ -175,6 +182,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="GondorText" layoutX="429.0" layoutY="142.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Gondor">
                             <font>
@@ -183,6 +193,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="ElantrisText" layoutX="531.0" layoutY="220.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elantris">
                             <font>
@@ -191,6 +204,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="ScadrialText" layoutX="690.0" layoutY="90.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="50.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Scadrial">
                             <font>
@@ -199,6 +215,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="RosharText" layoutX="800.0" layoutY="192.0" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Roshar">
                             <font>
@@ -215,6 +234,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="HogwartsText" layoutX="619.0" layoutY="292.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Hogwarts">
                             <font>
@@ -223,6 +245,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="EssosText" layoutX="680.0" layoutY="371.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Essos">
                             <font>
@@ -231,6 +256,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="DorneText" layoutX="542.0" layoutY="356.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Dorne">
                             <font>
@@ -239,6 +267,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="WesterosText" layoutX="423.0" layoutY="181.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="25.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Westeros">
                             <font>
@@ -247,6 +278,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="AranthiaText" layoutX="366.0" layoutY="159.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="70.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Aranthia">
                             <font>
@@ -255,6 +289,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="DrakoriaText" layoutX="275.0" layoutY="160.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Drakoria">
                             <font>
@@ -263,6 +300,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="GaladriaText" layoutX="355.0" layoutY="276.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Galadria">
                             <font>
@@ -271,6 +311,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="HighgardenText" layoutX="377.0" layoutY="250.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="60.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Highgarden" wrappingWidth="90.5126953125">
                             <font>
@@ -279,6 +322,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="WinterfellText" layoutX="412.0" layoutY="403.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Winterfell">
                             <font>
@@ -287,6 +333,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="HelvoriaText" layoutX="288.0" layoutY="255.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="30.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Helvoria">
                             <font>
@@ -295,6 +344,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="DragonstoneText" layoutX="310.0" layoutY="440.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="-20.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Dragonstone">
                             <font>
@@ -303,6 +355,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="PykeText" layoutX="125.0" layoutY="192.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Pyke">
                             <font>
@@ -311,6 +366,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="OldtownText" layoutX="165.0" layoutY="394.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" rotate="-30.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Oldtown">
                             <font>
@@ -319,6 +377,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="PentosText" layoutX="99.0" layoutY="275.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Pentos">
                             <font>
@@ -327,6 +388,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="BraavosText" layoutX="70.0" layoutY="371.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Braavos">
                             <font>
@@ -335,6 +399,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Text fx:id="VolantisText" layoutX="31.0" layoutY="141.0" onMouseClicked="#mouseClickedTerritory" onMouseExited="#mouseLeavedTerritory" onMouseMoved="#mouseMovedTerritory" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Volantis">
                             <font>
@@ -343,6 +410,9 @@
                      <effect>
                         <Glow level="0.99" />
                      </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Text>
                         <Button fx:id="attackButton" layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnAttack" prefHeight="36.0" prefWidth="83.0" text="Attack">
                             <styleClass>
@@ -358,6 +428,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="moveButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnMove" prefHeight="36.0" prefWidth="83.0" text="Move">
                             <styleClass>
@@ -373,6 +446,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="upgradeButton" layoutX="206.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnUpgrade" prefHeight="36.0" prefWidth="83.0" text="Upgrade">
                             <styleClass>
@@ -388,6 +464,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="researchButton" layoutX="302.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnResearch" prefHeight="36.0" prefWidth="89.0" text="Research">
                             <styleClass>
@@ -403,6 +482,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="shortCutButton" layoutX="14" layoutY="465.0" mnemonicParsing="false" onAction="#clickOnShortCut" prefHeight="36.0" prefWidth="137.0" text="Enable ShortCut">
                             <styleClass>
@@ -418,6 +500,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="allyButton" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnAlly" prefHeight="36.0" prefWidth="83.0" text="Ally">
                             <styleClass>
@@ -433,6 +518,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="manfactureButton" layoutX="110.0" layoutY="60.0" mnemonicParsing="false" onAction="#clickOnManufacture" prefHeight="36.0" prefWidth="108.0" text="Manufacture">
                             <styleClass>
@@ -448,6 +536,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                         <Button fx:id="commitButton" layoutX="640.0" layoutY="10.0" mnemonicParsing="false" onAction="#clickOnCommit" prefHeight="26.0" prefWidth="87.0" text="Commit">
                             <styleClass>
@@ -463,6 +554,9 @@
                                 -fx-text-fill: #FFFFFF;
                                 -fx-background-radius: 5px;
                             </style>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                         </Button>
                     </children>
                 </Pane>
