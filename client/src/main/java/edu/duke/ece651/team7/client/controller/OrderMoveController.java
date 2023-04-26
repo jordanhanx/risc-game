@@ -48,6 +48,7 @@ public class OrderMoveController implements Initializable {
     private TextField numInputer;
     private RemoteGame server;
     private ObservableList<String> terrList;
+    private ObservableList<String> destTerrList;
     private ObservableList<String> levList;
     private String sourceTerr;
     private String destinationTerr;
@@ -66,6 +67,10 @@ public class OrderMoveController implements Initializable {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
+        this.destTerrList=FXCollections.observableArrayList(self.getTerritories().stream().map(t -> t.getName()).toList());
+        if(self.getAlliance()!=null) {
+            destTerrList.addAll(self.getAlliance().getTerritories().stream().map(t -> t.getName()).toList());
+        }
         this.levList = FXCollections.observableArrayList();
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {
             levList.add(String.valueOf(lev));
@@ -77,7 +82,7 @@ public class OrderMoveController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         srcSelector.setItems(terrList);
-        destSelector.setItems(terrList);
+        destSelector.setItems(destTerrList);
         levelSelector.setItems(levList);
         srcSelector.setValue(sourceTerr);
         destSelector.setValue(destinationTerr);

@@ -98,4 +98,15 @@ public class MusicFactory {
         manufacturePlayer.setVolume(1);
         return manufacturePlayer;
     }
+
+    /**
+     * Creates a MediaPlayer object to play the "commit" sound effect.
+     * @return a MediaPlayer object that plays the "commit" sound effect
+     */
+    public static MediaPlayer createCommitPlayer(){
+        String mediaPath = "src/main/resources/music/commit.mp3";
+        MediaPlayer commitPlayer = createMediaPlayer(mediaPath);
+        commitPlayer.setVolume(1);
+        return commitPlayer;
+    }
 }
