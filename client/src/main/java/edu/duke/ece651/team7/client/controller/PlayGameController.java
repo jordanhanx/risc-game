@@ -5,33 +5,34 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import edu.duke.ece651.team7.client.model.UserSession;
 import edu.duke.ece651.team7.shared.*;
 
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
 
@@ -62,7 +63,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     }
 
     @FXML
-    private Label playerName, food, techResource, techLevel, allyName;
+    private Label playerName, food, techResource, techLevel, ally, airPlane, bomb;
     @FXML
     private Button moveButton, attackButton, upgradeButton, researchButton, shortCutButton;
     @FXML
@@ -72,10 +73,18 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     @FXML
     private SVGPath Dragonstone, Winterfell, Helvoria, Pyke, Volantis, Pentos, Braavos, Oldtown;
 
-    @FXML private ImageView playerImage;
+    @FXML
+    private ImageView playerImage;
 
     @FXML
     Pane paneGroup;
+    @FXML
+    private TextField input;
+    @FXML
+    private Button sendButton;
+    @FXML private ListView content;
+    @FXML ChoiceBox<String> playerSelector;
+    @FXML Pane playerInfoPane;
     private final RemoteGame server;
     private Property<GameMap> gameMap;
     private Property<Player> self;
@@ -110,15 +119,31 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         setTerritoryColor();
         DisplayImage();
         setToolTipMap();
+        setChoiceBox();
     }
 
-    private void setToolTipMap(){
-        for(Node node: paneGroup.getChildren()){
-            if(node instanceof SVGPath){
+    private void setChoiceBox(){
+        ObservableList<String> playerList = FXCollections.observableArrayList(
+                gameMap.getValue().getTerritories().stream()
+                        .map(Territory::getOwner)
+                        .filter(player -> !player.getName().equals(UserSession.getInstance().getUsername()))
+                        .map(Player::getName)
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList()
+        ));
+        playerList.add("All");
+        playerSelector.setItems(playerList);
+
+    }
+
+    private void setToolTipMap() {
+        for (Node node : paneGroup.getChildren()) {
+            if (node instanceof SVGPath) {
                 SVGPath svg = (SVGPath) node;
                 Tooltip tooltip = new Tooltip();
                 tooltip.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: white;");
-                Font font = new Font("Wawati SC Regular",15);
+                Font font = new Font("Wawati SC Regular", 15);
                 tooltip.setFont(font);
                 Tooltip.install(svg, tooltip);
                 toolTipMap.put(svg.getId(), tooltip);
@@ -127,7 +152,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
     }
 
     private void setImageForPlayer(int playerIndex, String territoryName) {
-        if (gameMap.getValue().getTerritoryByName(territoryName).getOwner().getName().equals(UserSession.getInstance().getUsername())) {
+        if (gameMap.getValue().getTerritoryByName(territoryName).getOwner().getName()
+                .equals(UserSession.getInstance().getUsername())) {
             Image image = new Image(getClass().getResourceAsStream(PLAYER_IMAGE_NAMES[playerIndex]));
             playerImage.setImage(image);
         }
@@ -140,28 +166,27 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             "/image/player3.png"
     };
 
-    public void DisplayImage(){
+    public void DisplayImage() {
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
         }
         int capacity = playerSet.size();
 
-        if(capacity==2) {
+        if (capacity == 2) {
             setImageForPlayer(0, "Narnia");
             setImageForPlayer(1, "Aranthia");
-        }else if(capacity==3){
-            setImageForPlayer(0,"Narnia" );
-            setImageForPlayer(1,"Hogwarts" );
-            setImageForPlayer(2,"Winterfell");
-        }else{
-            setImageForPlayer(0,"Narnia" );
-            setImageForPlayer(1,"Hogwarts" );
-            setImageForPlayer(2,"Aranthia");
-            setImageForPlayer(3,"Dragonstone");
+        } else if (capacity == 3) {
+            setImageForPlayer(0, "Narnia");
+            setImageForPlayer(1, "Hogwarts");
+            setImageForPlayer(2, "Winterfell");
+        } else {
+            setImageForPlayer(0, "Narnia");
+            setImageForPlayer(1, "Hogwarts");
+            setImageForPlayer(2, "Aranthia");
+            setImageForPlayer(3, "Dragonstone");
         }
     }
-
 
     /**
      * Updates the game map property.
@@ -227,88 +252,139 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         return gameMap.getValue().getTerritoryByName(terrName);
     }
 
+    /**
+     * Handles mouse movement over a territory Text element. Shows a Tooltip with information about the territory.
+     * @param me the MouseEvent triggered by the mouse movement
+     * @throws IllegalArgumentException if the source of the MouseEvent is not a Text element
+     */
     @FXML
-    public void mouseMovedTerritory(MouseEvent me){
+    public void mouseMovedTerritory(MouseEvent me) {
         Node source = (Node) me.getSource();
         Territory selectedTerr = null;
         Tooltip tooltip = null;
-        if(source instanceof Text){
+        if (source instanceof Text) {
             Text text = (Text) source;
             selectedTerr = findTerritory(text.getText());
             tooltip = toolTipMap.get(text.getText());
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid source " + source + " for MouseEvent");
         }
         showToolTip(selectedTerr, tooltip, source);
 
     }
 
+    /**
+     * Shows a Tooltip with information about a territory.
+     * @param selectedTerr the territory for which to show the Tooltip
+     * @param tooltip the Tooltip element to show
+     * @param source the Node element over which the Tooltip will be shown
+     */
     private void showToolTip(Territory selectedTerr, Tooltip tooltip, Node source) {
-        tooltip.setText("Territory name: "+ selectedTerr.getName()+"\n"+
-                "Owner: "+selectedTerr.getOwner().getName()+" \n"+
-                "Food: "+ String.valueOf(selectedTerr.produceFood().getAmount())+" \n"+
-                "Tech: "+ String.valueOf(selectedTerr.produceTech().getAmount())+" \n"+
-                "Units: \n"+
-                "CIVILIAN  (Level 0): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0)))+" \n"+
-                "INFANTRY  (Level 1): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1)))+" \n"+
-                "CAVALRY   (Level 2): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2)))+" \n"+
-                "TROOPER   (Level 3): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3)))+" \n"+
-                "ARTILLERY (Level 4): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4)))+" \n"+
-                "AIRFORCE  (Level 5): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5)))+" \n"+
-                "ULTRON    (Level 6): "+String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6)))+" \n"
-        );
-        tooltip.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(), source.localToScreen(source.getBoundsInLocal()).getMaxY());
+        tooltip.setText("Territory name: " + selectedTerr.getName() + "\n" +
+                "Owner: " + selectedTerr.getOwner().getName() + " \n" +
+                "Food: " + String.valueOf(selectedTerr.produceFood().getAmount()) + " \n" +
+                "Tech: " + String.valueOf(selectedTerr.produceTech().getAmount()) + " \n" +
+                "Units: \n" +
+                "CIVILIAN  (Level 0): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(0)))
+                + " \n" +
+                "INFANTRY  (Level 1): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(1)))
+                + " \n" +
+                "CAVALRY   (Level 2): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(2)))
+                + " \n" +
+                "TROOPER   (Level 3): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(3)))
+                + " \n" +
+                "ARTILLERY (Level 4): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(4)))
+                + " \n" +
+                "AIRFORCE  (Level 5): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(5)))
+                + " \n" +
+                "ULTRON    (Level 6): " + String.valueOf(selectedTerr.getUnitsNumberByLevel(Level.valueOfLabel(6)))
+                + " \n");
+        tooltip.show(source, source.localToScreen(source.getBoundsInLocal()).getMinX(),
+                source.localToScreen(source.getBoundsInLocal()).getMaxY());
     }
 
-
-
+    /**
+     * Handles mouse leaving a territory Text element. Hides the corresponding Tooltip.
+     * @param me the MouseEvent triggered by the mouse movement
+     * @throws IllegalArgumentException if the source of the MouseEvent is not a Text element
+     */
     @FXML
-    public void mouseLeavedTerritory(MouseEvent me){
+    public void mouseLeavedTerritory(MouseEvent me) {
         Object source = me.getSource();
         Territory selectedTerr = null;
-         if(source instanceof Text){
+        if (source instanceof Text) {
             Text text = (Text) source;
             toolTipMap.get(text.getText()).hide();
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
         }
     }
 
-    //click the same territory twice pop up the upgrade page
+    /**
+     * This method handles territory clicks. If it is the first click, the
+     * territory name is stored as the source. If it is the second click, it is stored as
+     * the destination.
+     @param mouseEvent The MouseEvent object generated by the user clicking a territory.
+     @throws IOException if there is an error handling the territory selection.
+     */
     @FXML
-    public void mouseClickedTerritory(MouseEvent me) throws IOException {
-        Object source = me.getSource();
-        if(source instanceof Text){
-            Text t = (Text) me.getSource();
-            String terrName = t.getText();
-            if(clickCount ==0){
-                terrSourceDest[0]=terrName;
-            }else{
-                terrSourceDest[1]=terrName;
-                Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
-                List<String> own = self.getTerritories().stream().map(a -> a.getName()).toList();
-                List<String> noOwn = gameMap.getValue().getTerritories().stream().map(b -> b.getName()).filter((b) -> !own.contains(t)).toList();
-                if(!terrSourceDest[0].equals(terrSourceDest[1])){
-                    //move or attack
-                    if(own.contains(terrSourceDest[0]) && own.contains(terrSourceDest[1])){
-                        showPopupStage(OrderMoveController.getScene(server, terrSourceDest[0],terrSourceDest[1]));
-                    }else if(own.contains(terrSourceDest[0]) && noOwn.contains(terrSourceDest[1])){
-                        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),terrSourceDest[0],terrSourceDest[1]));
-                    }
-                }else{
-                    if(own.contains(terrSourceDest[0])) {
-                        showPopupStage(OrderUpgradeController.getScene(server, terrName));
-                    }
-                }
-            }
-        }else{
-            throw new IllegalArgumentException("Invalid source " + source + " for ActionEvent");
+    public void mouseClickedTerritory(MouseEvent mouseEvent) throws IOException {
+        Object source = mouseEvent.getSource();
+        if (!(source instanceof Text)) {
+            throw new IllegalArgumentException("Invalid source " + source + " for MouseEvent");
         }
+
+        Text territoryText = (Text) source;
+        String territoryName = territoryText.getText();
+
+        if (clickCount == 0) {
+            terrSourceDest[0] = territoryName;
+        } else {
+            terrSourceDest[1] = territoryName;
+            handleTerritorySelection();
+        }
+
         clickCount = (clickCount + 1) % 2;
     }
 
+    /**
+     * This method handles territory selection logic based on the source and destination territories clicked by the user.
+     * It opens the upgrade window for the same territory clicked twice in a row. If the source (first click) and destination (second click) territory
+     * both belong to the player, it opens the move page. If the destination territory does not belong to the player, it opens
+     * the attack page.
+     * @throws IOException if there is an error opening the appropriate popup window.
+     */
+    private void handleTerritorySelection() throws IOException {
+        Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
+        List<String> ownedTerritories = self.getTerritories().stream()
+                .map(Territory::getName)
+                .toList();
+        List<String> unownedTerritories = gameMap.getValue().getTerritories().stream()
+                .map(Territory::getName)
+                .filter(name -> !ownedTerritories.contains(name))
+                .toList();
+
+        if (terrSourceDest[0].equals(terrSourceDest[1])) {
+            if (ownedTerritories.contains(terrSourceDest[0])) {
+                showPopupStage(OrderUpgradeController.getScene(server, terrSourceDest[0]));
+            }
+            return;
+        }
+
+        if (ownedTerritories.contains(terrSourceDest[0]) && ownedTerritories.contains(terrSourceDest[1])) {
+            showPopupStage(OrderMoveController.getScene(server, terrSourceDest[0], terrSourceDest[1]));
+        } else if (ownedTerritories.contains(terrSourceDest[0]) && unownedTerritories.contains(terrSourceDest[1])) {
+            showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(), terrSourceDest[0], terrSourceDest[1]));
+        }
+    }
 
 
+    /**
+     * The method set the shortcut for the move, attack, uograde, ally, manufacture order
+     * Commad + M pressed for move, Command + A pressed for attack, Command + U pressed for upgrade
+     * Command + S pressed for ally, Command + K pressed for manufacture
+     @throws IOException if there is an error handling the keyboard shortcut.
+     */
     @FXML
     public void clickOnShortCut(ActionEvent event) throws IOException {
         Scene scene = moveButton.getScene();
@@ -316,33 +392,33 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             if (new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN).match(e)) {
                 // Command + M pressed for move
                 try {
-                    showPopupStage(OrderMoveController.getScene(server,null,null));
+                    showPopupStage(OrderMoveController.getScene(server, null, null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN).match(e)) {
                 // Command + A pressed for attack
                 try {
-                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
+                    showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(), null, null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (new KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN).match(e)) {
                 // Command + U pressed for upgrade
                 try {
-                    showPopupStage(OrderUpgradeController.getScene(server,null));
+                    showPopupStage(OrderUpgradeController.getScene(server, null));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }else if(new KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN).match(e)){
-                //command + S pressed for ally
+            } else if (new KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN).match(e)) {
+                // command + S pressed for ally
                 try {
                     showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }else if(new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN).match(e)){
-                //command + K pressed for manufacture
+            } else if (new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN).match(e)) {
+                // command + K pressed for manufacture
                 try {
                     showPopupStage(OrderManufactureController.getScene(server));
                 } catch (Exception ex) {
@@ -362,9 +438,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnAttack(ActionEvent event) throws IOException {
-        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(),null,null));
+        showPopupStage(OrderAttackController.getScene(server, gameMap.getValue(), null, null));
     }
-
 
     /**
      * Event handler for the "Upgrade" button. Opens a new window to upgrade the
@@ -376,7 +451,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnUpgrade(ActionEvent event) throws IOException {
-        showPopupStage(OrderUpgradeController.getScene(server,null));
+        showPopupStage(OrderUpgradeController.getScene(server, null));
     }
 
     /**
@@ -389,17 +464,8 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      */
     @FXML
     public void clickOnMove(ActionEvent event) throws IOException {
-        showPopupStage(OrderMoveController.getScene(server,null,null));
+        showPopupStage(OrderMoveController.getScene(server, null, null));
     }
-
-    private void showPopupStage(Scene newScene) {
-        Stage popupStage = new Stage();
-        popupStage.setScene(newScene);
-        popupStage.initOwner(playerName.getScene().getWindow());
-        popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.showAndWait();
-    }
-
 
     /**
      * Event handler for the "Research" button.
@@ -418,14 +484,40 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    /**
+     * Event handler for the "Ally" button.
+     * It opens the order-ally-page to allow the player to make ally orders.
+     *
+     * @param event The ActionEvent triggered by clicking the "Ally" button.
+     * @throws IOException if there is an error while opening the scene.
+     */
     @FXML
     public void clickOnAlly(ActionEvent event) throws IOException {
         showPopupStage(OrderAllyController.getScene(server, gameMap.getValue()));
     }
 
+    /**
+     * Event handler for the "Manufacture" button.
+     * It opens the order-manufacture-page to allow the player to make manufacture orders.
+     *
+     * @param event The ActionEvent triggered by clicking the "Manufacture" button.
+     * @throws IOException if there is an error while opening the scene.
+     */
     @FXML
-    public void clickOnManfacture(ActionEvent event) throws IOException {
+    public void clickOnManufacture(ActionEvent event) throws IOException {
         showPopupStage(OrderManufactureController.getScene(server));
+    }
+
+    /**
+     * Shows a popup stage with the specified scene. This method is used to display scenes for order controllers.
+     * @param newScene the scene to be displayed in the popup stage.
+     */
+    private void showPopupStage(Scene newScene) {
+        Stage popupStage = new Stage();
+        popupStage.setScene(newScene);
+        popupStage.initOwner(playerName.getScene().getWindow());
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.showAndWait();
     }
 
     /**
@@ -457,7 +549,6 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         Color customBrown = Color.rgb(136, 136, 102);
         Color[] colorArr = { customGreen, customYellow, customBlue, customBrown };
 
-
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
             playerSet.add(t.getOwner().getName());
@@ -471,7 +562,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     /**
      * Sets the current user's information in the UI. This includes the user's name,
-     * food and tech resources, and current tech level.
+     * food and tech resources, current tech level, ally's name, .
      */
     public void setPlayerInfo() {
         playerName.setText(UserSession.getInstance().getUsername());
@@ -479,15 +570,16 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         techResource.setText(String.valueOf(self.getValue().getTech().getAmount()));
         techLevel.setText(String.valueOf(self.getValue().getCurrentMaxLevel()) + " (level"
                 + String.valueOf(self.getValue().getCurrentMaxLevel().label) + ")");
-        allyName.setText(String.valueOf(self.getValue().getAlliance()));
+        ally.setText(String.valueOf(self.getValue().getAlliance()));
+        airPlane.setText(String.valueOf(self.getValue().getAircraft().size()));
+        bomb.setText(String.valueOf(self.getValue().getBomb()));
 
         Color textColor = colorMap.get(UserSession.getInstance().getUsername());
-        playerName.setTextFill(textColor);
-        food.setTextFill(textColor);
-        techResource.setTextFill(textColor);
-        techLevel.setTextFill(textColor);
-        allyName.setTextFill(textColor);
-
+        for(Node node: playerInfoPane.getChildren()){
+            if(node instanceof Label){
+                ((Label) node).setTextFill(textColor);
+            }
+        }
     }
 
     /**
@@ -496,11 +588,61 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
      * constructor.
      */
     public void setTerritoryColor() {
-        for(Node node:paneGroup.getChildren() ){
-            if(node instanceof SVGPath){
-                ((SVGPath) node).setFill(colorMap.get(gameMap.getValue().getTerritoryByName(node.getId()).getOwner().getName()));
+        for (Node node : paneGroup.getChildren()) {
+            if (node instanceof SVGPath) {
+                ((SVGPath) node).setFill(
+                        colorMap.get(gameMap.getValue().getTerritoryByName(node.getId()).getOwner().getName()));
             }
         }
+    }
+
+    /**
+     * Event handler for the "Send" button.
+     * Sends a chat message to either all players or a specific player, depending on the selected player in the GUI.
+     *
+     * @param event The ActionEvent triggered by clicking the "Send" button.
+     * @throws RemoteException          If a remote method invocation error occurs
+     *                                  while attempting to commit the orders.
+     * @throws IllegalArgumentException If the server returns an error message.
+     */
+    @FXML
+    public void clickOnSend(ActionEvent event) throws RemoteException {
+        String response=null;
+        if(playerSelector.getValue().equals("All")) {
+            response = server.chatToAll(UserSession.getInstance().getUsername(),input.getText());
+        }else{
+            response= server.chatToPlayer(UserSession.getInstance().getUsername(), playerSelector.getSelectionModel().getSelectedItem(),input.getText());
+        }
+        if (response != null) {
+            throw new IllegalArgumentException(response);
+        }
+        input.clear();
+    }
+
+    /**
+     * Overrides the showChatMessage method and displays a chat message
+     * in the GUI.
+     * @param msg the chat message to be displayed in the GUI.
+     * @throws RemoteException if there is an error communicating with the server.
+     */
+    @Override
+    public void showChatMessage(String msg) throws RemoteException {
+        Platform.runLater(() -> {
+            displayContent(msg);
+        });
+    }
+
+    /**
+     * Displays the chat message in the GUI, by creating an HBox containing a Label with the message text, and adding
+     * the HBox to the content ListView in the GUI.
+     * @param text the text of the chat message to be displayed in the GUI.
+     */
+    private void displayContent(String text){
+        HBox hBox = new HBox();
+        Label msg = new Label(text);
+        hBox.getChildren().addAll(msg);
+        hBox.setStyle("-fx-background-color: #D2B48C; -fx-background-radius: 5px;-fx-border-color: #000000;  -fx-border-width: 2px;");
+        content.getItems().add(hBox);
     }
 
 }

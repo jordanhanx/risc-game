@@ -61,6 +61,7 @@ public class OrderUpgradeController implements Initializable {
      * in the ChoiceBoxes.
      * 
      * @param server The RemoteGame server to be used for the upgrade order.
+     * @param terrName, if the territory is specified when the attack page is open
      * @throws RemoteException if there is an error with the RemoteGame server.
      */
     public OrderUpgradeController(RemoteGame server, String terrName) throws RemoteException {

@@ -38,4 +38,6 @@ public interface RemoteClient extends Remote {
      *                         and the client
      */
     public void showPopupWindow(String msg) throws RemoteException;
+
+    public void showChatMessage(String msg) throws RemoteException;
 }

@@ -177,4 +177,8 @@ public interface RemoteGame extends Remote {
          * @throws RemoteException if there is an issue with remote invocation
          */
         public String doCommitOrder(String username) throws RemoteException;
+
+        public String chatToAll(String username, String msg) throws RemoteException;
+
+        public String chatToPlayer(String username, String toPlayer, String msg) throws RemoteException;
 }
