@@ -124,6 +124,10 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         setChoiceBox();
     }
 
+    /**
+     * Sets the choices for the player selector choice box.
+     Adds "All" option as well.
+     */
     private void setChoiceBox(){
         ObservableList<String> playerList = FXCollections.observableArrayList(
                 gameMap.getValue().getTerritories().stream()
@@ -139,6 +143,12 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
 
     }
 
+    /**
+     * Sets up tooltips for all the territories on the game map.
+     * Tooltips are styled with a custom background color and font.
+     * Tooltips are installed on each territory SVGPath object and mapped to their respective territory names.
+     */
+
     private void setToolTipMap() {
         for (Node node : paneGroup.getChildren()) {
             if (node instanceof SVGPath) {
@@ -153,6 +163,11 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
         }
     }
 
+    /**
+     Sets the player image for this player
+     @param playerIndex the index of the player
+     @param territoryName the name of the territory (used to determine which territory's owner to check)
+     */
     private void setImageForPlayer(int playerIndex, String territoryName) {
         if (gameMap.getValue().getTerritoryByName(territoryName).getOwner().getName()
                 .equals(UserSession.getInstance().getUsername())) {
@@ -168,6 +183,9 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             "/image/player3.png"
     };
 
+    /**
+     * Display the player's image
+     */
     public void DisplayImage() {
         Set<String> playerSet = new TreeSet<>();
         for (Territory t : gameMap.getValue().getTerritories()) {
