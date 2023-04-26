@@ -140,6 +140,8 @@ public class Combat {
     
     /**
      * Execute one unit combat between two Player
+     * if one party carries bomb, the other party will be eliminate 5 units
+     * if both party carry bomb, both party will lose 2 units. 
      * 
      * @param defender Player as defender
      * @param attacker Player as attacker
@@ -147,19 +149,33 @@ public class Combat {
      * @return false if defender succeeds
      */
     protected boolean doOneUnitCombat(Player attacker,Unit attU, Player defender, Unit defU){
-        Dice attackD = new Dice(20);
-        Dice defenseD = new Dice(20);
-        if(attackD.throwDicewithBonus(attU.getLevel()) > defenseD.throwDicewithBonus(defU.getLevel())){
-            
-            attackPool.get(defender).remove(defU);
-            System.out.println("Win: Attacker(" +attackPool.get(attacker).size()+ ") with unit: " + attU.getLevel() +" Defender(" + attackPool.get(defender).size()+") with unit: " + defU.getLevel());
+        // System.out.println(" Attacker: " + attU.hasBomb() + " defender: " + defU.hasBomb());
+        if(attU.hasBomb() && !defU.hasBomb()){
+            explodeUnits(defender, 5);
             return true;
-        }else{
-           
-            attackPool.get(attacker).remove(attU);
-            System.out.println("Attacker(" + attackPool.get(attacker).size()+ ") with unit: " + attU.getLevel() +"; Defender(" + attackPool.get(defender).size()+ ") with unit: " + defU.getLevel() + " Win");
+        }else if(!attU.hasBomb() && defU.hasBomb()){
+            explodeUnits(attacker, 5);
             return false;
+        }else if(attU.hasBomb() && defU.hasBomb()){
+            explodeUnits(attacker, 3);
+            explodeUnits(defender, 3);
+            return false;
+        }else{
+            Dice attackD = new Dice(20);
+            Dice defenseD = new Dice(20);
+            if(attackD.throwDicewithBonus(attU.getLevel()) > defenseD.throwDicewithBonus(defU.getLevel())){
+                
+                attackPool.get(defender).remove(defU);
+                System.out.println("Win: Attacker(" +attackPool.get(attacker).size()+ ") with unit: " + attU.getLevel() +" Defender(" + attackPool.get(defender).size()+") with unit: " + defU.getLevel());
+                return true;
+            }else{
+            
+                attackPool.get(attacker).remove(attU);
+                System.out.println("Attacker(" + attackPool.get(attacker).size()+ ") with unit: " + attU.getLevel() +"; Defender(" + attackPool.get(defender).size()+ ") with unit: " + defU.getLevel() + " Win");
+                return false;
+            }
         }
+            
     }
     /**
      * the highest-bonus attacker unit paired with the lowest-bonus defender unit
@@ -178,6 +194,7 @@ public class Combat {
             + ") Defender is " + defender.getName() + "(" + attackPool.get(defender).size() + ")");
         // System.out.println("Attacker: " + attacker.getName() + "(" + getAttackUnitofPlayer(attacker) + ") "
         //  +"Defender: " + defender.getName() + "(" + getAttackUnitofPlayer(defender) + ") ");
+
         if(attackPool.get(attacker).size() <= 0 || attackPool.get(defender).size() <= 0 ){
             return;
         }
@@ -189,6 +206,15 @@ public class Combat {
         }
         int defendUnitSize = attackPool.get(defender).size();
         boolean r2 = doOneUnitCombat(attacker, attackPool.get(attacker).get(0), defender, attackPool.get(defender).get(defendUnitSize-1));
+    }
+
+    public void explodeUnits(Player p, int n){
+        for (int i = 0; i < n ; i++){
+            attackPool.get(p).remove(0);
+            if(attackPool.get(p).size() == 0){
+                break;
+            }
+        }
     }
 
     /**

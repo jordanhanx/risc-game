@@ -94,7 +94,7 @@ public class OrderCostVisitorTest {
         Player p3 = map.getTerritoryByName("Gondor").getOwner();
         OrderCostVisitor costVisitor = new OrderCostVisitor(map);
 
-        AttackOrder m1 = new AttackOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Oz"), Level.CIVILIAN, 8);
+        AttackOrder m1 = new AttackOrder(p3, map.getTerritoryByName("Gondor"), map.getTerritoryByName("Oz"), 8);
         assertEquals(24, costVisitor.visit(m1).getAmount());
 
         AttackOrder m2 = new AttackOrder(p3, map.getTerritoryByName("Scadrial"), map.getTerritoryByName("Mordor"), 2);
@@ -153,6 +153,10 @@ public class OrderCostVisitorTest {
         Player playerB = new Player("GroupB", Level.AIRBORNE);
         AllianceOrder o1 = new AllianceOrder(playerA, playerB);
         assertNull(costVisitor.visit(o1));
+    }
+
+    @Test
+    public void test_ManufactureOrder(){
 
 
     }

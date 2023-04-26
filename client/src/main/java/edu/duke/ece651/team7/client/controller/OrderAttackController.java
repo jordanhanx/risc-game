@@ -98,7 +98,7 @@ public class OrderAttackController implements Initializable {
      */
     @FXML
     public void clickOnAttack(ActionEvent action) throws RemoteException {
-        String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),
+        String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),false, 0, 
                 srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));

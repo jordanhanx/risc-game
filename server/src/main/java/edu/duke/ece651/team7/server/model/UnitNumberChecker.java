@@ -20,19 +20,32 @@ public class UnitNumberChecker extends OrderRuleChecker{
             BasicOrder order = (BasicOrder) o;
             for(Level l: order.units.keySet()){
                 if(order.units.get(l) <= 0){
-                    return "Number of Units must be > 0";
+                    return "UniNumber Checker: Number of Units must be > 0";
                 }
                 if(order.units.get(l) > order.src.getUnitsNumberByLevel(l, order.issuer)){
-                    return "No enough units in the source Territory";
+                    return "UniNumber Checker: No enough units in the source Territory";
                 }
             }
+            if(order.useAircraft && (order.units.get(Level.AIRBORNE) == null || order.units.get(Level.AIRBORNE) > 10)){
+                return "UniNumber Checker: Aircraft can only take up to 10 AIRBORNE units";
+            }
+            if(order.getClass() == AttackOrder.class){ //only Ultron units can carry bomb
+                AttackOrder aorder = (AttackOrder) o;
+                if(aorder.numBomb < 0){
+                    return "UniNumber Checker: cannot issue negative amount of bomb";
+                }
+                if(aorder.numBomb > aorder.units.getOrDefault(Level.ULTRON, 0)){
+                    return "UniNumber Checker: More Bomb than Ultron units";
+                }
+                return null;
+            }
             return null;
-        }
 
+        }
         if(o.getClass() == UpgradeOrder.class){
             UpgradeOrder order = (UpgradeOrder) o;
             if(order.units > order.target.getUnitsNumberByLevel(order.from, order.issuer)){
-                return "No enough units in the source Territory";
+                return "UniNumber Checker: No enough units in the source Territory";
             }else{
                 return null;
             }

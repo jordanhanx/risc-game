@@ -2,8 +2,11 @@ package edu.duke.ece651.team7.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This type represents Player in the game.
@@ -16,6 +19,8 @@ public class Player implements Serializable, Comparable<Player> {
     private FoodResource food;
     private Level maxTechLevel;
     private Player alliance;
+    private LinkedList<Integer> aircrafts;
+    private int numBomb;
 
     /**
      * Constructs a Player with the name.
@@ -38,6 +43,8 @@ public class Player implements Serializable, Comparable<Player> {
         this.food = new FoodResource(0);
         this.maxTechLevel = l;
         this.alliance = null;
+        this.aircrafts = new LinkedList<>();
+        this.numBomb = 0;
     }
 
     /**
@@ -184,6 +191,50 @@ public class Player implements Serializable, Comparable<Player> {
 
     public TechResource getTech(){
         return tech;
+    }
+
+    public void modifyBombAmount(int num){
+        if(this.numBomb + num < 0){
+            throw new IllegalArgumentException("Does not have enough Bomb");
+        }else{
+            numBomb += num;
+        }
+    }
+
+    public void addAircraft(int num){
+        if(num <= 0){
+            throw new IllegalArgumentException("Cannot add negative amount of Aircrafts");
+        }
+        for(int i = 0; i < num; i++){
+            this.aircrafts.add(3);
+        }
+    }
+
+    public void consumeAircraft(int num){
+        if(num <= 0){
+            throw new IllegalArgumentException("Cannot consume negative amount of Aircraft");
+        }
+        if(this.aircrafts.size() - num < 0){
+            throw new IllegalArgumentException("Does not have enough Aircraft");
+        }
+        for(int i = 0; i < num; i++){
+            int cur_value = this.aircrafts.get(i);
+            this.aircrafts.set(i, cur_value-1);
+        }
+        Iterator<Integer> iterator = this.aircrafts.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() == 0) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public int getBomb(){
+        return this.numBomb;
+    }
+
+    public LinkedList<Integer> getAircraft(){
+        return this.aircrafts;
     }
 
     /**

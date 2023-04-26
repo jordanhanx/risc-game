@@ -13,9 +13,11 @@ public abstract class BasicOrder implements Order{
     protected Territory dest;
     protected Player issuer;
     protected Map<Level, Integer> units;
+    protected boolean useAircraft;
 
-    public BasicOrder(Player p, Territory s, Territory d, Object... u){
+    public BasicOrder(Player p, boolean ua, Territory s, Territory d, Object... u){
         issuer = p;
+        useAircraft = ua;
         src = s;
         dest = d;
         units = new LinkedHashMap<Level, Integer>();
@@ -25,40 +27,11 @@ public abstract class BasicOrder implements Order{
         }
     }
 
-    public BasicOrder(Player p, Territory s, Territory d, Map<Level, Integer> u){
+    public BasicOrder(Player p,  boolean ua, Territory s, Territory d, Map<Level, Integer> u){
         issuer = p;
         src = s;
+        useAircraft = ua;
         dest = d;
         units = u;
     }
-
-    // public Player getPlayer(){
-    //     return issuer;
-    // }
-    // public Territory getDest(){
-    //     return dest;
-    // }
-
-    // public  Map<Level, Integer> getUnits(){
-    //     return units;
-    // }
-    // public Territory getSrc(){
-    //     return src;
-    // }
-
-    // public void increaseUnits(int num){
-    //     units+=num;
-    // }
-
-    // public void decreaseUnits(int num){
-    //     if(units - num >= 0){
-    //         units-=num;
-    //     }else{
-    //         throw new ArithmeticException("units cannot be less than 0");
-    //     }
-    // }
-
-    
-
-
 }

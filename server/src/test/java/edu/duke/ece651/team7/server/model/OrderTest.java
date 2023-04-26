@@ -43,17 +43,17 @@ public class OrderTest {
         assertEquals(20, m1.units.get(Level.INFANTRY));
         assertNull(m1.units.get(Level.AIRBORNE));
 
-        MoveOrder m2 = new MoveOrder(groupB, tOz, tRoshar, units);
+        MoveOrder m2 = new MoveOrder(groupB, false, tOz, tRoshar, units);
         assertEquals(10, m2.units.get(Level.CIVILIAN));
         assertEquals(8, m2.units.get(Level.INFANTRY));
         assertEquals(9, m2.units.get(Level.AIRBORNE));
 
-        AttackOrder m3 = new AttackOrder(groupA, tMidkemia, tGondor, Level.CIVILIAN, 10,  Level.INFANTRY, 20);
+        AttackOrder m3 = new AttackOrder(groupA, false, tMidkemia, tGondor, Level.CIVILIAN, 10,  Level.INFANTRY, 20);
         assertEquals(10, m3.units.get(Level.CIVILIAN));
         assertEquals(20, m3.units.get(Level.INFANTRY));
         assertNull(m3.units.get(Level.AIRBORNE));
 
-        AttackOrder m4 = new AttackOrder(groupA, tScadrial, tGondor, units);
+        AttackOrder m4 = new AttackOrder(groupA, false,0,tScadrial, tGondor, units);
         assertEquals(10, m4.units.get(Level.CIVILIAN));
         assertEquals(8, m4.units.get(Level.INFANTRY));
         assertEquals(9, m4.units.get(Level.AIRBORNE));
@@ -68,6 +68,8 @@ public class OrderTest {
         assertEquals(groupB, m7.issuer);
         assertEquals(groupC, m7.alliance);
 
+        ManufactureOrder m8 = new ManufactureOrder(groupC, false, 10);
+    
     }
     @Test
     public void test_equal(){
@@ -112,5 +114,16 @@ public class OrderTest {
         assertFalse(r1.equals(r2));
         assertTrue(r1.equals(r3));
         assertFalse(r1.equals(u3));
+
+        ManufactureOrder m8 = new ManufactureOrder(p1, false, 10);
+        ManufactureOrder m9 = new ManufactureOrder(p1, false, 10);
+        assertTrue(m8.equals(m9));
+        assertFalse(m8.equals(r1));
+
+    }
+
+    @Test
+    public void test_manufactureOrder(){
+
     }
 }
