@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.media.MediaPlayer;
@@ -45,16 +46,18 @@ public class OrderAttackController implements Initializable {
 
     @FXML
     private ChoiceBox<String> srcSelector, destSelector, levelSelector;
-
     @FXML
     private TextField numInputer;
-
+    @FXML
+    private CheckBox useAirPlane;
+    @FXML
+    private TextField numBomb;
     private RemoteGame server;
     private ObservableList<String> srcList;
     private ObservableList<String> destList;
     private ObservableList<String> levList;
-    private String srcName;
-    private String destName;
+    private String sourceTerr;
+    private String destinationTerr;
 
     /**
      * Constructs a new instance of OrderAttackController with the specified server
@@ -64,7 +67,7 @@ public class OrderAttackController implements Initializable {
      * @param gameMap the GameMap object representing the game map
      * @throws RemoteException if a remote method call fails
      */
-    public OrderAttackController(RemoteGame server, GameMap gameMap, String srcName,String destName) throws RemoteException {
+    public OrderAttackController(RemoteGame server, GameMap gameMap, String sourceTerr,String destinationTerr) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.srcList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
@@ -74,8 +77,8 @@ public class OrderAttackController implements Initializable {
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {
             levList.add(String.valueOf(lev));
         }
-        this.srcName=srcName;
-        this.destName=destName;
+        this.sourceTerr =sourceTerr;
+        this.destinationTerr =destinationTerr;
     }
 
     @Override
@@ -83,8 +86,8 @@ public class OrderAttackController implements Initializable {
         srcSelector.setItems(srcList);
         destSelector.setItems(destList);
         levelSelector.setItems(levList);
-        srcSelector.setValue(srcName);
-        destSelector.setValue(destName);
+        srcSelector.setValue(sourceTerr);
+        destSelector.setValue(destinationTerr);
     }
 
     /**
@@ -98,7 +101,9 @@ public class OrderAttackController implements Initializable {
      */
     @FXML
     public void clickOnAttack(ActionEvent action) throws RemoteException {
-        String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),false, 0, 
+        String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),
+                useAirPlane.isSelected(),
+                Integer.parseInt(numBomb.getText()),
                 srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));

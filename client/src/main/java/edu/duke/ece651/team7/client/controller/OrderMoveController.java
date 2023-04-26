@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -43,16 +44,15 @@ public class OrderMoveController implements Initializable {
 
     @FXML
     private ChoiceBox<String> srcSelector, destSelector, levelSelector;
-
     @FXML
     private TextField numInputer;
-
     private RemoteGame server;
     private ObservableList<String> terrList;
     private ObservableList<String> levList;
-
-    private String srcName;
-    private String destName;
+    private String sourceTerr;
+    private String destinationTerr;
+    @FXML
+    private CheckBox useAirPlane;
 
     /**
      * Constructs an OrderMoveController object.
@@ -60,7 +60,7 @@ public class OrderMoveController implements Initializable {
      * @param server The RemoteGame object representing the game server.
      * @throws RemoteException If there is an error communicating with the server.
      */
-    public OrderMoveController(RemoteGame server, String srcName, String destName) throws RemoteException {
+    public OrderMoveController(RemoteGame server, String sourceTerr, String destinationTerr) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
         this.terrList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
@@ -68,8 +68,8 @@ public class OrderMoveController implements Initializable {
         for (int lev = 0; lev < self.getCurrentMaxLevel().label; ++lev) {
             levList.add(String.valueOf(lev));
         }
-        this.srcName=srcName;
-        this.destName=destName;
+        this.sourceTerr = sourceTerr;
+        this.destinationTerr = destinationTerr;
     }
 
     @Override
@@ -77,8 +77,8 @@ public class OrderMoveController implements Initializable {
         srcSelector.setItems(terrList);
         destSelector.setItems(terrList);
         levelSelector.setItems(levList);
-        srcSelector.setValue(srcName);
-        destSelector.setValue(destName);
+        srcSelector.setValue(sourceTerr);
+        destSelector.setValue(destinationTerr);
     }
 
     /**
@@ -91,8 +91,10 @@ public class OrderMoveController implements Initializable {
      */
     @FXML
     public void clickOnMove(ActionEvent action) throws RemoteException {
-        String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),false, 
-                srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
+        String response = server.tryMoveOrder(UserSession.getInstance().getUsername(),
+                useAirPlane.isSelected(),
+                srcSelector.getSelectionModel().getSelectedItem(),
+                destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
         if (response != null) {

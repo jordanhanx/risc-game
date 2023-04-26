@@ -33,15 +33,14 @@ public class OrderAllyController implements Initializable {
         return new Scene(loader.load(), 600, 400);
     }
 
-    private RemoteGame server;
     @FXML
     private ChoiceBox<String> allySelector;
-    private ObservableList<String> allyList;
-
     @FXML private ImageView player0;
     @FXML private ImageView player1;
     @FXML private ImageView player2;
     @FXML private ImageView player3;
+    private ObservableList<String> allyList;
+    private RemoteGame server;
 
     public OrderAllyController(RemoteGame server, GameMap gameMap) throws RemoteException{
         this.server=server;
@@ -80,17 +79,14 @@ public class OrderAllyController implements Initializable {
     }
     @FXML
     public void clickOnAlly(ActionEvent action) throws RemoteException{
-//        String response = server.tryAllianceOrder(UserSession.getInstance().getUsername(),
-//                allySelector.getValue()
-//                );
-//
-        String response = null;
+        String response = server.tryAllianceOrder(UserSession.getInstance().getUsername(),
+                allySelector.getValue()
+                );
         if (response != null) {
             MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
             actionFailedPlayer.play();
             throw new IllegalArgumentException(response);
         }
-
         //set the ally sound
         MediaPlayer allyPlayer = MusicFactory.createAllyPlayer();
         allyPlayer.play();

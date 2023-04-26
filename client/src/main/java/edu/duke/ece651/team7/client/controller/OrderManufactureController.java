@@ -25,13 +25,13 @@ public class OrderManufactureController implements Initializable {
         return new Scene(loader.load(), 600, 400);
     }
 
-    private RemoteGame server;
     @FXML
     private TextField amount;
     @FXML
     private CheckBox isBomb;
     @FXML
     private CheckBox isAirPlane;
+    private RemoteGame server;
 
     public OrderManufactureController(RemoteGame server) throws RemoteException {
         this.server=server;
@@ -39,12 +39,11 @@ public class OrderManufactureController implements Initializable {
 
     @FXML
     public void clickOnManufacture(ActionEvent action) throws RemoteException{
-//        String response=server.tryManfactureOrder(UserSession.getInstance().getUsername(),
-//                isBomb.isSelected(),
-//                Integer.parseInt(amount.getText())
-//        );
+        String response=server.tryManufactureOrder(UserSession.getInstance().getUsername(),
+                isBomb.isSelected(),
+                Integer.parseInt(amount.getText())
+        );
 
-        String response = null;
         if (response != null) {
             MediaPlayer actionFailedPlayer = MusicFactory.createActionFailedPlayer();
             actionFailedPlayer.play();
