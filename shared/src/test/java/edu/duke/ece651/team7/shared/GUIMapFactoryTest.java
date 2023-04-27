@@ -29,10 +29,10 @@ public class GUIMapFactoryTest  {
         List<Player> initGroupOwners = threePlayersMap.getInitGroupOwners();
        assertTrue(threePlayersMap.isAdjacent("Narnia", "Midkemia"));
        assertTrue(threePlayersMap.isAdjacent("Westeros", "Aranthia"));
-       assertTrue(threePlayersMap.isAdjacent("Aranthia", "Galadria"));
+       assertTrue(threePlayersMap.isAdjacent("Aranthia", "Westeros"));
        assertTrue(threePlayersMap.isAdjacent("Galadria", "Helvoria"));
        assertTrue(threePlayersMap.isAdjacent("Gondor", "Elantris"));
-       assertTrue(threePlayersMap.isAdjacent("Mordor", "Essos"));
+       assertTrue(threePlayersMap.isAdjacent("Mordor", "Hogwarts"));
        assertFalse(threePlayersMap.isAdjacent("Roshar", "Midkemia"));
        assertFalse(threePlayersMap.isAdjacent("Narnia", "Aranthia"));
 
@@ -50,23 +50,23 @@ public class GUIMapFactoryTest  {
        assertEquals(8, initGroupOwners.get(1).getTerritories().size());
        assertEquals(8, initGroupOwners.get(2).getTerritories().size());
 
-       assertEquals(2,threePlayersMap.getCostBetween("Narnia", "Midkemia") );
-       assertEquals(3,threePlayersMap.getCostBetween("Narnia", "Oz") );
+       assertEquals(3,threePlayersMap.getCostBetween("Narnia", "Midkemia") );
+       assertEquals(2,threePlayersMap.getCostBetween("Narnia", "Roshar") );
 
-       assertEquals(9,threePlayersMap.getCostBetween("Oz", "Elantris") );
-       assertEquals(9,threePlayersMap.getCostBetween("Elantris", "Oz") );
+       assertEquals(8,threePlayersMap.getCostBetween("Oz", "Elantris") );
+       assertEquals(8,threePlayersMap.getCostBetween("Elantris", "Oz") );
 
-       assertEquals(4,threePlayersMap.getCostBetween("Highgarden", "Helvoria") );
-       assertEquals(4,threePlayersMap.getCostBetween("Helvoria","Highgarden") );
+       assertEquals(6,threePlayersMap.getCostBetween("Highgarden", "Galadria") );
+       assertEquals(6,threePlayersMap.getCostBetween("Galadria","Highgarden") );
 
-       assertEquals(14,threePlayersMap.getCostBetween("Highgarden", "Aranthia") );
-       assertEquals(14,threePlayersMap.getCostBetween("Aranthia","Highgarden") );
+       assertEquals(5,threePlayersMap.getCostBetween("Highgarden", "Aranthia") );
+       assertEquals(5,threePlayersMap.getCostBetween("Aranthia","Highgarden") );
 
-       assertEquals(12,threePlayersMap.getCostBetween("Mordor", "Essos") );
-       assertEquals(12,threePlayersMap.getCostBetween("Essos", "Mordor") );
+       assertEquals(7,threePlayersMap.getCostBetween("Mordor", "Hogwarts") );
+       assertEquals(7,threePlayersMap.getCostBetween("Hogwarts", "Mordor") );
 
-       assertEquals(10,threePlayersMap.getCostBetween("Pyke", "Pentos") );
-       assertEquals(10,threePlayersMap.getCostBetween("Pentos", "Pyke") );
+       assertEquals(7,threePlayersMap.getCostBetween("Pyke", "Pentos") );
+       assertEquals(7,threePlayersMap.getCostBetween("Pentos", "Pyke") );
     
     }
 }
