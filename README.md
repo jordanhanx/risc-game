@@ -46,4 +46,4 @@ Each player has the option to move, attack, research, and upgrade.
 2. **Ultron:** Ultron units can be equipped with bombs. Bombs can also be built using technology resources. When a user attacks a territory with Ultron units without equipping them with bombs. Ultron units participate in combat with normal combat resolution. If Ultron units are equipped with bombs, it will blow up 5 opponent unit during one-to-one combat when only one side has bomb. If both sides have bombs during one-to-one combat, both sides will lose 3 units. 
 
 
-![Alt text](https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1200/https://inkarnate-api-as-production.s3.amazonaws.com/LoR7Kpr6BBB7TfdEYFdcLr)
+![Alt text](image.png)
