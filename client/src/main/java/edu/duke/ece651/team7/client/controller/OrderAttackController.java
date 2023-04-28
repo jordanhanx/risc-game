@@ -103,9 +103,14 @@ public class OrderAttackController implements Initializable {
      */
     @FXML
     public void clickOnAttack(ActionEvent action) throws RemoteException {
+        String numBombText = numBomb.getText();
+        int numBombValue = 0;
+        if (numBombText != null && !numBombText.trim().isEmpty()) {
+            numBombValue = Integer.parseInt(numBombText);
+        }
         String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),
                 useAirPlane.isSelected(),
-                Integer.parseInt(numBomb.getText()),
+                numBombValue,
                 srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
