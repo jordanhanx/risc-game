@@ -3,7 +3,9 @@ package edu.duke.ece651.team7.client.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -72,7 +74,17 @@ public class OrderAttackController implements Initializable {
     public OrderAttackController(RemoteGame server, GameMap gameMap, String sourceTerr,String destinationTerr) throws RemoteException {
         this.server = server;
         Player self = server.getSelfStatus(UserSession.getInstance().getUsername());
-        this.srcList = FXCollections.observableList(self.getTerritories().stream().map(t -> t.getName()).toList());
+        List<String> territoryNames = self.getTerritories().stream()
+                .map(Territory::getName)
+                .collect(Collectors.toList());
+        if (self.getAlliance() != null) {
+            Player ally = self.getAlliance();
+            territoryNames.addAll(ally.getTerritories().stream()
+                    .filter(terr -> terr.getUnitsNumber(self) != 0)
+                    .map(Territory::getName)
+                    .collect(Collectors.toList()));
+        }
+        this.srcList = FXCollections.observableList(territoryNames);
         this.destList = FXCollections.observableList(
                 gameMap.getTerritories().stream().map(t -> t.getName()).filter((t) -> !srcList.contains(t)).toList());
         this.levList = FXCollections.observableArrayList();
@@ -111,7 +123,8 @@ public class OrderAttackController implements Initializable {
         String response = server.tryAttackOrder(UserSession.getInstance().getUsername(),
                 useAirPlane.isSelected(),
                 numBombValue,
-                srcSelector.getSelectionModel().getSelectedItem(), destSelector.getSelectionModel().getSelectedItem(),
+                srcSelector.getSelectionModel().getSelectedItem(),
+                destSelector.getSelectionModel().getSelectedItem(),
                 Integer.parseInt(levelSelector.getSelectionModel().getSelectedItem()),
                 Integer.parseInt(numInputer.getText()));
         if (response != null) {

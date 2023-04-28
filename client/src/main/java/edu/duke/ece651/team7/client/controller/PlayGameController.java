@@ -6,8 +6,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import edu.duke.ece651.team7.client.MusicFactory;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -30,14 +28,13 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import edu.duke.ece651.team7.client.model.UserSession;
-import edu.duke.ece651.team7.shared.*;
-
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
 
+import edu.duke.ece651.team7.client.MusicFactory;
+import edu.duke.ece651.team7.client.model.UserSession;
+import edu.duke.ece651.team7.shared.*;
 /**
  * The PlayGameController class is responsible for managing the game view, which
  * displays the current state of the game to the user, and allows the user to
@@ -220,6 +217,7 @@ public class PlayGameController extends UnicastRemoteObject implements RemoteCli
             this.gameMap.setValue(gameMap);
             initColorMap();
             setTerritoryColor();
+            setChoiceBox();
         });
     }
 
